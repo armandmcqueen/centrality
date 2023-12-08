@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "centrality-controlplane"
+version = "0.0.1"
+authors = [
+    {name = "Armand McQueen", email = "armandmcqueen@gmail.com"},
+]
+description = "Centrality control plane"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "SQLAlchemy == 2.0.23",
+    "psycopg2-binary == 2.9.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    'ruff ~= 0.1.6',
+    'flit ~= 3.9.0',
+]
+
+[tool.flit.module]
+name = "controlplane"
