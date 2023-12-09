@@ -24,8 +24,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    'ruff ~= 0.1.6',
-    'flit ~= 3.9.0',
+    "ruff ~= 0.1.6",
+    "flit ~= 3.9.0",
+    "docker ~= 7.0.0",
 ]
 
 [tool.flit.module]
