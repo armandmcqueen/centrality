@@ -3,12 +3,11 @@ from pydantic import BaseModel
 from typing import List
 
 
-from sqlalchemy import DateTime, ARRAY, Float
-from sqlalchemy.orm import Mapped,mapped_column
+from sqlalchemy import ARRAY, Float
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.utils import gen_random_uuid
-from dataclasses import dataclass
 
 
 #######################################################
@@ -33,7 +32,9 @@ class CpuVmMetricORM(DatastoreBaseORM):
     __tablename__ = "vm_metric_cpu"
     metric_id: Mapped[str] = mapped_column(primary_key=True, default=gen_random_uuid)
     vm_id: Mapped[str] = mapped_column(nullable=False)
-    ts: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
+    ts: Mapped[datetime.datetime] = mapped_column(
+        TIMESTAMP(timezone=True), nullable=False
+    )
     # cpu_percents: Mapped[List[float]] = mapped_column(nullable=False)
     cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
     avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)
@@ -53,6 +54,5 @@ class CpuVmMetric(BaseModel):
             vm_id=orm.vm_id,
             ts=orm.ts,
             cpu_percents=orm.cpu_percents,
-            avg_cpu_percent=orm.avg_cpu_percent
+            avg_cpu_percent=orm.avg_cpu_percent,
         )
-

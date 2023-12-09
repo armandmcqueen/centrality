@@ -4,6 +4,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/controlplane" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/controlplane/controlplane" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/common/common" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
     </content>

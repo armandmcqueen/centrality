@@ -1,6 +1,5 @@
 import os
 import json
-from dataclasses import dataclass
 from pydantic import BaseModel
 from controlplane.constants import CONTROL_PLANE_DATASTORE_CONFIG_ENVVAR
 

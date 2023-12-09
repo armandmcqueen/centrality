@@ -15,5 +15,3 @@ datastore_client = DatastoreClient(config=datastore_config)
 @app.get(constants.HEALTHCHECK_ENDPOINT)
 def get_healthcheck():
     return {"status": "ok"}
-
-

@@ -19,13 +19,13 @@ class DatastoreClient:
         DatastoreBaseORM.metadata.create_all(self.engine)
 
     def reset_db(self):
-        """ Drop all tables and recreate them"""
+        """Drop all tables and recreate them"""
         DatastoreBaseORM.metadata.drop_all(self.engine)
         DatastoreBaseORM.metadata.create_all(self.engine)
         self._add_dev_token()
 
     def new_token(self) -> UserToken:
-        """ Create a new token and add it to the database"""
+        """Create a new token and add it to the database"""
         user_token = UserTokenORM()
         with Session(bind=self.engine) as session:
             session.add(user_token)
@@ -33,15 +33,14 @@ class DatastoreClient:
             return UserToken.from_orm(user_token)
 
     def _add_dev_token(self) -> None:
-        """ Add the dev token to the database"""
+        """Add the dev token to the database"""
         user_token = UserTokenORM(user_id="dev", token="dev")
         with Session(bind=self.engine) as session:
             session.add(user_token)
             session.commit()
 
-
     def get_tokens(self) -> List[UserToken]:
-        """ Get all tokens from the database"""
+        """Get all tokens from the database"""
         results = []
         with Session(bind=self.engine) as session:
             rows = session.query(UserTokenORM).all()
@@ -52,16 +51,22 @@ class DatastoreClient:
         return results
 
     def validate_token(self, user_id: str, token: str) -> bool:
-        """ Check if a token is valid"""
+        """Check if a token is valid"""
         with Session(bind=self.engine) as session:
-            row = session.query(UserTokenORM).filter(UserTokenORM.user_id == user_id).first()
+            row = (
+                session.query(UserTokenORM)
+                .filter(UserTokenORM.user_id == user_id)
+                .first()
+            )
             if row is None:
                 return False
             row = cast(UserTokenORM, row)
             result_token = UserToken.from_orm(row)
             return result_token.token == token
 
-    def add_cpu_measurement(self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime) -> None:
+    def add_cpu_measurement(
+        self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime
+    ) -> None:
         avg_cpu_percent = sum(cpu_percents) / len(cpu_percents)
         epoch_millis = int(ts.timestamp() * 1000)
         metric_id = f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"
@@ -70,13 +75,18 @@ class DatastoreClient:
             vm_id=vm_id,
             ts=ts,
             cpu_percents=cpu_percents,
-            avg_cpu_percent=avg_cpu_percent
+            avg_cpu_percent=avg_cpu_percent,
         )
         with Session(bind=self.engine) as session:
             session.add(metric)
             session.commit()
 
-    def get_cpu_measurements(self, vm_id: str, start_ts: Optional[datetime.datetime], end_ts: Optional[datetime.datetime]) -> List[CpuVmMetric]:
+    def get_cpu_measurements(
+        self,
+        vm_id: str,
+        start_ts: Optional[datetime.datetime],
+        end_ts: Optional[datetime.datetime],
+    ) -> List[CpuVmMetric]:
         results = []
         with Session(bind=self.engine) as session:
             # Get rows with vm_id based on start_ts and end_ts
@@ -89,12 +99,14 @@ class DatastoreClient:
             if end_ts is not None:
                 filter_args.append(CpuVmMetricORM.ts <= end_ts)
 
-            rows = session.query(CpuVmMetricORM).filter(
-                *filter_args
-            ).order_by(CpuVmMetricORM.ts).all()
+            rows = (
+                session.query(CpuVmMetricORM)
+                .filter(*filter_args)
+                .order_by(CpuVmMetricORM.ts)
+                .all()
+            )
             for row in rows:
                 row = cast(CpuVmMetricORM, row)
                 result_metric = CpuVmMetric.from_orm(row)
                 results.append(result_metric)
         return results
-

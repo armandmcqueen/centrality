@@ -17,9 +17,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    'ruff ~= 0.1.6',
+    'ruff ~= 0.1.7',
     'flit ~= 3.9.0',
 ]
 
 [tool.flit.module]
-name = "controlplane"
+name = "common"

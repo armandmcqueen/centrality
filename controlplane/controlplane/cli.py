@@ -43,8 +43,5 @@ def launch_api():
             return
 
 
-
-
 if __name__ == "__main__":
     typer.run(launch_api)
-

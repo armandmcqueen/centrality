@@ -32,5 +32,3 @@ class DefaultControlPlaneRestConfig(ControlPlaneRestConfig):
             port=8000,
             startup_healthcheck_timeout=20,
         )
-
-

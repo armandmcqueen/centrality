@@ -3,7 +3,8 @@ import uuid
 
 
 class PostgresContainer:
-    """ Class to launch postgres container as a context manager"""
+    """Class to launch postgres container as a context manager"""
+
     def __init__(self, name=None):
         unique_id = name if name else str(uuid.uuid4())
         self.name = f"datastore-postgres-{unique_id}"
@@ -33,5 +34,3 @@ class PostgresContainer:
     def __exit__(self, exc_type, exc_value, traceback):
         if self.container:
             self.container.stop()
-
-

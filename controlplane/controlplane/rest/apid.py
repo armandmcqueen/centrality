@@ -14,6 +14,7 @@ class RestApiDaemonImplementationError(Exception):
 
     Usually when trying to manipulate the subprocess before it has been created
     """
+
     pass
 
 
@@ -33,7 +34,9 @@ class RestApiDaemonThread(threading.Thread):
     def run(self):
         self._run_started = True
         # TODO: Should we use the uvicorn python API instead of the CLI?
-        fast_api_command = f"uvicorn controlplane.rest.api:app --port {self.config.port}"
+        fast_api_command = (
+            f"uvicorn controlplane.rest.api:app --port {self.config.port}"
+        )
         self.fast_api_parent_proc = subprocess.Popen(
             fast_api_command,
             stdout=subprocess.PIPE,
@@ -50,16 +53,15 @@ class RestApiDaemonThread(threading.Thread):
         self.fast_api_parent_proc.terminate()
 
     def wait_for_healthy(self):
-        """ Query the healthcheck endpoint until either it returns a 200 or we timeout. """
+        """Query the healthcheck endpoint until either it returns a 200 or we timeout."""
         if not self._run_started:
-            raise RestApiDaemonImplementationError("Trying to wait for healthy before starting")
+            raise RestApiDaemonImplementationError(
+                "Trying to wait for healthy before starting"
+            )
 
         while self.fast_api_parent_proc is None:
             # Wait for the subprocess to be created by the thread
             time.sleep(0.005)
-
-
-
 
         start_time = time.time()
         max_time = start_time + self.config.startup_healthcheck_timeout
@@ -77,8 +79,6 @@ class RestApiDaemonThread(threading.Thread):
                 print(f"⌛️ ReadTimeout when trying to connect to {url}")
                 pass
             time.sleep(self.config.startup_healthcheck_poll_interval)
-        raise RestApiDidntStartError(f"FastAPI didn't start within {self.config.startup_healthcheck_timeout} seconds")
-
-
-
-
+        raise RestApiDidntStartError(
+            f"FastAPI didn't start within {self.config.startup_healthcheck_timeout} seconds"
+        )
