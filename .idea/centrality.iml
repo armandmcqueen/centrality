@@ -8,6 +8,10 @@
       <sourceFolder url="file://$MODULE_DIR$/common/common" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/common/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/common/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/controlplane/.ruff_cache/0.1.7" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (centrality)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
