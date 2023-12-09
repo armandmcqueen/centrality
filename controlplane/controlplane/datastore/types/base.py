@@ -1,7 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase
 
 
-class DatastoreBase(DeclarativeBase):
+class DatastoreBaseORM(DeclarativeBase):
     pass
 
 

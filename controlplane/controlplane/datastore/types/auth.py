@@ -1,5 +1,7 @@
-from controlplane.datastore.types.base import DatastoreBase
+from controlplane.datastore.types.base import DatastoreBaseORM
+from controlplane.datastore.types.utils import gen_random_uuid
 from sqlalchemy.dialects.postgresql import UUID
+from pydantic import BaseModel
 
 from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped,mapped_column
@@ -7,24 +9,19 @@ from dataclasses import dataclass
 import uuid
 
 
-def gen_random_uuid():
-    """ Generate a random UUID as a string"""
-    return str(uuid.uuid4())
-
-
 def gen_random_token():
     """ Generate a random UUID as a string"""
     return f"centrality-{uuid.uuid4()}"
 
-class UserTokenORM(DatastoreBase):
-    __tablename__ = "user_account"
+
+class UserTokenORM(DatastoreBaseORM):
+    __tablename__ = "users"
 
     user_id: Mapped[str] = mapped_column(primary_key=True, default=gen_random_uuid)
     token: Mapped[str] = mapped_column(nullable=False, unique=True, default=gen_random_token)
 
 
-@dataclass
-class UserToken:
+class UserToken(BaseModel):
     user_id: str
     token: str
 
