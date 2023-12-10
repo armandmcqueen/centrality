@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/controlplane/controlplane" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common/common" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/vmagent" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/vmagent/vmagent" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
