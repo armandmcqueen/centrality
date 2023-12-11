@@ -2,6 +2,8 @@ import datetime
 from pydantic import BaseModel
 from typing import List
 
+from common.types.vmmetrics import CpuMeasurement
+
 
 from sqlalchemy import ARRAY, Float
 from sqlalchemy.orm import Mapped, mapped_column
@@ -41,6 +43,8 @@ class CpuVmMetricORM(DatastoreBaseORM):
 
 
 class CpuVmMetric(BaseModel):
+    # TODO: Is this useful? It has overlap with the type in common/types/vmmetrics.py, but
+    #       includes some additional info that maybe shouldn't be exposed to users?
     metric_id: str
     vm_id: str
     ts: datetime.datetime

@@ -1,11 +1,14 @@
 import docker
 import uuid
 
+
 def run_postgres_docker():
     pass
 
+
 def run_postgres_process():
     pass
+
 
 class PostgresContainer:
     """Class to launch postgres container as a context manager"""

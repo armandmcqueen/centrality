@@ -50,19 +50,17 @@ class DatastoreClient:
                 results.append(result_token)
         return results
 
-    def validate_token(self, user_id: str, token: str) -> bool:
+    def validate_token(self, token: str) -> bool:
         """Check if a token is valid"""
         with Session(bind=self.engine) as session:
             row = (
                 session.query(UserTokenORM)
-                .filter(UserTokenORM.user_id == user_id)
+                .filter(UserTokenORM.token == token)
                 .first()
             )
             if row is None:
                 return False
-            row = cast(UserTokenORM, row)
-            result_token = UserToken.from_orm(row)
-            return result_token.token == token
+            return True
 
     def add_cpu_measurement(
         self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime
@@ -83,17 +81,15 @@ class DatastoreClient:
 
     def get_cpu_measurements(
         self,
-        vm_id: str,
+        vm_ids: List[str],
         start_ts: Optional[datetime.datetime],
         end_ts: Optional[datetime.datetime],
     ) -> List[CpuVmMetric]:
         results = []
         with Session(bind=self.engine) as session:
-            # Get rows with vm_id based on start_ts and end_ts
-            # If the start_ts is None, get all rows with vm_id that are before end_ts
-            # If the end_ts is None, get all rows with vm_id that are after start_ts
-            # If both are None, get all rows with vm_id
-            filter_args = [CpuVmMetricORM.vm_id == vm_id]
+            if len(vm_ids) == 0:
+                return []
+            filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
             if start_ts is not None:
                 filter_args.append(CpuVmMetricORM.ts >= start_ts)
             if end_ts is not None:

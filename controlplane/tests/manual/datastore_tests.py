@@ -12,7 +12,7 @@ def test_token(client: DatastoreClient):
     for token in existing_tokens:
         print(f"Existing token: {token}")
 
-    authed = client.validate_token("dev", "dev")
+    authed = client.validate_token("dev")
     print(f"Authed: {authed}")
 
 
@@ -36,7 +36,7 @@ def test_metrics(client: DatastoreClient):
     # Retrieve all metrics for the vm
     print()
     print("Testing get_cpu_measurements with no time filters")
-    all_metrics = client.get_cpu_measurements(vm_id=vm_id, start_ts=None, end_ts=None)
+    all_metrics = client.get_cpu_measurements(vm_ids=[vm_id], start_ts=None, end_ts=None)
     expected = 10
     matched = len(all_metrics) == expected
     output = "PASSED" if matched else "FAILED"
@@ -45,7 +45,7 @@ def test_metrics(client: DatastoreClient):
     print()
     print("Testing get_cpu_measurements with start and end time filters, inclusive")
     all_metrics_defined = client.get_cpu_measurements(
-        vm_id=vm_id, start_ts=start_time, end_ts=end_time
+        vm_ids=[vm_id], start_ts=start_time, end_ts=end_time
     )
     # print(all_metrics_defined)
     expected = 10
@@ -57,7 +57,7 @@ def test_metrics(client: DatastoreClient):
     print()
     print("Testing get_cpu_measurements with end_filter")
     first_half_metrics = client.get_cpu_measurements(
-        vm_id=vm_id,
+        vm_ids=[vm_id],
         start_ts=start_time,
         end_ts=start_time + datetime.timedelta(seconds=0.5),
     )
@@ -73,7 +73,7 @@ def test_metrics(client: DatastoreClient):
     print()
     print("Testing get_cpu_measurements with start filter")
     second_half_metrics = client.get_cpu_measurements(
-        vm_id=vm_id,
+        vm_ids=[vm_id],
         start_ts=start_time + datetime.timedelta(seconds=0.5),
         end_ts=end_time,
     )
