@@ -1,12 +1,9 @@
-import datetime
 import json
 
 from fastapi.routing import APIRoute
 from fastapi import FastAPI
 from common import constants
-from controlplane.datastore.client import DatastoreClient
-from controlplane.datastore.config import DatastoreConfig
-from controlplane.rest.config import ControlPlaneRestConfig
+from vmagent.rest.config import VmAgentRestConfig
 
 
 from pydantic import BaseModel
@@ -23,9 +20,7 @@ app = FastAPI(
 
 
 # Load config values from environment variables and setup connect to datastore
-rest_config = ControlPlaneRestConfig.from_envvar()
-datastore_config = DatastoreConfig.from_envvar()
-datastore_client = DatastoreClient(config=datastore_config)
+rest_config = VmAgentRestConfig.from_envvar()
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)

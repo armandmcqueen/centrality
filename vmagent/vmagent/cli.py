@@ -16,6 +16,7 @@ def get_default_configs() -> tuple[conclib.ConclibConfig, VmAgentRestConfig]:
     rest_config = DefaultVmAgentRestConfig()
     return conclib_config, rest_config
 
+
 @app.command()
 def launch():
     """
@@ -55,6 +56,11 @@ def launch():
         print("👋 Goodbye")
         return
 
+
+@app.command()
+def hello():
+    """ Do nothing command to make typer think there are multiple subcommands"""
+    print("Hello")
 
 
 

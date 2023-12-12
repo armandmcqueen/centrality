@@ -1,6 +1,7 @@
 # Custom
 .ignore/
 .DS_Store
+dump.rdb
 
 
 # Byte-compiled / optimized / DLL files
