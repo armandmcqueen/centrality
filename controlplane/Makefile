@@ -19,3 +19,11 @@ stopdb:
 .PHONY: psql
 psql:
 	PGPASSWORD=postgres psql --no-password -h localhost -U postgres
+
+.PHONY: gen-openapi-spec
+gen-openapi-spec:
+	python controlplane/cli.py openapi > ../common/common/sdks/controlplane/openapi.json
+
+.PHONY: launch
+launch:
+	python controlplane/cli.py launch

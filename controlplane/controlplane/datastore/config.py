@@ -1,7 +1,7 @@
 import os
 import json
 from pydantic import BaseModel
-from controlplane.constants import CONTROL_PLANE_DATASTORE_CONFIG_ENVVAR
+from common.constants import CONTROL_PLANE_DATASTORE_CONFIG_ENVVAR
 
 
 class ControlPlaneDatastoreConfigEnvvarNotSetError(Exception):

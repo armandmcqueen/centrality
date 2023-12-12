@@ -1,9 +1,11 @@
 import datetime
 from typing import Optional, Annotated
+import json
 
+from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
-from controlplane import constants
+from common import constants
 from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
@@ -18,19 +20,22 @@ class OkResponse(BaseModel):
     status: str = "ok"
 
 
-app = FastAPI()
+app = FastAPI(
+    title="centrality-controlplane",
+    version="0.0.1",
+)
+security = HTTPBearer()
 
+
+# Load config values from environment variables and setup connect to datastore
 rest_config = ControlPlaneRestConfig.from_envvar()
 datastore_config = DatastoreConfig.from_envvar()
-
 datastore_client = DatastoreClient(config=datastore_config)
-
-
-security = HTTPBearer()
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)
 def get_healthcheck():
+    """ Basic healthcheck """
     return OkResponse()
 
 
@@ -39,10 +44,11 @@ def get_healthcheck():
 def get_auth_healthcheck(
         credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> OkResponse:
+    """ Basic healthcheck that requires authentication """
     return OkResponse()
 
 
-@app.get(constants.CPU_METRIC_ENDPOINT)
+@app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def get_cpu_metric(
         credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
@@ -70,12 +76,13 @@ def get_cpu_metric(
     ) for result in results]
 
 
-@app.post(constants.CPU_METRIC_ENDPOINT)
+@app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def put_cpu_metric(
         credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
         measurement: CpuMeasurement
 ) -> OkResponse:
+    """ Put a cpu metric measurement into the datastore """
     datastore_client.add_cpu_measurement(
         vm_id=measurement.vm_id,
         cpu_percents=measurement.cpu_percents,
@@ -83,4 +90,31 @@ def put_cpu_metric(
     return OkResponse()
 
 
+def generate_openapi_json():
+    """ Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this) """
+    openapi_schema = app.openapi()
+    # Write to stdout
+    print(json.dumps(openapi_schema, indent=2))
+
+
+# To improve the naming of auto-generated API clients, we use the route names
+# as the operation IDs. Copied from docs:
+# https://fastapi.tiangolo.com/advanced/path-operation-advanced-configuration/
+def use_route_names_as_operation_ids(app: FastAPI) -> None:
+    """
+    Simplify operation IDs so that generated API clients have simpler function
+    names.
+
+    Should be called only after all routes have been added.
+    """
+    for route in app.routes:
+        if isinstance(route, APIRoute):
+            route.operation_id = route.name  # in this case, 'read_items'
+
+
+use_route_names_as_operation_ids(app)
+
+
+if __name__ == '__main__':
+    generate_openapi_json()
 

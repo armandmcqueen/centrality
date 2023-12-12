@@ -2,7 +2,7 @@ import os
 import json
 from pydantic import BaseModel
 
-from controlplane.constants import CONTROL_PLANE_REST_CONFIG_ENVVAR
+from common.constants import CONTROL_PLANE_REST_CONFIG_ENVVAR
 
 
 class ControlPlaneRestConfigEnvvarNotSetError(Exception):
@@ -11,7 +11,7 @@ class ControlPlaneRestConfigEnvvarNotSetError(Exception):
 
 class ControlPlaneRestConfig(BaseModel):
     port: int
-    startup_healthcheck_timeout: float
+    startup_healthcheck_timeout: int
     startup_healthcheck_poll_interval: float = 0.5
 
     def save_to_envvar(self):
