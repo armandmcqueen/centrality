@@ -1,11 +1,11 @@
-import uuid
+import pykka
 
 from typing import Optional
-import pykka
 
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.cpu import CpuMetricCollector
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
+from vmagent.actors.heartbeat import HeartbeatSender
+from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
 
 class ActorSystem:
@@ -17,21 +17,23 @@ class ActorSystem:
     def __init__(
             self,
             vm_id: str,
-            control_plane_sdk_config: ControlPlaneSdkConfig,
-            control_plane_sdk_token: str,
+            control_plane_sdk: ControlPlaneSdk,
     ):
-        self.control_plane_sdk_config = control_plane_sdk_config
+        self.control_plane_sdk = control_plane_sdk
         self.vm_agent_config = VmAgentConfig(vm_id=vm_id)
 
         self.metric_subsystem = MetricSubsystem(
             vm_agent_config=self.vm_agent_config,
-            control_plane_sdk_config=control_plane_sdk_config,
-            control_plane_sdk_token=control_plane_sdk_token,
-
+            control_plane_sdk=self.control_plane_sdk,
         )
+        self.heartbeat_sender_ref: Optional[pykka.ActorRef] = None
 
     def start(self):
         self.metric_subsystem.start()
+        self.heartbeat_sender_ref = HeartbeatSender.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
 
 
 class MetricSubsystem:
@@ -41,17 +43,14 @@ class MetricSubsystem:
     def __init__(
             self,
             vm_agent_config: VmAgentConfig,
-            control_plane_sdk_config: ControlPlaneSdkConfig,
-            control_plane_sdk_token: str,
+            control_plane_sdk: ControlPlaneSdk,
     ):
         self.vm_agent_config = vm_agent_config
-        self.control_plane_sdk_config = control_plane_sdk_config
-        self.control_plane_sdk_token = control_plane_sdk_token
+        self.control_plane_sdk = control_plane_sdk
         self.cpu_metric_collector_ref: Optional[pykka.ActorRef] = None
 
     def start(self):
         self.cpu_metric_collector_ref = CpuMetricCollector.start(
             vm_agent_config=self.vm_agent_config,
-            control_plane_sdk_config=self.control_plane_sdk_config,
-            control_plane_sdk_token=self.control_plane_sdk_token,
+            control_plane_sdk=self.control_plane_sdk,
         )

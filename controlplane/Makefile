@@ -16,6 +16,10 @@ rundb:
 stopdb:
 	docker stop datastore-postgres
 
+.PHONY: resetdb
+resetdb:
+	python controlplane/cli.py reset-datastore
+
 .PHONY: psql
 psql:
 	PGPASSWORD=postgres psql --no-password -h localhost -U postgres
@@ -28,6 +32,6 @@ gen-openapi-spec:
 launch:
 	python controlplane/cli.py launch
 
-.PHONY: cleandb
-resetdb:
-	python controlplane/cli.py reset-datastore
+
+
+

@@ -21,13 +21,11 @@ class CpuMetricCollector(conclib.Actor):
     def __init__(
             self,
             vm_agent_config: VmAgentConfig,
-            control_plane_sdk_config: ControlPlaneSdkConfig,
-            control_plane_sdk_token: str,
+            control_plane_sdk: ControlPlaneSdk,
     ):
-        self.control_plane_sdk_config = control_plane_sdk_config
         self.vm_agent_config = vm_agent_config
+        self.control_plane_sdk = control_plane_sdk
         self.ticker: Optional[CpuMetricCollectorTicker] = None
-        self.control_plane_sdk = ControlPlaneSdk(config=control_plane_sdk_config, token=control_plane_sdk_token)
         super().__init__(
             urn=self.URN,
         )
@@ -61,11 +59,11 @@ class CpuMetricCollector(conclib.Actor):
 
 
 class CpuMetricCollectorTicker(conclib.Ticker):
+    TICK_INTERVAL = constants.VM_AGENT_METRIC_CPU_INTERVAL_SECS
+
     def __init__(self, cpu_metric_collector: pykka.ActorRef):
         self.cpu_metric_collector = cpu_metric_collector
-        super().__init__(
-            interval=0.5,
-        )
+        super().__init__(interval=self.TICK_INTERVAL)
 
     def execute(self):
         self.cpu_metric_collector.tell(CollectCpuMetrics())
