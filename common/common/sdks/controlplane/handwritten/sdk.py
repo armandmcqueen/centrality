@@ -35,7 +35,7 @@ class ControlPlaneSdk:
         url = self._build_url(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
         return requests.post(url, headers=self.headers, data=measurement.model_dump_json())
 
-    def get_cpu_metric(
+    def get_cpu_measurements(
             self,
             vm_ids: list[str],
             from_ts: Optional[datetime.datetime] = None,
@@ -52,3 +52,23 @@ class ControlPlaneSdk:
         response = requests.get(url, headers=self.headers, params=params)
         measurements = [CpuMeasurement(**j) for j in response.json()]
         return response, measurements
+
+    def get_latest_cpu_measurements(
+            self,
+            vm_ids: list[str],
+    ) -> tuple[requests.Response, list[CpuMeasurement]]:
+        url = self._build_url(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
+        response = requests.get(url, headers=self.headers, params=dict(vm_ids=vm_ids))
+        measurements = [CpuMeasurement(**j) for j in response.json()]
+        return response, measurements
+
+    def send_heartbeat(self, vm_id: str) -> requests.Response:
+        url = self._build_url(constants.get_control_plane_vm_heartbeat_endpoint(vm_id))
+        return requests.post(url, headers=self.headers)
+
+    def get_live_vms(self) -> tuple[requests.Response, list[str]]:
+        url = self._build_url(constants.CONTROL_PLANE_VM_LIST_ENDPOINT)
+        response = requests.get(url, headers=self.headers)
+        vm_ids = [vm_id for vm_id in response.json()]
+        return response, vm_ids
+

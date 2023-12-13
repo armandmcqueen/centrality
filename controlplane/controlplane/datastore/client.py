@@ -7,8 +7,10 @@ from sqlalchemy.orm import Session
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
 from controlplane.datastore.types.vmmetrics import CpuVmMetricORM, CpuVmMetric
+from controlplane.datastore.types.vmliveness import VmHeartbeatORM, VmHeartbeat
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
+from sqlalchemy.dialects.postgresql import insert
 
 
 class DatastoreClient:
@@ -106,3 +108,65 @@ class DatastoreClient:
                 result_metric = CpuVmMetric.from_orm(row)
                 results.append(result_metric)
         return results
+
+    def get_latest_cpu_measurements(
+        self,
+        vm_ids: List[str],
+    ) -> List[CpuVmMetric]:
+        if len(vm_ids) == 0:
+            return []
+        results = []
+        with Session(bind=self.engine) as session:
+            filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
+
+            # Get the most recent metric for each VM by filtering on the vm_id and then getting the most recent timestamp
+            subquery = (
+                # This subquery gets the most recent timestamp for each vm_id
+                session.query(CpuVmMetricORM.vm_id, CpuVmMetricORM.ts)
+                .filter(*filter_args)
+                .subquery()
+            )
+            rows = (
+                # This query gets the most recent metric for each vm_id
+                session.query(CpuVmMetricORM)
+                .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
+                .filter(CpuVmMetricORM.ts == subquery.c.ts)
+                .all()
+            )
+            for row in rows:
+                row = cast(CpuVmMetricORM, row)
+                result_metric = CpuVmMetric.from_orm(row)
+                results.append(result_metric)
+        return results
+
+    def report_heartbeat(
+            self,
+            vm_id: str,
+    ):
+        """ Set the last heartbeat for a VM to be the current time """
+        with Session(bind=self.engine) as session:
+            upsert_stmt = insert(VmHeartbeatORM).values(
+                vm_id=vm_id,
+                last_heartbeat_ts=datetime.datetime.utcnow()
+            ).on_conflict_do_update(
+                index_elements=['vm_id'],
+                set_=dict(last_heartbeat_ts=datetime.datetime.utcnow())
+            )
+            session.execute(upsert_stmt)
+            session.commit()
+
+    def get_live_vms(
+            self,
+            liveness_threshold_secs: int,
+    ) -> list[str]:
+        """
+        Get a list of VMs that have sent a heartbeat in the last liveness_threshold_secs seconds
+        """
+        min_ts = datetime.datetime.utcnow() - datetime.timedelta(seconds=liveness_threshold_secs)
+        with Session(bind=self.engine) as session:
+            rows = (
+                session.query(VmHeartbeatORM)
+                .filter(VmHeartbeatORM.last_heartbeat_ts >= min_ts)
+                .all()
+            )
+            return [row.vm_id for row in rows]

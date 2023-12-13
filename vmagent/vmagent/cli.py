@@ -8,6 +8,7 @@ from common import constants
 from vmagent.rest.config import VmAgentRestConfig, DefaultVmAgentRestConfig
 from vmagent.actorsystem import ActorSystem
 from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig, DefaultControlPlaneSdkConfig
+from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
 
 app = typer.Typer()
@@ -31,8 +32,7 @@ def launch():
     """
     conclib_config, rest_config, control_plane_sdk_config = get_default_configs()
     # TODO: Proper token and device id
-    token = "dev"
-    vm_id = "test-machine-1"
+    vm_id = "test-machine-2"
 
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
@@ -48,10 +48,13 @@ def launch():
     )
 
     try:
+        control_plane_sdk = ControlPlaneSdk(
+            config=control_plane_sdk_config,
+            token="dev",
+        )
         actor_system = ActorSystem(
             vm_id=vm_id,
-            control_plane_sdk_config=control_plane_sdk_config,
-            control_plane_sdk_token=token,
+            control_plane_sdk=control_plane_sdk,
         )
         actor_system.start()
 

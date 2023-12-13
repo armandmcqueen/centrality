@@ -49,7 +49,7 @@ def test_sdk(config: ControlPlaneSdkConfig, token: str):
         else:
             console.print("[bold green]Write CPU metric passed")
 
-        response, measurements = client.get_cpu_metric(vm_ids=[vm_id])
+        response, measurements = client.get_cpu_measurements(vm_ids=[vm_id])
         if response.status_code != 200:
             console.print("[bold red]Get CPU metric failed")
             rich.inspect(response)

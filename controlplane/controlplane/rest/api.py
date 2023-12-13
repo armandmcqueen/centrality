@@ -76,6 +76,20 @@ def get_cpu_metric(
     ) for result in results]
 
 
+@app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT)
+@auth(datastore_client)
+def get_latest_cpu_measurements(
+        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+        vm_ids: Annotated[list[str], Query()],
+) -> list[CpuMeasurement]:
+    results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
+    return [CpuMeasurement(
+        vm_id=result.vm_id,
+        cpu_percents=result.cpu_percents,
+        ts=result.ts
+    ) for result in results]
+
+
 @app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def put_cpu_metric(
@@ -88,6 +102,28 @@ def put_cpu_metric(
         cpu_percents=measurement.cpu_percents,
         ts=measurement.ts)
     return OkResponse()
+
+
+@app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT)
+@auth(datastore_client)
+def report_heartbeat(
+        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+        vm_id: str
+) -> OkResponse:
+    """ Put a cpu metric measurement into the datastore """
+    datastore_client.report_heartbeat(vm_id=vm_id)
+    return OkResponse()
+
+
+@app.get(constants.CONTROL_PLANE_VM_LIST_ENDPOINT)
+@auth(datastore_client)
+def list_vms(
+        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+) -> list[str]:
+    """ Return a list of the active VMs """
+    live_vms = datastore_client.get_live_vms(liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    print(live_vms)
+    return live_vms
 
 
 def generate_openapi_json():
