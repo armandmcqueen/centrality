@@ -12,7 +12,7 @@ description = "Centrality control plane"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "conclib == 0.0.3",
+    "conclib == 0.0.7",
     "SQLAlchemy ~= 2.0.23",
     "psycopg2-binary ~= 2.9.9",
     "pydantic ~= 2.5.2",

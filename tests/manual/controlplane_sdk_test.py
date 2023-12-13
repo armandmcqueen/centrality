@@ -1,6 +1,6 @@
 import datetime
 
-from common.sdks.controlplane.handwritten.sdk import Client
+from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from common.sdks.controlplane.handwritten.config import DefaultControlPlaneSdkConfig, ControlPlaneSdkConfig
 from common.types.vmmetrics import CpuMeasurement
 import time
@@ -13,7 +13,7 @@ console = rich.console.Console()
 
 
 def test_sdk(config: ControlPlaneSdkConfig, token: str):
-    client = Client(config=config, token=token)
+    client = ControlPlaneSdk(config=config, token=token)
 
     # TODO: Tests are too fast for this spinner to be useful, but keeping
     #       it around for now as reference

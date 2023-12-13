@@ -8,7 +8,7 @@ from common.types.vmmetrics import CpuMeasurement
 from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 
 
-class Client:
+class ControlPlaneSdk:
     def __init__(self, config: ControlPlaneSdkConfig, token: str):
         self.token = token
         self.config = config
