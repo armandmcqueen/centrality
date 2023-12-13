@@ -30,4 +30,4 @@ launch:
 
 .PHONY: cleandb
 resetdb:
-	python controlplane/cli.py resetdb
+	python controlplane/cli.py reset-datastore
