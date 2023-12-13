@@ -5,6 +5,7 @@ import typer
 
 from controlplane.rest.config import DefaultControlPlaneRestConfig, ControlPlaneRestConfig
 from controlplane.datastore.config import DefaultDatastoreConfig, DatastoreConfig
+from controlplane.datastore.client import DatastoreClient
 from common import constants
 
 
@@ -63,6 +64,18 @@ def openapi():
 
     out = subprocess.check_output("python -m controlplane.rest.api", shell=True)
     print(out.decode("utf-8"))
+
+
+@app.command()
+def reset_datastore():
+    """
+    Reset the datastore to a clean state.
+
+    This will delete all data in the datastore and reset the schema.
+    """
+    datastore_config = DefaultDatastoreConfig()
+    datastore_client = DatastoreClient(config=datastore_config)
+    datastore_client.reset_db()
 
 
 if __name__ == "__main__":

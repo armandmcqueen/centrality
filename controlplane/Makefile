@@ -27,3 +27,7 @@ gen-openapi-spec:
 .PHONY: launch
 launch:
 	python controlplane/cli.py launch
+
+.PHONY: cleandb
+resetdb:
+	python controlplane/cli.py resetdb
