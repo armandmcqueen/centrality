@@ -82,6 +82,7 @@ def get_latest_cpu_measurements(
         credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
         vm_ids: Annotated[list[str], Query()],
 ) -> list[CpuMeasurement]:
+    """ Get the most recent CPU measurements for each VM """
     results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
     return [CpuMeasurement(
         vm_id=result.vm_id,
@@ -110,7 +111,7 @@ def report_heartbeat(
         credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
         vm_id: str
 ) -> OkResponse:
-    """ Put a cpu metric measurement into the datastore """
+    """ Report a heartbeat for a VM """
     datastore_client.report_heartbeat(vm_id=vm_id)
     return OkResponse()
 
@@ -122,7 +123,6 @@ def list_vms(
 ) -> list[str]:
     """ Return a list of the active VMs """
     live_vms = datastore_client.get_live_vms(liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS)
-    print(live_vms)
     return live_vms
 
 
