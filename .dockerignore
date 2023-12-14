@@ -1,0 +1,327 @@
+# flyctl launch added from .gitignore
+# Custom
+**/.ignore
+**/.DS_Store
+**/dump.rdb
+
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__
+**/*.py[cod]
+**/*$py.class
+
+# C extensions
+**/*.so
+
+# Distribution / packaging
+**/.Python
+**/build
+**/develop-eggs
+**/dist
+**/downloads
+**/eggs
+**/.eggs
+**/lib
+**/lib64
+**/parts
+**/sdist
+**/var
+**/wheels
+**/share/python-wheels
+**/*.egg-info
+**/.installed.cfg
+**/*.egg
+**/MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+**/*.manifest
+**/*.spec
+
+# Installer logs
+**/pip-log.txt
+**/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+**/htmlcov
+**/.tox
+**/.nox
+**/.coverage
+**/.coverage.*
+**/.cache
+**/nosetests.xml
+**/coverage.xml
+**/*.cover
+**/*.py,cover
+**/.hypothesis
+**/.pytest_cache
+**/cover
+
+# Translations
+**/*.mo
+**/*.pot
+
+# Django stuff:
+**/*.log
+**/local_settings.py
+**/db.sqlite3
+**/db.sqlite3-journal
+
+# Flask stuff:
+**/instance
+**/.webassets-cache
+
+# Scrapy stuff:
+**/.scrapy
+
+# Sphinx documentation
+**/docs/_build
+
+# PyBuilder
+**/.pybuilder
+**/target
+
+# Jupyter Notebook
+**/.ipynb_checkpoints
+
+# IPython
+**/profile_default
+**/ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+**/.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+**/__pypackages__
+
+# Celery stuff
+**/celerybeat-schedule
+**/celerybeat.pid
+
+# SageMath parsed files
+**/*.sage.py
+
+# Environments
+**/.env
+**/.venv
+**/env
+**/venv
+**/ENV
+**/env.bak
+**/venv.bak
+
+# Spyder project settings
+**/.spyderproject
+**/.spyproject
+
+# Rope project settings
+**/.ropeproject
+
+# mkdocs documentation
+site
+
+# mypy
+**/.mypy_cache
+**/.dmypy.json
+**/dmypy.json
+
+# Pyre type checker
+**/.pyre
+
+# pytype static type analyzer
+**/.pytype
+
+# Cython debug symbols
+**/cython_debug
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# flyctl launch added from .idea/.gitignore
+# Default ignored files
+.idea/shelf
+.idea/workspace.xml
+# Editor-based HTTP Client requests
+.idea/httpRequests
+# Datasource local storage ignored files
+.idea/dataSources
+.idea/dataSources.local.xml
+
+# flyctl launch added from .ignore/venv/.gitignore
+# created by virtualenv automatically
+.ignore/venv/**/*
+
+# flyctl launch added from common/.ruff_cache/.gitignore
+common/.ruff_cache/**/*
+
+# flyctl launch added from common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/.gitignore
+# Byte-compiled / optimized / DLL files
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/__pycache__
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.py[cod]
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*$py.class
+
+# C extensions
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.so
+
+# Distribution / packaging
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.Python
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/env
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/build
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/develop-eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/dist
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/downloads
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/lib
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/lib64
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/parts
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/sdist
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/var
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.egg-info
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.installed.cfg
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.manifest
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.spec
+
+# Installer logs
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/pip-log.txt
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/htmlcov
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.tox
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.coverage
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.coverage.*
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.cache
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/nosetests.xml
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/coverage.xml
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*,cover
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.hypothesis
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/venv
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.venv
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.python-version
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.pytest_cache
+
+# Translations
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.mo
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.pot
+
+# Django stuff:
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/*.log
+
+# Sphinx documentation
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/docs/_build
+
+# PyBuilder
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/target
+
+#Ipython Notebook
+common/common/sdks/controlplane/controlplane-openapi-generator-pydantic-v1/**/.ipynb_checkpoints
+
+# flyctl launch added from common/common/sdks/controlplane/controlplane-openapi-generator-python/.gitignore
+# Byte-compiled / optimized / DLL files
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/__pycache__
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.py[cod]
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*$py.class
+
+# C extensions
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.so
+
+# Distribution / packaging
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.Python
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/env
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/build
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/develop-eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/dist
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/downloads
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.eggs
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/lib
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/lib64
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/parts
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/sdist
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/var
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.egg-info
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.installed.cfg
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.manifest
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.spec
+
+# Installer logs
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/pip-log.txt
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/htmlcov
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.tox
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.coverage
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.coverage.*
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.cache
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/nosetests.xml
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/coverage.xml
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*,cover
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.hypothesis
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/venv
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.venv
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.python-version
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.pytest_cache
+
+# Translations
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.mo
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.pot
+
+# Django stuff:
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/*.log
+
+# Sphinx documentation
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/docs/_build
+
+# PyBuilder
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/target
+
+#Ipython Notebook
+common/common/sdks/controlplane/controlplane-openapi-generator-python/**/.ipynb_checkpoints
+
+# flyctl launch added from controlplane/.ruff_cache/.gitignore
+controlplane/.ruff_cache/**/*
+
+# flyctl launch added from vmagent/.ruff_cache/.gitignore
+vmagent/.ruff_cache/**/*
+fly.toml
