@@ -15,10 +15,10 @@ older version of Python and with minimal dependencies.
 
 ## Requirements
 
-OpenAPI generator
 
 ```bash
 brew install openapi-generator
+brew install flyctl
 ```
 
 ## Build Order

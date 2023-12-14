@@ -11,12 +11,17 @@ from controlplane.datastore.types.vmliveness import VmHeartbeatORM, VmHeartbeat
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
+import os
 
 
 class DatastoreClient:
     def __init__(self, config: DatastoreConfig):
         self.config = config
-        self.engine = create_engine(config.get_url(), echo=self.config.verbose_orm)
+        # TODO: Hacky - can't be merged in
+        url = config.get_url()
+        if os.environ.get("DATABASE_URL"):
+            url = os.environ.get("DATABASE_URL")
+        self.engine = create_engine(url, echo=self.config.verbose_orm)
 
         DatastoreBaseORM.metadata.create_all(self.engine)
 
