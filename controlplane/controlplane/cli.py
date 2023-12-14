@@ -19,18 +19,21 @@ def get_default_configs() -> tuple[ControlPlaneRestConfig, DatastoreConfig]:
 
 
 @app.command()
-def launch():
+def launch(postgres_host: str = "localhost"):
     """
     Launch the Control Plane FastAPI server.
 
     When we add an actor system, this is where we'll launch it.
     """
     # TODO: Allow for non-default configs
+    print("📝 Using default configs")
     rest_config, datastore_config = get_default_configs()
+    datastore_config.host = postgres_host  # TODO: Remove this hacky approach to configs
     rest_config.save_to_envvar()
     datastore_config.save_to_envvar()
+    print("🚀 Launching Control Plane API")
 
-    launch_command = f"uvicorn controlplane.rest.api:app --port {rest_config.port}"
+    launch_command = f"uvicorn controlplane.rest.api:app --port {rest_config.port} --host 0.0.0.0"
     healthcheck_url = f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}"
     api_thread = conclib.start_api(
         fast_api_command=launch_command,
@@ -77,6 +80,10 @@ def reset_datastore():
     datastore_client = DatastoreClient(config=datastore_config)
     datastore_client.reset_db()
 
+
+@app.command()
+def hello():
+    print("Hello, world, this is the Control Plane CLI!")
 
 if __name__ == "__main__":
     app()

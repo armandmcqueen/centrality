@@ -30,7 +30,7 @@ gen-openapi-spec:
 
 .PHONY: launch
 launch:
-	python controlplane/cli.py launch
+	python controlplane/cli.py launch --postgres-host localhost
 
 
 
