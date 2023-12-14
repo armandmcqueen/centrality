@@ -1,0 +1,34 @@
+services:
+  vmagent1:
+    build: .
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /centrality/vmagent
+    command: "python3.11 vmagent/cli.py launch --control-plane-host controlplane --vm-id test-machine-1"
+    depends_on:
+      - controlplane
+
+  vmagent2:
+    build: .
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /centrality/vmagent
+    command: "python3.11 vmagent/cli.py launch --control-plane-host controlplane --vm-id test-machine-2"
+    depends_on:
+      - controlplane
+
+  controlplane:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /centrality/controlplane
+    command: "python3.11 controlplane/cli.py launch --postgres-host postgres"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: "postgres:16.1"
+    environment:
+      - POSTGRES_PASSWORD=postgres

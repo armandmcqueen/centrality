@@ -26,18 +26,25 @@ def get_default_configs() -> tuple[
 
 
 @app.command()
-def launch():
+def launch(
+        control_plane_host: str = "localhost",
+        vm_id: str = "test-machine"
+):
     """
     Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
     """
+    print("📝 Using default configs")
     conclib_config, rest_config, control_plane_sdk_config = get_default_configs()
+    control_plane_sdk_config.host = control_plane_host  # TODO: Fix this hacky approach to configs
     # TODO: Proper token and device id
-    vm_id = "test-machine-2"
+    token = "dev"
 
+    print("🚀 Launching VM Agent actor system")
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
 
+    print("🚀 Launching VM Agent REST API")
     # Start FastAPI
     rest_config.save_to_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
@@ -80,7 +87,6 @@ def launch():
 def hello():
     """ Do nothing command to make typer think there are multiple subcommands"""
     print("Hello")
-
 
 
 if __name__ == "__main__":
