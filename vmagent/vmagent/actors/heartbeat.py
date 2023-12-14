@@ -46,9 +46,7 @@ class HeartbeatSender(conclib.Actor):
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendHeartbeat):
-            print("[HeartbeatSender] Sending heartbeat")
             self.control_plane_sdk.send_heartbeat(vm_id=self.vm_agent_config.vm_id)
-            print("[HeartbeatSender] Heartbeat sent")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
 
