@@ -15,8 +15,8 @@ console = rich.console.Console()
 def test_sdk(config: ControlPlaneSdkConfig, token: str):
     client = ControlPlaneSdk(config=config, token=token)
 
-    # TODO: Tests are too fast for this spinner to be useful, but keeping
-    #       it around for now as reference
+    # Tests are too fast for this spinner to be useful, but keeping
+    #  it around for now as reference
     with console.status(spinner="aesthetic", status="[bold cyan]Running tests...", spinner_style="bold cyan") as status:
         response = client.get_healthcheck()
         if response.status_code != 200:

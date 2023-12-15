@@ -43,8 +43,8 @@ class CpuVmMetricORM(DatastoreBaseORM):
 
 
 class CpuVmMetric(BaseModel):
-    # TODO: Is this useful? It has overlap with the type in common/types/vmmetrics.py, but
-    #       includes some additional info that maybe shouldn't be exposed to users?
+    # Is this useful? It has overlap with the type in common/types/vmmetrics.py, but
+    # includes some additional info that maybe shouldn't be exposed to users?
     metric_id: str
     vm_id: str
     ts: datetime.datetime
