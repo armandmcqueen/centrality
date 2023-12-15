@@ -1,26 +1,19 @@
-
-
-
-
 def flatten_dict(d: dict) -> dict:
     """
     Flatten a nested dict into a flat dict with keys separated by '.'
 
-    WARNING: Fully AI generated code
+    NOTE: Fully AI generated code
     """
+
     def expand(key, value):
         if isinstance(value, dict):
-            return [
-                (key + '.' + k, v)
-                for k, v in flatten_dict(value).items()
-            ]
+            return [(key + "." + k, v) for k, v in flatten_dict(value).items()]
         else:
             return [(key, value)]
-    items = [
-        item for k, v in d.items()
-        for item in expand(k, v)
-    ]
+
+    items = [item for k, v in d.items() for item in expand(k, v)]
     return dict(items)
+
 
 def test_flatten_dict():
     d = {
@@ -41,7 +34,6 @@ def test_flatten_dict():
         "b.e.f": 4,
         "f.g.h": "i",
     }
-    print("flatten_dict matched")
 
 
 def merge_flattened_into_nested(flattened: dict, nested: dict) -> dict:
@@ -100,8 +92,8 @@ def test_merge_flattened_into_nested():
         },
     }
     assert merge_flattened_into_nested(flattened, nested) == expected
-    print("merge_flattened_into_nested matched")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_flatten_dict()
     test_merge_flattened_into_nested()
