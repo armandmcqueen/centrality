@@ -42,11 +42,9 @@ def launch(postgres_host: str = "localhost"):
         startup_healthcheck_poll_interval=rest_config.startup_healthcheck_poll_interval,
     )
 
-
     try:
         while True:
             # Wait until something fails or the user kills the process
-            # TODO: Does the while loop even do anything useful here?
             time.sleep(100)
     except KeyboardInterrupt:
         print()  # Print a newline to make the output look nicer after ^C
