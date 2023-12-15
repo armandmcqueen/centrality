@@ -1,42 +1,50 @@
+import json
 import os
+from pathlib import Path
 
 import pydantic
-from pydantic import BaseModel
-from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
-from pathlib import Path
 import yaml
-import json
+from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
 
 
 class CentralityConfigEnvvarUnsetError(Exception):
+    """ When CentralityConfig.from_envvar() is run, but the envvar is not set """
     pass
 
-class CentralityConfigInvalidEnvvarError(Exception):
+
+class CentralityConfigInvalidEnvvarOverrideError(Exception):
+    """
+    When an envvar override is found for this config, but doesn't match any fields.
+    To help users catch typos
+    """
     pass
-
-
-def to_slug(s: str) -> str:
-    """
-    Convert a dot notation string to a slug notation string.
-    """
-    return s.lower().replace(".", "").replace("_", "")
 
 
 class CentralityConfigNameConflictError(Exception):
-    def __init__(self, config_type: type["CentralityConfig"], conflict_1: str, conflict_2: str):
+    """ If a CentralityConfig has conflicting slugs. See documentation on CentralityConfig for more details """
+    def __init__(
+        self, config_type: type["CentralityConfig"], conflict_1: str, conflict_2: str
+    ):
         self.config_type = config_type.__name__
         self.conflict_1 = conflict_1
         self.conflict_2 = conflict_2
 
     def __str__(self) -> str:
         slug = to_slug(self.conflict_1)
-        return (f"Invalid CentralityConfig: {self.config_type}\n"
-                f"There is a naming conflict in the config field names. See CentralityConfig docstring for why this exists.\n"
-                f"Details: {self.conflict_1} and {self.conflict_2} both have the same slug: {slug}")
+        return (
+            f"Invalid CentralityConfig: {self.config_type}\n"
+            f"There is a naming conflict in the config field names. See CentralityConfig "
+            f"docstring for why this exists.\n"
+            f"Details: {self.conflict_1} and {self.conflict_2} both have the same slug: {slug}"
+        )
 
 
+def to_slug(s: str) -> str:
+    """Convert a dot notation string to a slug notation string"""
+    return s.lower().replace(".", "").replace("_", "")
 
-class CentralityConfig(BaseModel):
+
+class CentralityConfig(pydantic.BaseModel):
     """
     Overridable config for use in Centrality.
 
@@ -53,7 +61,7 @@ class CentralityConfig(BaseModel):
 
     Order of precedence is:
     1. Default values
-    2. kwargs (which will typically come from the YAML/JSON)
+    2. CentralityConfig init kwargs (which will typically come from the YAML/JSON)
     3. Environment variable overrides
     4. argument overrides (`config_overrides`)
 
@@ -111,22 +119,12 @@ class CentralityConfig(BaseModel):
     # ARGUMENT OVERRIDES
     argument overrides (`config_overrides`) can be provided two ways:
     nested
-    ```
-        {
-            "datastore": {
-                "host": "anotherhost"
-            }
-        }
-    ```
+    ```{"datastore": {"host": "anotherhost"} }```
     or flattened
-    ```
-        {
-            "datastore.host": "anotherhost"
-        }
-    ```
+    ```{"datastore.host": "anotherhost"}```
     """
-    def __init__(self, config_overrides: dict | None = None, **kwargs):
 
+    def __init__(self, config_overrides: dict | None = None, **kwargs):
         # Override via envvars
         flattened_envvars = self.find_envvars()
         if flattened_envvars:
@@ -150,7 +148,7 @@ class CentralityConfig(BaseModel):
         # Had issues before, leaving this in case:
         for field_name in list(cls.model_json_schema(False).get("properties")):
             field_info = cls.model_fields[field_name]
-        # for field_name, field_info in cls.model_fields.items():
+            # for field_name, field_info in cls.model_fields.items():
             if issubclass(field_info.annotation, CentralityConfig):
                 sub_tree = field_info.annotation._build_field_tree()
                 for sub_field_name in sub_tree:
@@ -166,16 +164,15 @@ class CentralityConfig(BaseModel):
         """
         field_tree = cls._build_field_tree()
         undeduped_slugs = [(to_slug(dot), dot) for dot in field_tree]
-        existing_slugs = {}  # slug: dot
+        existing_slugs = {}  # dict[slug, dot]
         for new_slug, new_dot in undeduped_slugs:
             if new_slug in existing_slugs:
                 existing_dot = existing_slugs[new_slug]
                 raise CentralityConfigNameConflictError(cls, existing_dot, new_dot)
             existing_slugs[new_slug] = new_dot
 
-
     @classmethod
-    def find_envvars(cls) -> dict | None:
+    def find_envvars(cls) -> dict:
         """
         Find all environment variables that match the config schema and return ovverrides in
         flattened dict format.
@@ -188,80 +185,77 @@ class CentralityConfig(BaseModel):
         for k, v in os.environ.items():
             envvar_name_slug = to_slug(k)
             if envvar_name_slug.startswith(prefix_slug):
-                field_slug = envvar_name_slug[len(prefix_slug):]
+                field_slug = envvar_name_slug[len(prefix_slug) :]
                 if field_slug not in fields:
-                    raise CentralityConfigInvalidEnvvarError(f"Environment variable {k} does not match any config fields")
+                    raise CentralityConfigInvalidEnvvarOverrideError(
+                        f"Environment variable {k} does not match any config fields"
+                    )
                 field_dot = fields[field_slug]
                 envvars[field_dot] = v
-        return envvars if len(envvars) > 0 else None
+        return envvars
 
     @classmethod
-    def from_yaml_file(cls, yaml_path: Path | str) -> 'CentralityConfig':
-        """
-        Load a YAML file and return a config object.
-        """
+    def from_yaml_file(cls, yaml_path: Path | str) -> "CentralityConfig":
+        """Load a YAML file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(yaml_path, str):
             yaml_path = Path(yaml_path)
-        with open(yaml_path, 'r') as f:
+        with open(yaml_path, "r") as f:
             yaml_dict = yaml.safe_load(f)
         return cls.from_dict(yaml_dict)
 
-    def write_yaml(self, yaml_path: Path) -> None:
-        """
-        Save the config to a YAML file.
-        """
-        with open(yaml_path, 'w') as f:
+    def write_yaml(self, yaml_path: Path | str) -> None:
+        """Save the config to a YAML file."""
+        if isinstance(yaml_path, str):
+            yaml_path = Path(yaml_path)
+        with open(yaml_path, "w") as f:
             yaml.dump(self.as_dict(), f)
 
     @classmethod
-    def from_json_file(cls, json_path: Path | str) -> 'CentralityConfig':
-        """
-        Load a JSON file and return a config object.
-        """
+    def from_json_file(cls, json_path: Path | str) -> "CentralityConfig":
+        """Load a JSON file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(json_path, str):
             json_path = Path(json_path)
-        with open(json_path, 'r') as f:
+        with open(json_path, "r") as f:
             json_dict = json.load(f)
         return cls.from_dict(json_dict)
 
-    def write_json(self, json_path: Path) -> None:
-        """
-        Save the config to a JSON file.
-        """
-        with open(json_path, 'w') as f:
+    def write_json(self, json_path: Path | str) -> None:
+        """Save the config to a JSON file."""
+        if isinstance(json_path, str):
+            json_path = Path(json_path)
+        with open(json_path, "w") as f:
             json.dump(self.as_dict(), f)
 
     @classmethod
-    def from_dict(cls, d: dict) -> 'CentralityConfig':
+    def from_dict(cls, d: dict) -> "CentralityConfig":
         """
-        Load a dict and return a config object. Just for code clarity.
+        Load a dict and return a config object. Exists for code clarity.
         """
         return cls(**d)
 
     def as_dict(self) -> dict:
         """
-        Return the config as a dict. Just for code clarity.
+        Return the config as a dict. Exists for code clarity.
         """
         return self.model_dump()
 
     @classmethod
     def envvar_name(cls):
-        """
-        Return the environment variable name for this config.
-        """
-        return f"CENTRALITY_{cls.__class__.__name__}".upper()
+        """Return the environment variable name for saving and loading this config."""
+        # SAVELOAD ensures it doesn't conflict with ENVOVERRIDEs pattern
+        return f"CENTRALITY_SAVELOAD_{cls.__name__}".upper()
 
     @classmethod
-    def from_envvar(cls) -> 'CentralityConfig':
-        """
-        Load the config from an environment variable.
-        """
+    def from_envvar(cls) -> "CentralityConfig":
+        """Load the config from the environment variable."""
         envvar_name = cls.envvar_name()
         envvar_value = os.environ.get(envvar_name, None)
         if envvar_value is None:
-            raise CentralityConfigEnvvarUnsetError(f"Environment variable {envvar_name} not set")
+            raise CentralityConfigEnvvarUnsetError(
+                f"Environment variable {envvar_name} not set"
+            )
         json_dict = json.loads(envvar_value)
         return cls.from_dict(json_dict)
 
@@ -272,39 +266,13 @@ class CentralityConfig(BaseModel):
         os.environ[self.envvar_name()] = self.model_dump_json()
 
     def pretty_print_yaml(self) -> None:
-        """
-        Print the config as a YAML string.
-        """
+        """Print the config as a YAML string."""
         print(yaml.dump(self.as_dict()))
 
     def pretty_print_json(self) -> None:
-        """
-        Print the config as a JSON string.
-        """
+        """Print the config as a JSON string."""
         print(json.dumps(self.as_dict(), indent=4))
 
-
-
-
-# Example Config, before addition of CentralityConfig
-
-
-# class DatastoreConfig(BaseModel):
-#     host: str = "localhost"
-#     port: int = 5432
-#     username: str = "postgres"
-#     password: str = "postgres"
-#
-# class ControlPlaneRestConfig(BaseModel):
-#     port: int
-#     startup_healthcheck_timeout: int
-#     startup_healthcheck_poll_interval: float = 0.5
-#
-#
-#
-# class ControlPlaneConfig(BaseModel):
-#     datastore: DatastoreConfig = DatastoreConfig()
-#     rest: ControlPlaneRestConfig = ControlPlaneRestConfig()
 
 
 
@@ -313,6 +281,7 @@ class DatastoreConfig(CentralityConfig):
     port: int = 5432
     username: str = "postgres"
     password: str = "postgres"
+
 
 class ControlPlaneRestConfig(CentralityConfig):
     port: int
@@ -323,6 +292,7 @@ class ControlPlaneRestConfig(CentralityConfig):
 class ControlPlaneConfig(CentralityConfig):
     datastore: DatastoreConfig
     rest: ControlPlaneRestConfig
+
 
 def test_defaults():
     ds_config = DatastoreConfig()
@@ -339,6 +309,7 @@ def test_required_fields():
     except pydantic.ValidationError:
         assert True
 
+
 def assert_expected(control_plane_config: ControlPlaneConfig):
     assert control_plane_config.datastore.host == "notlocalhost"
     assert control_plane_config.datastore.port == 5432
@@ -349,13 +320,17 @@ def assert_expected(control_plane_config: ControlPlaneConfig):
     assert control_plane_config.rest.startup_healthcheck_timeout == 60
     assert control_plane_config.rest.startup_healthcheck_poll_interval == 0.5
 
+
 def test_nested_config_and_arg_ovverrids():
-    control_plane_config = ControlPlaneConfig(config_overrides={
-        "datastore.host": "notlocalhost",
-        "rest.port": 8000,
-        "rest.startup_healthcheck_timeout": 60,
-    })
+    control_plane_config = ControlPlaneConfig(
+        config_overrides={
+            "datastore.host": "notlocalhost",
+            "rest.port": 8000,
+            "rest.startup_healthcheck_timeout": 60,
+        }
+    )
     assert_expected(control_plane_config)
+
 
 def test_nested_config_and_envvar_ovverrids():
     os.environ["CENTRALITY_CONTROLPLANECONFIG_DATASTORE_HOST"] = "notlocalhost"
@@ -363,7 +338,6 @@ def test_nested_config_and_envvar_ovverrids():
     os.environ["CENTRALITY_CONTROLPLANECONFIG_REST_STARTUP_HEALTHCHECK_TIMEOUT"] = "60"
     control_plane_config = ControlPlaneConfig()
     assert_expected(control_plane_config)
-
 
 
 def main():
@@ -380,7 +354,7 @@ def main():
 #  non-matching envvar name (prefix matched, but no field found)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Running main")
     main()
     print("Done running main")
