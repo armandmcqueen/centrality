@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from common.config.config import CentralityConfig
 
 
-class VmAgentConfig(BaseModel):
+class VmAgentConfig(CentralityConfig):
     vm_id: str
 
 

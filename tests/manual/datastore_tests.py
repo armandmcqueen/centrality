@@ -2,7 +2,7 @@ import datetime
 import time
 
 from controlplane.datastore.client import DatastoreClient
-from controlplane.datastore.config import DefaultDatastoreConfig
+from controlplane.datastore.config import DatastoreConfig
 
 
 def test_token(client: DatastoreClient):
@@ -87,7 +87,7 @@ def test_metrics(client: DatastoreClient):
 
 
 if __name__ == "__main__":
-    config = DefaultDatastoreConfig()
+    config = DatastoreConfig()
     client = DatastoreClient(config)
     client.reset_db()
 

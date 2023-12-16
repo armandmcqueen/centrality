@@ -11,6 +11,8 @@ CONTROL_PLANE_CPU_METRIC_ENDPOINT = "/metrics/cpu"
 CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT = "/metrics/cpu/latest"
 CONTROL_PLANE_VM_LIST_ENDPOINT = "/vm/list"
 CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/heartbeat/{vm_id}"
+
+
 def get_control_plane_vm_heartbeat_endpoint(vm_id: str) -> str:
     return f"/vm/heartbeat/{vm_id}"
 
@@ -28,7 +30,9 @@ VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
 # Other Constants                                                   #
 #####################################################################
 VM_HEARTBEAT_INTERVAL_SECS = 5  # How often VMs should report heartbeats
-VM_HEARTBEAT_TIMEOUT_SECS = 10  # If we don't hear from a VM for this long, we consider it dead
+VM_HEARTBEAT_TIMEOUT_SECS = (
+    10  # If we don't hear from a VM for this long, we consider it dead
+)
 
 
 # Control Plane specific constants
@@ -39,5 +43,3 @@ CONTROL_PLANE_DATASTORE_CONFIG_ENVVAR = "CENTRALITY_CONTROL_PLANE_DATASTORE_CONF
 # VM Agent specific constants
 VM_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_VM_AGENT_REST_CONFIG"
 VM_AGENT_METRIC_CPU_INTERVAL_SECS = 0.5  # How often to collect CPU metrics
-
-

@@ -8,7 +8,8 @@ from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
 
 
 class CentralityConfigEnvvarUnsetError(Exception):
-    """ When CentralityConfig.from_envvar() is run, but the envvar is not set """
+    """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
+
     pass
 
 
@@ -17,11 +18,13 @@ class CentralityConfigInvalidEnvvarOverrideError(Exception):
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
+
     pass
 
 
 class CentralityConfigNameConflictError(Exception):
-    """ If a CentralityConfig has conflicting slugs. See documentation on CentralityConfig for more details """
+    """If a CentralityConfig has conflicting slugs. See documentation on CentralityConfig for more details"""
+
     def __init__(
         self, config_type: type["CentralityConfig"], conflict_1: str, conflict_2: str
     ):
@@ -272,4 +275,3 @@ class CentralityConfig(pydantic.BaseModel):
     def pretty_print_json(self) -> None:
         """Print the config as a JSON string."""
         print(json.dumps(self.as_dict(), indent=4))
-

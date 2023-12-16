@@ -9,6 +9,3 @@ class CpuMeasurement(BaseModel):
     vm_id: str
     ts: datetime.datetime
     cpu_percents: List[float]
-
-
-

@@ -5,9 +5,9 @@ import pykka
 import conclib
 from common import constants
 
-from vmagent.rest.config import VmAgentRestConfig, DefaultVmAgentRestConfig
+from vmagent.rest.config import VmAgentRestConfig
 from vmagent.actorsystem import ActorSystem
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig, DefaultControlPlaneSdkConfig
+from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
 
@@ -20,8 +20,8 @@ def get_default_configs() -> tuple[
     ControlPlaneSdkConfig,
 ]:
     conclib_config = conclib.DefaultConfig()
-    rest_config = DefaultVmAgentRestConfig()
-    control_plane_sdk_config = DefaultControlPlaneSdkConfig()
+    rest_config = VmAgentRestConfig()
+    control_plane_sdk_config = ControlPlaneSdkConfig()
     return conclib_config, rest_config, control_plane_sdk_config
 
 
@@ -46,7 +46,7 @@ def launch(
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
-    rest_config.save_to_envvar()  # Make the rest_config available to the REST API
+    rest_config.save_as_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
         fast_api_command=f"uvicorn vmagent.rest.api:app --port {rest_config.port}",
         healthcheck_url=f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}",

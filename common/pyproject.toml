@@ -25,3 +25,8 @@ dev = [
 
 [tool.flit.module]
 name = "common"
+
+[tool.ruff]
+exclude = [
+    "common/sdks/controlplane/controlplane-openapi-generator*",
+]
