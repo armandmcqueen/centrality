@@ -12,9 +12,10 @@ docker-push:
 
 .PHONY: lint
 lint:
-	make -C cli lint
 	make -C common lint
 	make -C controlplane lint
-	make -C tests lint
 	make -C vmagent lint
+	make -C cli lint
+	make -C tests lint
+
 

@@ -17,10 +17,7 @@ import os
 class DatastoreClient:
     def __init__(self, config: DatastoreConfig):
         self.config = config
-        # TODO: Hacky - can't be merged in
         url = config.get_url()
-        if os.environ.get("DATABASE_URL"):
-            url = os.environ.get("DATABASE_URL")
         self.engine = create_engine(url, echo=self.config.verbose_orm)
 
         DatastoreBaseORM.metadata.create_all(self.engine)
