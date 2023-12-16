@@ -14,17 +14,6 @@ from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 app = typer.Typer()
 
 
-def get_default_configs() -> tuple[
-    conclib.ConclibConfig,
-    VmAgentRestConfig,
-    ControlPlaneSdkConfig,
-]:
-    conclib_config = conclib.DefaultConfig()
-    rest_config = VmAgentRestConfig()
-    control_plane_sdk_config = ControlPlaneSdkConfig()
-    return conclib_config, rest_config, control_plane_sdk_config
-
-
 @app.command()
 def launch(
         control_plane_host: str = "localhost",
@@ -34,10 +23,9 @@ def launch(
     Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
     """
     print("📝 Using default configs")
-    conclib_config, rest_config, control_plane_sdk_config = get_default_configs()
-    control_plane_sdk_config.host = control_plane_host  # TODO: Fix this hacky approach to configs
-    # TODO: Proper token and device id
-    token = "dev"
+    conclib_config = conclib.DefaultConfig()
+    rest_config = VmAgentRestConfig()
+    control_plane_sdk_config = ControlPlaneSdkConfig(config_overrides=dict(host=control_plane_host))
 
     print("🚀 Launching VM Agent actor system")
     # Start conclib bridge
@@ -46,7 +34,7 @@ def launch(
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
-    rest_config.save_as_envvar()  # Make the rest_config available to the REST API
+    rest_config.save_to_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
         fast_api_command=f"uvicorn vmagent.rest.api:app --port {rest_config.port}",
         healthcheck_url=f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}",

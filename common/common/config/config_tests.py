@@ -168,7 +168,7 @@ def test_to_from_envvar():
         raise RuntimeError("Environment Variable already set")
 
     config1 = BasicNestedConfigParent()
-    config1.save_as_envvar()
+    config1.save_to_envvar()
     assert BasicNestedConfigParent.envvar_name() in os.environ
     config2 = BasicNestedConfigParent.from_envvar()
     assert config2.subconfig.int_field_with_default == INT_VAL_1

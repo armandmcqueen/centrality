@@ -12,12 +12,6 @@ from common import constants
 app = typer.Typer()
 
 
-def get_default_configs() -> tuple[ControlPlaneRestConfig, DatastoreConfig]:
-    rest_config = ControlPlaneRestConfig()
-    datastore_config = DatastoreConfig()
-    return rest_config, datastore_config
-
-
 @app.command()
 def launch(postgres_host: str = "localhost"):
     """
@@ -25,12 +19,11 @@ def launch(postgres_host: str = "localhost"):
 
     When we add an actor system, this is where we'll launch it.
     """
-    # TODO: Allow for non-default configs
     print("📝 Using default configs")
-    rest_config, datastore_config = get_default_configs()
-    datastore_config.host = postgres_host  # TODO: Remove this hacky approach to configs
-    rest_config.save_as_envvar()
-    datastore_config.save_as_envvar()
+    rest_config = ControlPlaneRestConfig()
+    datastore_config = DatastoreConfig(config_overrides=dict(host=postgres_host))
+    rest_config.save_to_envvar()
+    datastore_config.save_to_envvar()
     print("🚀 Launching Control Plane API")
 
     launch_command = f"uvicorn controlplane.rest.api:app --port {rest_config.port} --host 0.0.0.0"
@@ -59,9 +52,10 @@ def launch(postgres_host: str = "localhost"):
 
 @app.command()
 def openapi():
-    rest_config, datastore_config = get_default_configs()
-    rest_config.save_as_envvar()
-    datastore_config.save_as_envvar()
+    rest_config = ControlPlaneRestConfig()
+    datastore_config = DatastoreConfig()
+    rest_config.save_to_envvar()
+    datastore_config.save_to_envvar()
 
     out = subprocess.check_output("python -m controlplane.rest.api", shell=True)
     print(out.decode("utf-8"))
