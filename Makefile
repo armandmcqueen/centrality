@@ -10,11 +10,11 @@ docker-run:
 docker-push:
 	docker push armandmcqueen/centrality-dev:latest
 
-# Recursively call make lint for each subproject
-.POHNY: lint
+.PHONY: lint
 lint:
 	make -C cli lint
 	make -C common lint
 	make -C controlplane lint
 	make -C tests lint
 	make -C vmagent lint
+
