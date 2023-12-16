@@ -1,7 +1,9 @@
-from common.config.config import (CentralityConfig,
-                                  CentralityConfigNameConflictError,
-                                  CentralityConfigInvalidEnvvarOverrideError,
-                                  CentralityConfigEnvvarUnsetError)
+from common.config.config import (
+    CentralityConfig,
+    CentralityConfigNameConflictError,
+    CentralityConfigInvalidEnvvarOverrideError,
+    CentralityConfigEnvvarUnsetError,
+)
 import os
 import pytest
 import pydantic
@@ -39,7 +41,9 @@ class BasicConfigWithoutDefaults(CentralityConfig):
 
 
 class BasicNestedConfigParent(CentralityConfig):
-    subconfig: BasicConfigWithDefaults = pydantic.Field(default_factory=BasicConfigWithDefaults)
+    subconfig: BasicConfigWithDefaults = pydantic.Field(
+        default_factory=BasicConfigWithDefaults
+    )
 
 
 class Subconfig(CentralityConfig):
@@ -60,57 +64,73 @@ class NameConflictChildTwoConfig(CentralityConfig):
 
 
 class NameConflictParentConfig(CentralityConfig):
-    child: NameConflictChildOneConfig = pydantic.Field(default_factory=NameConflictChildOneConfig)
-    child_on: NameConflictChildTwoConfig = pydantic.Field(default_factory=NameConflictChildTwoConfig)
-
-
-
+    child: NameConflictChildOneConfig = pydantic.Field(
+        default_factory=NameConflictChildOneConfig
+    )
+    child_on: NameConflictChildTwoConfig = pydantic.Field(
+        default_factory=NameConflictChildTwoConfig
+    )
 
 
 def test_basic_config_with_defaults():
     config = BasicConfigWithDefaults()
     assert config.int_field_with_default == INT_VAL_1
 
+
 def test_basic_config_without_default_errors():
     with pytest.raises(pydantic.ValidationError):
-        config = BasicConfigWithoutDefaults()
+        _ = BasicConfigWithoutDefaults()
+
 
 def test_basic_config_without_default_works_when_value_set():
     config = BasicConfigWithoutDefaults(int_field_no_default=INT_VAL_1)
     assert config.int_field_no_default == INT_VAL_1
+
 
 def test_nested_config():
     config = BasicNestedConfigParent()
     assert isinstance(config.subconfig, BasicConfigWithDefaults)
     assert config.subconfig.int_field_with_default == INT_VAL_1
 
+
 def test_argument_overrides():
-    config = BasicConfigWithoutDefaults(config_overrides=dict(int_field_no_default=INT_VAL_1))
+    config = BasicConfigWithoutDefaults(
+        config_overrides=dict(int_field_no_default=INT_VAL_1)
+    )
     assert config.int_field_no_default == INT_VAL_1
 
+
 def test_envvar_override():
-    os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULT"] = str(INT_VAL_1)
+    os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULT"] = str(
+        INT_VAL_1
+    )
     config = BasicConfigWithoutDefaults()
     assert config.int_field_no_default == INT_VAL_1
     del os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULT"]
 
+
 def test_invalid_envvar_override():
     with pytest.raises(CentralityConfigInvalidEnvvarOverrideError):
-        os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULTSSS"] = str(INT_VAL_1)
+        os.environ[
+            "CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULTSSS"
+        ] = str(INT_VAL_1)
         config = BasicConfigWithoutDefaults()
         assert config.int_field_no_default == INT_VAL_1
         del os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULTSSS"]
 
+
 def test_nested_config_override():
-    config = ParentConfig(config_overrides={
-        "subconfig.string_field_without_default": STRING_VAL_2
-    })
+    config = ParentConfig(
+        config_overrides={"subconfig.string_field_without_default": STRING_VAL_2}
+    )
     assert config.subconfig.string_field_with_default == STRING_VAL_1
     assert config.subconfig.string_field_without_default == STRING_VAL_2
 
+
 def test_naming_conflict():
     with pytest.raises(CentralityConfigNameConflictError):
-        config = NameConflictParentConfig()
+        _ = NameConflictParentConfig()
+
 
 def test_to_from_yaml():
     yaml_path = Path(__file__).parent / "test.yaml"
@@ -125,6 +145,7 @@ def test_to_from_yaml():
 
     # Cleanup
     os.remove(yaml_path)
+
 
 def test_to_from_json():
     json_path = Path(__file__).parent / "test.json"
@@ -159,11 +180,7 @@ def test_to_from_envvar():
 
 def test_from_unset_envvar_errors():
     with pytest.raises(CentralityConfigEnvvarUnsetError):
-        config = BasicNestedConfigParent.from_envvar()
-
-
-
-
+        _ = BasicNestedConfigParent.from_envvar()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import datetime
 
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
-from common.sdks.controlplane.handwritten.config import DefaultControlPlaneSdkConfig, ControlPlaneSdkConfig
+from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 from common.types.vmmetrics import CpuMeasurement
 import time
 import rich
@@ -60,7 +60,7 @@ def test_sdk(config: ControlPlaneSdkConfig, token: str):
 
 
 if __name__ == '__main__':
-    config = DefaultControlPlaneSdkConfig()
+    config = ControlPlaneSdkConfig()
     token = "dev"
 
     test_sdk(config, token)

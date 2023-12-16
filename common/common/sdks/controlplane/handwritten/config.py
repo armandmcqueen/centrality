@@ -1,14 +1,7 @@
-from pydantic import BaseModel
+from common.config.config import CentralityConfig
 
 
-class ControlPlaneSdkConfig(BaseModel):
-    host: str
-    port: int
-    https: bool
-
-
-class DefaultControlPlaneSdkConfig(ControlPlaneSdkConfig):
+class ControlPlaneSdkConfig(CentralityConfig):
     host: str = "localhost"
     port: int = 8000
     https: bool = False
-
