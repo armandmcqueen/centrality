@@ -2,6 +2,7 @@ import datetime
 from typing import Optional, Annotated
 import json
 
+
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
@@ -20,6 +21,11 @@ class OkResponse(BaseModel):
     status: str = "ok"
 
 
+class InfoResponse(BaseModel):
+    deploy_time: datetime.datetime
+
+
+deploy_time = datetime.datetime.now()
 app = FastAPI(
     title="centrality-controlplane",
     version="0.0.1",
@@ -47,6 +53,11 @@ def get_auth_healthcheck(
     """ Basic healthcheck that requires authentication """
     return OkResponse()
 
+
+@app.get(constants.INFO_ENDPOINT)
+def get_info():
+    """ Return basic info about deployment """
+    return InfoResponse(deploy_time=deploy_time)
 
 @app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
