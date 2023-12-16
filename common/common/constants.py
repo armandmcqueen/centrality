@@ -5,6 +5,7 @@
 # Shared endpoints
 HEALTHCHECK_ENDPOINT = "/healthz"
 AUTH_HEALTHCHECK_ENDPOINT = "/healthz/auth"
+INFO_ENDPOINT = "/info"
 
 # Control Plane specific endpoints
 CONTROL_PLANE_CPU_METRIC_ENDPOINT = "/metrics/cpu"

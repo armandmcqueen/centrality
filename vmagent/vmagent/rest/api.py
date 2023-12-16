@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from fastapi.routing import APIRoute
@@ -13,6 +14,11 @@ class OkResponse(BaseModel):
     status: str = "ok"
 
 
+class InfoResponse(BaseModel):
+    deploy_time: datetime.datetime
+
+
+deploy_time = datetime.datetime.now()
 app = FastAPI(
     title="centrality-vmagent",
     version="0.0.1",
@@ -28,6 +34,10 @@ def get_healthcheck():
     """ Basic healthcheck """
     return OkResponse()
 
+@app.get(constants.INFO_ENDPOINT)
+def get_info():
+    """ Return basic info about deployment """
+    return InfoResponse(deploy_time=deploy_time)
 
 def generate_openapi_json():
     """ Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this) """
