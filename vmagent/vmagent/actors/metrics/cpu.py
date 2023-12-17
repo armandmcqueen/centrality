@@ -15,8 +15,11 @@ class CollectCpuMetrics(conclib.ActorMessage):
     pass
 
 
-class CpuMetricCollector(conclib.Actor):
+class CpuMetricCollector(conclib.PeriodicActor):
     URN = constants.VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR
+    TICKS = {
+        CollectCpuMetrics: constants.VM_AGENT_METRIC_CPU_INTERVAL_SECS,
+    }
 
     def __init__(
             self,
@@ -25,45 +28,20 @@ class CpuMetricCollector(conclib.Actor):
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
-        self.ticker: Optional[CpuMetricCollectorTicker] = None
-        super().__init__(
-            urn=self.URN,
+        super().__init__()
+
+    def collect_cpu_metric(self) -> None:
+        cpu_percents = psutil.cpu_percent(percpu=True)
+        measurement = CpuMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=datetime.datetime.utcnow(),
+            cpu_percents=cpu_percents,
         )
-
-    def on_start(self) -> None:
-        self.ticker = CpuMetricCollectorTicker(self.actor_ref)
-        self.ticker.start()
-
-    def on_stop(self) -> None:
-        self.ticker.stop()
-
-    def on_failure(
-        self,
-        exception_type: Optional[type[BaseException]],
-        exception_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
-    ) -> None:
-        self.ticker.stop()
+        self.control_plane_sdk.write_cpu_metric(measurement=measurement)
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, CollectCpuMetrics):
-            cpu_percents = psutil.cpu_percent(percpu=True)
-            measurement = CpuMeasurement(
-                vm_id=self.vm_agent_config.vm_id,
-                ts=datetime.datetime.utcnow(),
-                cpu_percents=cpu_percents,
-            )
-            self.control_plane_sdk.write_cpu_metric(measurement=measurement)
+            self.collect_cpu_metric()
         else:
             raise conclib.errors.UnexpectedMessageError(message)
 
-
-class CpuMetricCollectorTicker(conclib.Ticker):
-    TICK_INTERVAL = constants.VM_AGENT_METRIC_CPU_INTERVAL_SECS
-
-    def __init__(self, cpu_metric_collector: pykka.ActorRef):
-        self.cpu_metric_collector = cpu_metric_collector
-        super().__init__(interval=self.TICK_INTERVAL)
-
-    def execute(self):
-        self.cpu_metric_collector.tell(CollectCpuMetrics())
