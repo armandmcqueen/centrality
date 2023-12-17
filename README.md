@@ -21,10 +21,6 @@ brew install openapi-generator
 brew install flyctl
 ```
 
-## Build Order
-
-1. Generate OpenAPI spec for `controlplane` and save them to `common/sdks`. `cd controlplane && make gen-openapi-spec`
-2. Generate Python client for each spec
 
 # Conclib
 
