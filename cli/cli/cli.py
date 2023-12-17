@@ -1,6 +1,9 @@
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from common.cli_utils import CliContextManager
 from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn
+from rich.live import Live
+from rich.text import Text
 import rich
 import typer
 import time
@@ -8,18 +11,46 @@ import time
 
 app = typer.Typer()
 
-
-def get_default_configs() -> ControlPlaneSdkConfig:
-    return ControlPlaneSdkConfig()
+TOKEN = "dev"
 
 
 @app.command()
-def watch_cpu_metrics():
-    control_plane_sdk_config = get_default_configs()
-    token = "dev"
+def watch_vms():
+    control_plane_sdk_config = ControlPlaneSdkConfig()
     control_plane_sdk = ControlPlaneSdk(
         config=control_plane_sdk_config,
-        token=token,
+        token=TOKEN,
+    )
+
+    rich.print("[bold underline cyan]Active Machines")
+    text = Text()
+
+    with CliContextManager():
+        with Live(text, refresh_per_second=5) as live:
+
+            tick_count = 0  # ticks are 1/1000 of a second
+            loop_interval_ticks = 100
+            while True:
+                if tick_count % 200 == 0:
+                    # Update the list of VMs we track
+                    resp, live_vms = control_plane_sdk.get_live_vms()
+                    text = Text("\n".join(live_vms))
+                    live.update(text)
+
+                if tick_count % 100 == 0:
+                    # TODO: Update the color of the listing based on time since last heartbeat
+                    pass
+
+                time.sleep(loop_interval_ticks / 1000)
+                tick_count += loop_interval_ticks
+
+
+@app.command()
+def watch_cpu():
+    control_plane_sdk_config = ControlPlaneSdkConfig()
+    control_plane_sdk = ControlPlaneSdk(
+        config=control_plane_sdk_config,
+        token=TOKEN,
     )
 
     console = rich.console.Console()
@@ -27,8 +58,8 @@ def watch_cpu_metrics():
     def get_progress_descriptions(vm_id: str):
         return f"[cyan]VM {vm_id}"
 
-    try:
-        console.print("[bold underline cyan]Active Machines")
+    with CliContextManager():
+        console.print("[bold underline cyan]Active Machines CPU")
         with Progress(
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
@@ -81,15 +112,6 @@ def watch_cpu_metrics():
 
                 time.sleep(loop_interval)
                 sec_count += loop_interval
-
-    except KeyboardInterrupt:
-        print("🛑 Received keyboard interrupt.")
-        return
-    except Exception as e:
-        print("❗️ Encountered an error")
-        print(e)
-    finally:
-        print("👋 Goodbye")
 
 
 if __name__ == "__main__":
