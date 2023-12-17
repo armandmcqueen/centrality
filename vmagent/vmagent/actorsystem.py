@@ -16,11 +16,11 @@ class ActorSystem:
     """
     def __init__(
             self,
-            vm_id: str,
+            vm_agent_config: VmAgentConfig,
             control_plane_sdk: ControlPlaneSdk,
     ):
+        self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
-        self.vm_agent_config = VmAgentConfig(vm_id=vm_id)
 
         self.metric_subsystem = MetricSubsystem(
             vm_agent_config=self.vm_agent_config,

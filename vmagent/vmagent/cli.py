@@ -5,9 +5,8 @@ import pykka
 import conclib
 from common import constants
 
-from vmagent.rest.config import VmAgentRestConfig
+from vmagent.config import VmAgentConfig
 from vmagent.actorsystem import ActorSystem
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
 
@@ -24,8 +23,7 @@ def launch(
     """
     print("📝 Using default configs")
     conclib_config = conclib.DefaultConfig()
-    rest_config = VmAgentRestConfig()
-    control_plane_sdk_config = ControlPlaneSdkConfig(config_overrides=dict(host=control_plane_host))
+    config = VmAgentConfig(vm_id=vm_id, controlplane_sdk=dict(host=control_plane_host))
 
     print("🚀 Launching VM Agent actor system")
     # Start conclib bridge
@@ -34,21 +32,22 @@ def launch(
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
-    rest_config.save_to_envvar()  # Make the rest_config available to the REST API
+
+    config.rest.save_to_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
-        fast_api_command=f"uvicorn vmagent.rest.api:app --port {rest_config.port}",
-        healthcheck_url=f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}",
-        startup_healthcheck_timeout=rest_config.startup_healthcheck_timeout,
-        startup_healthcheck_poll_interval=rest_config.startup_healthcheck_poll_interval,
+        fast_api_command=f"uvicorn vmagent.rest.api:app --port {config.rest.port}",
+        healthcheck_url=f"http://localhost:{config.rest.port}{constants.HEALTHCHECK_ENDPOINT}",
+        startup_healthcheck_timeout=config.rest.startup_healthcheck_timeout,
+        startup_healthcheck_poll_interval=config.rest.startup_healthcheck_poll_interval,
     )
 
     try:
         control_plane_sdk = ControlPlaneSdk(
-            config=control_plane_sdk_config,
+            config=config.controlplane_sdk,
             token="dev",
         )
         actor_system = ActorSystem(
-            vm_id=vm_id,
+            vm_agent_config=config,
             control_plane_sdk=control_plane_sdk,
         )
         actor_system.start()
