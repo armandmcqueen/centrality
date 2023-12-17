@@ -25,3 +25,10 @@ brew install flyctl
 
 1. Generate OpenAPI spec for `controlplane` and save them to `common/sdks`. `cd controlplane && make gen-openapi-spec`
 2. Generate Python client for each spec
+
+# Conclib
+
+We use the pykka actor model with `conclib` extensions for lots of the Python code. This is partially for the
+good startup and cleanup behavior given an actor tree. If we need to use threads or processes that aren't actors
+they must be cleaned up by a parent actor so that `pykka.ActorRegistry.stop_all()` completely cleans up all 
+execution.

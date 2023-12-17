@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "centrality-common ~= 0.0.1",
-    "conclib == 0.0.7",
+    "conclib == 0.0.8",
     "rich ~= 13.7.0",
     "typer[all] ~= 0.9.0",
     "psutil ~= 5.9.6",
