@@ -23,11 +23,12 @@ class FakeMetricConfig(CentralityConfig):
     def _validate_config_vals(self):
         valid_algorithms = [alg.value for alg in FakeMetricAlgorithms]
         if self.algorithm not in valid_algorithms:
-            raise ValueError(f"FakeMetric algorithm {self.algorithm} not valid. "
-                             f"Valid algorithms are: {valid_algorithms}")
+            msg = f"FakeMetric algorithm {self.algorithm} not valid. Valid algorithms are: {valid_algorithms}"
+            raise ValueError(msg)
         if self.max_val < self.min_val:
-            raise ValueError(f"FakeMetric min_val ({self.min_val}) is "
-                             f"greater than max_val ({self.max_val})")
+            msg = f"FakeMetric min_val ({self.min_val}) is greater than max_val ({self.max_val})"
+            raise ValueError(msg)
+        return self
 
 
 # TODO: Write tests once useful.
@@ -47,9 +48,9 @@ class FakeMetricGenerator:
             elapsed = time.time() - self.start_time
 
         sample_point = elapsed % self.config.period
-        if self.config.algorithm == FakeMetricAlgorithms.LINEAR_SYNCED:
+        if self.config.algorithm == FakeMetricAlgorithms.LINEAR_SYNCED.value:
             vals = self._generate_linear(sample_point)
-        elif self.config.algorithm == FakeMetricAlgorithms.RANDOM:
+        elif self.config.algorithm == FakeMetricAlgorithms.RANDOM.value:
             vals = self._generate_random()
         else:
             raise RuntimeError("This should be impossible unless I forgot to handle a new AlgorithmType")

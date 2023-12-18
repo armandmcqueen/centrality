@@ -60,7 +60,6 @@ class CentralityConfig(pydantic.BaseModel):
         if config_overrides:
             flattened_overrides = flatten_dict(config_overrides)
             kwargs = merge_flattened_into_nested(flattened_overrides, kwargs)
-
         super().__init__(**kwargs)
         self._validate_implementation()  # Hook to validate name conflicts
 
