@@ -1,5 +1,6 @@
 from enum import Enum
-from common.config.config import CentralityConfig, CentralityConfigValidationError
+from common.config.config import CentralityConfig
+from pydantic import model_validator
 import time
 import random
 
@@ -18,10 +19,15 @@ class FakeMetricConfig(CentralityConfig):
     jitter_factor: float = 0.1  # How much jitter to add
     algorithm: str = FakeMetricAlgorithms.LINEAR_SYNCED.value
 
-    def custom_validate(self):
+    @model_validator(mode="after")
+    def _validate_config_vals(self):
         valid_algorithms = [alg.value for alg in FakeMetricAlgorithms]
         if self.algorithm not in valid_algorithms:
-            raise CentralityConfigValidationError(f"FakeMetric algorithm {self.algorithm} not valid. Valid algorithms are: {valid_algorithms}")
+            raise ValueError(f"FakeMetric algorithm {self.algorithm} not valid. "
+                             f"Valid algorithms are: {valid_algorithms}")
+        if self.max_val < self.min_val:
+            raise ValueError(f"FakeMetric min_val ({self.min_val}) is "
+                             f"greater than max_val ({self.max_val})")
 
 
 # TODO: Write tests once useful.
@@ -44,13 +50,13 @@ class FakeMetricGenerator:
         if self.config.algorithm == FakeMetricAlgorithms.LINEAR_SYNCED:
             vals = self._generate_linear(sample_point)
         elif self.config.algorithm == FakeMetricAlgorithms.RANDOM:
-            vals = self._generate_random(sample_point)
+            vals = self._generate_random()
         else:
             raise RuntimeError("This should be impossible unless I forgot to handle a new AlgorithmType")
         return vals
 
-    def _generate_random(self, sample_point: float) -> list[float]:
-        # sample_point is ignored. Jitter is ignored.
+    def _generate_random(self) -> list[float]:
+        # Jitter is ignored.
         vals = [
             random.uniform(self.config.min_val, self.config.max_val)
             for _ in range(self.config.num_vals)
@@ -58,13 +64,11 @@ class FakeMetricGenerator:
         return vals
 
     def _generate_linear(self, sample_point: float):
-        # sample_point is ignored. Jitter is ignored.
         percent = sample_point / self.config.period
         val_range = self.config.max_val - self.config.min_val
-        assert val_range >= 0, "max_val must be greater than or equal to min_val"
         delta = percent * val_range
         pre_jitter_val = self.config.min_val + delta
-        # Vary by up to ±10% and then bound by min and max
+        # Vary by up to ± $JITTER_FACTOR % and then bound by min and max
         if self.config.jitter:
             jitter_deltas = [
                 random.uniform(-self.config.jitter_factor, self.config.jitter_factor) * pre_jitter_val

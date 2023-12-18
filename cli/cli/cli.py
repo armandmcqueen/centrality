@@ -26,7 +26,7 @@ def watch_vms():
     text = Text()
 
     with CliContextManager():
-        with Live(text, refresh_per_second=5) as live:
+        with Live(text, refresh_per_second=10) as live:
 
             tick_count = 0  # ticks are 1/1000 of a second
             loop_interval_ticks = 100

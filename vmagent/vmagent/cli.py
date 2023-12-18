@@ -34,6 +34,7 @@ def launch(
         config_overrides["vm_id"]=vm_id
     if control_plane_host:
         config_overrides["controlplane_sdk"] = dict(host=control_plane_host)
+
     if file:
         file = Path(file)
         print(f"💾 Loading config from {file.resolve().absolute()}")

@@ -121,13 +121,9 @@ class DatastoreClient:
         with Session(bind=self.engine) as session:
             filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
 
-            # Get the most recent metric for each VM by filtering on the vm_id and then getting the most recent timestamp
+            # Get the most recent metric for each VM by filtering on the vm_id
+            # and then getting the most recent timestamp
             subquery = (
-                # This subquery gets the most recent timestamp for each vm_id
-                # session.query(CpuVmMetricORM.vm_id, CpuVmMetricORM.ts)
-                # .filter(*filter_args)
-                # .group_by(CpuVmMetricORM.vm_id)
-                # .subquery()
 
                 session.query(
                     CpuVmMetricORM.vm_id,

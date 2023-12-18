@@ -11,17 +11,12 @@ class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
     pass
 
-class CentralityConfigValidationError(Exception):
-    """When any custom validation fails"""
-    pass
-
 
 class CentralityConfigInvalidEnvvarOverrideError(Exception):
     """
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
-
     pass
 
 
@@ -67,7 +62,6 @@ class CentralityConfig(pydantic.BaseModel):
             kwargs = merge_flattened_into_nested(flattened_overrides, kwargs)
 
         super().__init__(**kwargs)
-        self.custom_validate()
         self._validate_implementation()  # Hook to validate name conflicts
 
     @classmethod
@@ -137,14 +131,6 @@ class CentralityConfig(pydantic.BaseModel):
                 field_dot = fields[field_slug]
                 envvars[field_dot] = v
         return envvars
-
-    def custom_validate(self):
-        """
-        Add any custom Python validation that is required
-
-        TODO: Check if we can use pydantic builtin logic for all of this
-        """
-        pass
 
     @classmethod
     def from_yaml_file(
@@ -230,8 +216,6 @@ class CentralityConfig(pydantic.BaseModel):
     def pretty_print_yaml(self) -> None:
         """Print the config as a YAML string."""
         output = yaml.dump(self.to_dict())
-        # TODO: Make this beautiful for CLI output with textwrap and rich syntax highlighting
-        # indented_output = textwrap.indent(output, "   ")
         print(output)
 
     def pretty_print_json(self) -> None:
