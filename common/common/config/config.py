@@ -9,7 +9,6 @@ from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
 
 class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
-
     pass
 
 
@@ -18,7 +17,6 @@ class CentralityConfigInvalidEnvvarOverrideError(Exception):
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
-
     pass
 
 
@@ -62,7 +60,6 @@ class CentralityConfig(pydantic.BaseModel):
         if config_overrides:
             flattened_overrides = flatten_dict(config_overrides)
             kwargs = merge_flattened_into_nested(flattened_overrides, kwargs)
-
         super().__init__(**kwargs)
         self._validate_implementation()  # Hook to validate name conflicts
 
@@ -135,14 +132,18 @@ class CentralityConfig(pydantic.BaseModel):
         return envvars
 
     @classmethod
-    def from_yaml_file(cls, yaml_path: Path | str) -> "CentralityConfig":
+    def from_yaml_file(
+            cls,
+            yaml_path: Path | str,
+            config_overrides: dict | None = None
+    ) -> "CentralityConfig":
         """Load a YAML file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(yaml_path, str):
             yaml_path = Path(yaml_path)
         with open(yaml_path, "r") as f:
             yaml_dict = yaml.safe_load(f)
-        return cls.from_dict(yaml_dict)
+        return cls.from_dict(yaml_dict, config_overrides=config_overrides)
 
     def write_yaml(self, yaml_path: Path | str) -> None:
         """Save the config to a YAML file."""
@@ -152,14 +153,18 @@ class CentralityConfig(pydantic.BaseModel):
             yaml.dump(self.to_dict(), f)
 
     @classmethod
-    def from_json_file(cls, json_path: Path | str) -> "CentralityConfig":
+    def from_json_file(
+            cls,
+            json_path: Path | str,
+            config_overrides: dict | None = None
+    ) -> "CentralityConfig":
         """Load a JSON file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(json_path, str):
             json_path = Path(json_path)
         with open(json_path, "r") as f:
             json_dict = json.load(f)
-        return cls.from_dict(json_dict)
+        return cls.from_dict(json_dict, config_overrides=config_overrides)
 
     def write_json(self, json_path: Path | str) -> None:
         """Save the config to a JSON file."""
@@ -169,10 +174,12 @@ class CentralityConfig(pydantic.BaseModel):
             json.dump(self.to_dict(), f)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "CentralityConfig":
+    def from_dict(cls, d: dict, config_overrides: dict | None = None) -> "CentralityConfig":
         """
         Load a dict and return a config object. Exists for code clarity.
         """
+        if config_overrides:
+            return cls(**d, config_overrides=config_overrides)
         return cls(**d)
 
     def to_dict(self) -> dict:
@@ -207,8 +214,10 @@ class CentralityConfig(pydantic.BaseModel):
 
     def pretty_print_yaml(self) -> None:
         """Print the config as a YAML string."""
-        print(yaml.dump(self.to_dict()))
+        output = yaml.dump(self.to_dict())
+        print(output)
 
     def pretty_print_json(self) -> None:
         """Print the config as a JSON string."""
-        print(json.dumps(self.to_dict(), indent=4))
+        output = json.dumps(self.to_dict(), indent=4)
+        print(output)

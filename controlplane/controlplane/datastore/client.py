@@ -1,7 +1,7 @@
 import datetime
 from typing import List, cast, Sequence, Optional
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import Session
 
 from controlplane.datastore.types.base import DatastoreBaseORM
@@ -121,18 +121,23 @@ class DatastoreClient:
         with Session(bind=self.engine) as session:
             filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
 
-            # Get the most recent metric for each VM by filtering on the vm_id and then getting the most recent timestamp
+            # Get the most recent metric for each VM by filtering on the vm_id
+            # and then getting the most recent timestamp
             subquery = (
-                # This subquery gets the most recent timestamp for each vm_id
-                session.query(CpuVmMetricORM.vm_id, CpuVmMetricORM.ts)
+
+                session.query(
+                    CpuVmMetricORM.vm_id,
+                    func.max(CpuVmMetricORM.ts).label('latest_ts')
+                )
                 .filter(*filter_args)
+                .group_by(CpuVmMetricORM.vm_id)
                 .subquery()
             )
             rows = (
                 # This query gets the most recent metric for each vm_id
                 session.query(CpuVmMetricORM)
                 .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
-                .filter(CpuVmMetricORM.ts == subquery.c.ts)
+                .filter(CpuVmMetricORM.ts == subquery.c.latest_ts)
                 .all()
             )
             for row in rows:

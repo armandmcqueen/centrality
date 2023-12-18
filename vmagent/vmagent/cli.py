@@ -1,6 +1,10 @@
 import time
 import typer
 import pykka
+import sys
+from typing import Annotated
+
+from pathlib import Path
 
 import conclib
 from common import constants
@@ -8,6 +12,7 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actorsystem import ActorSystem
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from typing import Optional
 
 
 app = typer.Typer()
@@ -15,15 +20,30 @@ app = typer.Typer()
 
 @app.command()
 def launch(
-        control_plane_host: str = "localhost",
-        vm_id: str = "test-machine"
+        control_plane_host: Optional[str] = None,
+        vm_id: Optional[str] = None,
+        file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
 ):
     """
     Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
     """
-    print("📝 Using default configs")
+
     conclib_config = conclib.DefaultConfig()
-    config = VmAgentConfig(vm_id=vm_id, controlplane_sdk=dict(host=control_plane_host))
+    config_overrides = dict()
+    if vm_id:
+        config_overrides["vm_id"]=vm_id
+    if control_plane_host:
+        config_overrides["controlplane_sdk"] = dict(host=control_plane_host)
+
+    if file:
+        file = Path(file)
+        print(f"💾 Loading config from {file.resolve().absolute()}")
+        config = VmAgentConfig.from_yaml_file(file, config_overrides=config_overrides)
+    else:
+        print("🌱 Using default configs")
+        config = VmAgentConfig(config_overrides=config_overrides)
+    print("⚙️ Config:")
+    config.pretty_print_yaml()
 
     print("🚀 Launching VM Agent actor system")
     # Start conclib bridge
@@ -32,7 +52,6 @@ def launch(
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
-
     config.rest.save_to_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
         fast_api_command=f"uvicorn vmagent.rest.api:app --port {config.rest.port}",
