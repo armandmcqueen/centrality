@@ -4,7 +4,7 @@
 
 ### Docker Compose
 
-Local testing is primarily done with Docker Compose launching all of the components.
+Local testing is primarily done with Docker Compose launching all the components.
 
 ```bash
 docker compose build
