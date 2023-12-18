@@ -2,6 +2,10 @@
 
 # Testing
 
+### Docker Compose
+
+Local testing is primarily done with Docker Compose launching all of the components.
+
 ```bash
 docker compose build
 docker compose up
@@ -11,6 +15,14 @@ docker compose up
 #python cli/cli/cli.py watch-vm
 python cli/cli/cli.py watch-cpu
 ````
+
+### Quick tests
+
+To quickly run a test outside of a container, you can use the `quicktest` config.
+
+```bash
+python vmagent/vmagent/cli.py launch -f tests/configs/quicktest/vmagent.yaml
+```
 
 
 # Development
