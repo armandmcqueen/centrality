@@ -3,8 +3,8 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
-    working_dir: /centrality/vmagent
-    command: "python3.11 vmagent/cli.py launch --control-plane-host controlplane --vm-id test-machine-1"
+    working_dir: /centrality
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent1.yaml"
     depends_on:
       - controlplane
 
@@ -12,8 +12,8 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
-    working_dir: /centrality/vmagent
-    command: "python3.11 vmagent/cli.py launch --control-plane-host controlplane --vm-id test-machine-2"
+    working_dir: /centrality
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent2.yaml"
     depends_on:
       - controlplane
 
@@ -32,3 +32,5 @@ services:
     image: "postgres:16.1"
     environment:
       - POSTGRES_PASSWORD=postgres
+    ports:
+      - "127.0.0.1:5432:5432"

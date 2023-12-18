@@ -1,4 +1,5 @@
 from typing import Callable
+from types import TracebackType
 import sys
 
 
@@ -14,13 +15,16 @@ class CliContextManager:
     def __enter__(self):
         pass
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback: TracebackType):
+        suppress_exception = False
         if exc_type is KeyboardInterrupt:
             print()
             print("🛑 Received keyboard interrupt.")
+            suppress_exception = True
         elif exc_type is not None:
             print("❗️ Encountered an error")
             print(exc_value)
         self.finally_func()
         print("👋 Goodbye")
-        sys.exit(0)  # Prevent any other output from happening
+        return suppress_exception
+          # Prevent any other output from happening

@@ -1,5 +1,17 @@
 # Centrality
 
+# Testing
+
+```bash
+docker compose build
+docker compose up
+```
+
+```bash
+#python cli/cli/cli.py watch-vm
+python cli/cli/cli.py watch-cpu
+````
+
 
 # Development
 

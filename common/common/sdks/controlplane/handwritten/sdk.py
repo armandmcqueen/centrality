@@ -60,7 +60,7 @@ class ControlPlaneSdk:
         vm_ids: list[str],
     ) -> tuple[requests.Response, list[CpuMeasurement]]:
         """Get the most recent CPU measurements for each VM"""
-        url = self._build_url(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
+        url = self._build_url(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT)
         response = requests.get(url, headers=self.headers, params=dict(vm_ids=vm_ids))
         measurements = [CpuMeasurement(**j) for j in response.json()]
         return response, measurements

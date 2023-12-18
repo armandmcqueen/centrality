@@ -1,0 +1,9 @@
+vm_id: test-machine
+metrics:
+  cpu:
+    use_fake: false
+    fake:
+      algorithm: linear_synced  # linear_synced | random
+      jitter: true
+      num_vals: 2
+      period: 10

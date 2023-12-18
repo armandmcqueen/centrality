@@ -64,6 +64,7 @@ def watch_cpu():
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
             TaskProgressColumn(),
+            refresh_per_second=10,
         ) as progress:
             vm_bars = {}
             resp, live_vms = control_plane_sdk.get_live_vms()
@@ -73,10 +74,11 @@ def watch_cpu():
                     get_progress_descriptions(vm_id), total=100
                 )
 
-            sec_count = 0
-            loop_interval = 0.5
+            tick_count = 0  # ticks are 1/1000 of a second
+            loop_interval_ticks = 100
+
             while True:
-                if sec_count % 10 == 0:
+                if tick_count % 10_000 == 0:
                     # Update the list of VMs we track
                     resp, live_vms = control_plane_sdk.get_live_vms()
                     # TODO: Handle errors?
@@ -92,7 +94,7 @@ def watch_cpu():
                         progress.remove_task(vm_bars[vm_id])
                         del vm_bars[vm_id]
 
-                if sec_count % 1 == 0:
+                if tick_count % 200 == 0:
                     # Update the CPU metrics for all VMs current tracked
                     live_vms = list(vm_bars.keys())
                     if len(live_vms) != 0:
@@ -110,8 +112,8 @@ def watch_cpu():
                                 vm_bars[measurement.vm_id], completed=avg_cpu_percent
                             )
 
-                time.sleep(loop_interval)
-                sec_count += loop_interval
+                time.sleep(loop_interval_ticks / 1000)
+                tick_count += loop_interval_ticks
 
 
 if __name__ == "__main__":
