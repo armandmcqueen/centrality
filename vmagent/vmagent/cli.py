@@ -1,6 +1,7 @@
 import time
 import typer
 import pykka
+import socket
 import sys
 from typing import Annotated
 
@@ -26,12 +27,18 @@ def launch(
 ):
     """
     Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
+
+    If vm_id == "auto", the hostname will be used as the vm_id.
     """
 
     conclib_config = conclib.DefaultConfig()
     config_overrides = dict()
     if vm_id:
-        config_overrides["vm_id"]=vm_id
+        if vm_id == "auto":  # TODO: Document this
+            print("🙈 Overriding vm_id with hostname")
+            vm_id = f"auto-{socket.gethostname()}"
+
+        config_overrides["vm_id"] = vm_id
     if control_plane_host:
         config_overrides["controlplane_sdk"] = dict(host=control_plane_host)
 

@@ -1,4 +1,4 @@
-vm_id: test-machine-2
+vm_id: test-machine
 controlplane_sdk:
   host: controlplane
 metrics:
