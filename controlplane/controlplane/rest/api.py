@@ -13,6 +13,7 @@ from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.rest.auth import auth
 
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
 
@@ -31,6 +32,14 @@ app = FastAPI(
     version="0.0.1",
 )
 security = HTTPBearer()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Load config values from environment variables and setup connect to datastore
