@@ -9,3 +9,7 @@ class CpuMeasurement(BaseModel):
     vm_id: str
     ts: datetime.datetime
     cpu_percents: List[float]
+
+    @property
+    def avg_cpu_percent(self) -> float:
+        return sum(self.cpu_percents) / len(self.cpu_percents)
