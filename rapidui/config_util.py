@@ -1,4 +1,4 @@
-# Utility to help pass config to streamlit via envvar. This is a workaround for lack fo argument support
+# Utility to help pass config to streamlit via envvar. This is a workaround for lack of argument support
 # in multi-page apps (if you want people to be able to go directly to a page via a URL instead of going
 # through the home page).
 
