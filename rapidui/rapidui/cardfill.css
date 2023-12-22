@@ -1,0 +1,5 @@
+
+[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlock"] [data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #233044;
+    background: #233044;
+}

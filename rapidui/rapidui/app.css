@@ -1,0 +1,27 @@
+@import url('https://rsms.me/inter/inter.css');
+
+html, body, h2, h1, h3, p, span [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+h2 {
+    font-weight: 400;
+    font-size: 1.8rem;
+}
+
+[data-testid="stHeader"] {
+        visibility: hidden;
+    }
+.block-container {
+    padding-top: 1rem;
+    max-width: 66rem;
+}
+/*[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlock"] [data-testid="stVerticalBlockBorderWrapper"] {*/
+/*    background-color: #233044;*/
+/*    background: #233044;*/
+/*}*/
+
+hr {
+    margin-top: 1em;
+}
+
