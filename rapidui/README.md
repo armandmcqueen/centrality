@@ -2,6 +2,12 @@
 
 Quick and dirty UI for Centrality. Built using some streamlit
 
+## Usage
+
+```bash
+./launch.bash configs/dev.yaml
+```
+
 ## Components
 
 - `flexbox.py` - minimal flexbox for displaying cards
