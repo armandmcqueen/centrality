@@ -188,6 +188,12 @@ class CentralityConfig(pydantic.BaseModel):
         """
         return self.model_dump()
 
+    def to_dict_str(self) -> str:
+        """
+        Return the config as a json str. Exists for code clarity.
+        """
+        return self.model_dump_json()
+
     @classmethod
     def envvar_name(cls):
         """Return the environment variable name for saving and loading this config."""
