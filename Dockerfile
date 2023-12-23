@@ -24,6 +24,12 @@ WORKDIR /centrality
 # Install the monorepo
 RUN pip install -e ./common && \
     pip install -e ./vmagent && \
-    pip install -e ./controlplane
+    pip install -e ./controlplane && \
+    pip install -e ./rapidui
 
+# VM agent port
+EXPOSE 7777
+# Control plane port
 EXPOSE 8000
+# RapidUI port
+EXPOSE 8501

@@ -1,0 +1,8 @@
+/*
+When displaying cards in a flexbox, add fill to the cards. Not all pages want to load this
+because it can have undesirable side-effects since we can't use classes to target the cards.
+*/
+
+[data-testid="stHorizontalBlock"] [data-testid="stVerticalBlock"] [data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #233044;
+}
