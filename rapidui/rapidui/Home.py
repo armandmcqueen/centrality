@@ -8,13 +8,9 @@ cli = typer.Typer()
 
 @cli.command()
 def app():
-    config = load_config()
+    _ = load_config()
     header("Home")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli(standalone_mode=False)
-
-
-
-

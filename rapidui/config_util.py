@@ -13,9 +13,9 @@ cli = typer.Typer()
 
 @cli.command(name="set")
 def set_var(
-        file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
+    file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
 ):
-    """ Print out the correct export command to set the envvar. This should then be exec'd verbatim """
+    """Print out the correct export command to set the envvar. This should then be exec'd verbatim"""
 
     if file:
         config = StreamlitUiConfig.from_yaml_file(Path(file))
@@ -25,11 +25,10 @@ def set_var(
 
 
 @cli.command()
-def unset(
-):
-    """ Print out the correct export command to unset the envvar. This should then be exec'd verbatim """
+def unset():
+    """Print out the correct export command to unset the envvar. This should then be exec'd verbatim"""
     print(f"unset {StreamlitUiConfig.envvar_name()}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

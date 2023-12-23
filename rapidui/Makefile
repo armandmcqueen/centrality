@@ -11,5 +11,5 @@ format:
 
 .PHONY: launch
 launch:
-	./launch.bash configs/dev.yaml
+	./launch.bash configs/localhost.yaml
 
