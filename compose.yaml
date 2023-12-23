@@ -48,7 +48,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality/rapidui
-    command: "make launch"
+    command: "./launch.bash ../tests/configs/dockercompose/rapidui.yaml"
     depends_on:
       - controlplane
 
