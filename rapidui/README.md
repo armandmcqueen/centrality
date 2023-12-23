@@ -5,7 +5,7 @@ Quick and dirty UI for Centrality. Built using Streamlit.
 ## Usage
 
 ```bash
-./launch.bash configs/localhost.yaml
+./launch.bash ../tests/configs/quicktest/rapidui.yaml
 ```
 Equivalent:
 ```bash
