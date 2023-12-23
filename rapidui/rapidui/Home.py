@@ -1,5 +1,5 @@
 from rapidui.header import header
-from rapidui.lib.utils import load_config
+from rapidui.library.utils import load_config
 import typer
 
 

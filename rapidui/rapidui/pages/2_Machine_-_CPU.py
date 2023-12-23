@@ -1,12 +1,12 @@
 import time
 import streamlit as st
 
-from rapidui.lib.flexbox import UniformFlexbox
+from rapidui.library.flexbox import UniformFlexbox
 from rapidui.header import header
-from rapidui.lib.utils import load_config, calculate_epoch
-from rapidui.lib.constants import TOKEN
+from rapidui.library.utils import load_config, calculate_epoch
+from rapidui.library.constants import TOKEN
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
-from rapidui.lib.cpu_view import CpuCardContents, CpuCard
+from rapidui.library.cpu_view import CpuCardContents, CpuCard
 
 
 @st.cache_data

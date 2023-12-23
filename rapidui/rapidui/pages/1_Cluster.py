@@ -3,16 +3,16 @@ import time
 import streamlit as st
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
-from rapidui.lib.flexbox import UniformFlexbox
-from rapidui.lib.cluster_view import (
+from rapidui.library.flexbox import UniformFlexbox
+from rapidui.library.cluster_view import (
     MachineOverviewCard,
     MachineOverviewCardContents,
     LiveMachineCount,
 )
 from rapidui.header import header
-from rapidui.lib.utils import load_config, calculate_epoch
-from rapidui.lib.config import StreamlitUiConfig
-from rapidui.lib.constants import TOKEN
+from rapidui.library.utils import load_config, calculate_epoch
+from rapidui.library.config import StreamlitUiConfig
+from rapidui.library.constants import TOKEN
 
 
 # Use caching with epochs to only refresh data at some interval

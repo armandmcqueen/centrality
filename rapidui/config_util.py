@@ -2,7 +2,7 @@
 # in multi-page apps (if you want people to be able to go directly to a page via a URL instead of going
 # through the home page).
 
-from rapidui.lib.config import StreamlitUiConfig
+from rapidui.library.config import StreamlitUiConfig
 from pathlib import Path
 from typing import Annotated, Optional
 import typer
