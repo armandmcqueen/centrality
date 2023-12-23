@@ -3,4 +3,6 @@ primaryColor="#3f7ad7"
 backgroundColor="#1B2635"
 secondaryBackgroundColor="#203d6b"
 textColor="#FFFFFFF2"
+
+# This is overridden by custom CSS, so it doesn't matter
 font="sans serif"
