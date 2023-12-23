@@ -11,5 +11,5 @@ format:
 
 .PHONY: launch
 launch:
-	./launch.bash configs/localhost.yaml
+	./launch.bash ../tests/configs/quicktest/rapidui.yaml
 
