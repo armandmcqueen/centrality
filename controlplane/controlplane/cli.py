@@ -1,11 +1,13 @@
 import subprocess
 import time
 import conclib
+import pykka
 import typer
 
 from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
+from controlplane.actorsystem import ControlPlaneActorSystem
 from common import constants
 
 
@@ -20,17 +22,22 @@ def launch(postgres_host: str = "localhost"):
     When we add an actor system, this is where we'll launch it.
     """
     print("📝 Using default configs")
+    conclib_config = conclib.DefaultConfig()
     rest_config = ControlPlaneRestConfig()
     datastore_config = DatastoreConfig(config_overrides=dict(host=postgres_host))
     rest_config.save_to_envvar()
     datastore_config.save_to_envvar()
-    print("🚀 Launching Control Plane API")
 
-    launch_command = f"uvicorn controlplane.rest.api:app --port {rest_config.port} --host 0.0.0.0"
-    healthcheck_url = f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}"
+    print("🚀 Launching Control Plane actor system")
+    # Start conclib bridge
+    redis_daemon = conclib.start_redis(config=conclib_config)
+    conclib.start_proxy(config=conclib_config)
+    actor_system = ControlPlaneActorSystem(datastore_config=datastore_config).start()
+
+    print("🚀 Launching Control Plane API")
     api_thread = conclib.start_api(
-        fast_api_command=launch_command,
-        healthcheck_url=healthcheck_url,
+        fast_api_command=f"uvicorn controlplane.rest.api:app --port {rest_config.port} --host 0.0.0.0",
+        healthcheck_url=f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}",
         startup_healthcheck_timeout=rest_config.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=rest_config.startup_healthcheck_poll_interval,
     )
@@ -46,7 +53,10 @@ def launch(postgres_host: str = "localhost"):
         print(e)
         print(f"❗️Control Plane API shutting down due to {type(e)} exception")
     finally:
+        # TODO: Think through this order
         api_thread.shutdown()
+        redis_daemon.shutdown()
+        pykka.ActorRegistry.stop_all()
         print("👋 Goodbye")
 
 

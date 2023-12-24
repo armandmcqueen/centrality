@@ -31,6 +31,20 @@ docker compose build
 docker compose up
 ```
 
+To use the current code without needing to build new containers, we use an override file that mounts the source code
+into the containers. This is much faster than rebuilding the containers.
+
+```bash
+docker compose -f compose.yaml -f compose-override-mountcode.yaml up
+```
+
+Add the `-d` flag to run in the background, which makes the logs more manageable.
+
+To see logs for all containers:
+```bash
+docker compose logs -f
+```
+
 ## Quick tests
 
 To quickly run a test outside of a container, you can use the `quicktest` config.
@@ -63,6 +77,11 @@ To run a local VM Agent that talks to the Fly control plane:
 python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-local.yaml
 ```
 
+To access the DB locally on port 5433:
+```bash
+fly proxy 5433 -a centrality-datastore-dev
+```
+
 
 # Development
 
@@ -80,8 +99,42 @@ and with minimal dependencies.
 
 
 ```bash
+brew install redis
 brew install openapi-generator
 brew install flyctl
+```
+
+
+### AWS - containers
+
+AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+```bash
+brew install gnupg
+brew install amazon-ecs-cli
+```
+
+To run docker compose with the AWS ECS backend, you need to configure the ECS CLI and create a cluster. 
+```
+ecs-cli configure --cluster centrality-ec2 --region us-east-1 --config-name centrality-ec2
+ecs-cli up --launch-type FARGATE
+```
+
+Need to copy compose.yaml to `docker-compose.yaml` for ECS CLI to work.
+```
+ecs-cli compose up
+```
+
+### AWS - ec2
+
+Manually created a large m7g.16xlarge instance with 64 cores and 256GB of RAM. 
+
+```bash
+git clone https://github.com/armandmcqueen/centrality
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-armv7" -o /usr/local/bin/docker-compos
+
+sudo docker-compose up
 ```
 
 

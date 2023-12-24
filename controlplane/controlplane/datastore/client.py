@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
-from controlplane.datastore.types.vmmetrics import CpuVmMetricORM, CpuVmMetric
+from controlplane.datastore.types.vmmetrics import CpuVmMetricORM, CpuVmMetric, CpuVmMetricLatestORM, CpuVmMetricLatest
 from controlplane.datastore.types.vmliveness import VmHeartbeatORM, VmHeartbeat
 from controlplane.datastore.types.utils import gen_random_uuid
+from controlplane.datastore.types.previewer import PreviewBranchStateORM, PreviewBranchState
 from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
 import os
@@ -79,8 +80,30 @@ class DatastoreClient:
             cpu_percents=cpu_percents,
             avg_cpu_percent=avg_cpu_percent,
         )
+        latest_metric = CpuVmMetricLatestORM(
+            vm_id=vm_id,
+            ts=ts,
+            cpu_percents=cpu_percents,
+            avg_cpu_percent=avg_cpu_percent,
+        )
         with Session(bind=self.engine) as session:
             session.add(metric)
+
+            # Upsert latest metric
+            upsert_stmt = insert(CpuVmMetricLatestORM).values(
+                vm_id=vm_id,
+                ts=ts,
+                cpu_percents=cpu_percents,
+                avg_cpu_percent=avg_cpu_percent,
+            ).on_conflict_do_update(
+                index_elements=['vm_id'],
+                set_=dict(
+                    ts=ts,
+                    cpu_percents=cpu_percents,
+                    avg_cpu_percent=avg_cpu_percent,
+                )
+            )
+            session.execute(upsert_stmt)
             session.commit()
 
     def get_cpu_measurements(
@@ -114,35 +137,50 @@ class DatastoreClient:
     def get_latest_cpu_measurements(
         self,
         vm_ids: List[str],
-    ) -> List[CpuVmMetric]:
+    ) -> List[CpuVmMetricLatest]:
         if len(vm_ids) == 0:
             return []
         results = []
+        print("Getting latest cpu measurements for VMs:", vm_ids)
+
         with Session(bind=self.engine) as session:
-            filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
+            # filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
 
-            # Get the most recent metric for each VM by filtering on the vm_id
-            # and then getting the most recent timestamp
-            subquery = (
+            # # Get the most recent metric for each VM by filtering on the vm_id
+            # # and then getting the most recent timestamp
+            # subquery = (
+            #
+            #     session.query(
+            #         CpuVmMetricORM.vm_id,
+            #         func.max(CpuVmMetricORM.ts).label('latest_ts')
+            #     )
+            #     .filter(*filter_args)
+            #     .group_by(CpuVmMetricORM.vm_id)
+            #     .subquery()
+            # )
+            # rows = (
+            #     # This query gets the most recent metric for each vm_id
+            #     session.query(CpuVmMetricORM)
+            #     .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
+            #     .filter(CpuVmMetricORM.ts == subquery.c.latest_ts)
+            #     .all()
+            # )
 
-                session.query(
-                    CpuVmMetricORM.vm_id,
-                    func.max(CpuVmMetricORM.ts).label('latest_ts')
-                )
-                .filter(*filter_args)
-                .group_by(CpuVmMetricORM.vm_id)
-                .subquery()
-            )
+            # New implementation: get from the latest table
+            # TODO: This has a bug I think - check out the warning message
+            # rows = (
+            #     session.query(CpuVmMetricLatestORM)
+            #     .filter(*filter_args)
+            #     .all()
+            # )
             rows = (
-                # This query gets the most recent metric for each vm_id
-                session.query(CpuVmMetricORM)
-                .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
-                .filter(CpuVmMetricORM.ts == subquery.c.latest_ts)
+                session.query(CpuVmMetricLatestORM)
+                .filter(CpuVmMetricLatestORM.vm_id.in_(vm_ids))
                 .all()
             )
             for row in rows:
-                row = cast(CpuVmMetricORM, row)
-                result_metric = CpuVmMetric.from_orm(row)
+                row = cast(CpuVmMetricLatestORM, row)
+                result_metric = CpuVmMetricLatest.from_orm(row)
                 results.append(result_metric)
         return results
 
@@ -177,3 +215,98 @@ class DatastoreClient:
                 .all()
             )
             return [row.vm_id for row in rows]
+
+    # TODO: Rename this - it is a datastore update, not a previewer operation
+    def trigger_previewer(self, branch_name: str) -> None:
+        """
+        Trigger the previewer for a certain branch. If this is the first trigger for the
+        branch, it will create a new row. If the branch is already active, the last_update_ts
+         will be updated to the current time and is_active will be set to True.
+        """
+        with Session(bind=self.engine) as session:
+            upsert_stmt = insert(PreviewBranchStateORM).values(
+                branch_name=branch_name,
+                is_active=True,
+                deployed_commit=None,
+                last_update_ts=datetime.datetime.utcnow()
+            ).on_conflict_do_update(
+                index_elements=['branch_name'],
+                set_=dict(
+                    is_active=True,
+                    last_update_ts=datetime.datetime.utcnow(),
+
+                )
+            )
+            session.execute(upsert_stmt)
+            session.commit()
+
+    @staticmethod
+    def _previewer_get_active_branch_state(
+            branch_name: str,
+            session: Session,
+    ) -> PreviewBranchStateORM:
+        """ Get the existing branch state. If it doesn't exist or isn't active, raise an exception """
+        row = (
+            session.query(PreviewBranchStateORM)
+            .filter(PreviewBranchStateORM.branch_name == branch_name)
+            .first()
+        )
+        if row is None:
+            # TODO: Better exception type
+            raise Exception(f"Branch {branch_name} does not exist. Trigger needed first. This is a bug.")
+        row = cast(PreviewBranchStateORM, row)
+        if not row.is_active:
+            # TODO: Better exception type
+            raise Exception(f"Branch {branch_name} is not active. This is a bug.")
+        return row
+
+    # TODO: Rename this - it is a datastore update, not a previewer operation
+    def previewer_report_new_deployment(
+            self,
+            branch_name: str,
+            deployed_commit: str,
+    ):
+        """
+        Report that a certain branch has been deployed to a certain commit. If the branch
+        is not active or the branch is new, this will raise an exception.
+        """
+        with Session(bind=self.engine) as session:
+            row = self._previewer_get_active_branch_state(branch_name, session)
+
+            row.deployed_commit = deployed_commit
+            row.is_active = True
+            row.last_update_ts = datetime.datetime.utcnow()
+            session.commit()
+
+    # TODO: Rename this - it is a datastore update, not a previewer operation
+    def previewer_report_cleaned_up(
+            self,
+            branch_name: str,
+    ):
+        """
+        Report that a certain branch has been cleaned up. If the branch
+        is not active or the branch is new, this will raise an exception.
+        """
+        with Session(bind=self.engine) as session:
+            row = self._previewer_get_active_branch_state(branch_name, session)
+            row.deployed_commit = None
+            row.is_active = False
+            row.last_update_ts = datetime.datetime.utcnow()
+            session.commit()
+
+    def previewer_get_active_branches(self) -> list[PreviewBranchState]:
+        """
+        Get a list of all active branches
+        """
+        with Session(bind=self.engine) as session:
+            rows = (
+                session.query(PreviewBranchStateORM)
+                .filter(PreviewBranchStateORM.is_active)
+                .all()
+            )
+            results = []
+
+            for row in rows:
+                row = cast(PreviewBranchStateORM, row)
+                results.append(PreviewBranchState.from_orm(row))
+            return results

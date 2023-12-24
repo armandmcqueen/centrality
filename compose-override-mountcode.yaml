@@ -1,0 +1,19 @@
+# Override docker compose to mount the code into the containers to skip building during development
+# docker compose -f compose.yaml -f compose-override-mountcode.yaml up
+version: '3'
+services:
+  vmagent-auto:
+    volumes:
+      - .:/centrality
+  vmagent-manual:
+    volumes:
+      - .:/centrality
+  vmagent-many-cpus:
+    volumes:
+      - .:/centrality
+  controlplane:
+    volumes:
+      - .:/centrality
+  rapidui:
+    volumes:
+      - .:/centrality

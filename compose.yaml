@@ -33,7 +33,7 @@ services:
   controlplane:
     build: .
     ports:
-      - "127.0.0.1:8000:8000"
+      - "0.0.0.0:8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality/controlplane
@@ -44,7 +44,7 @@ services:
   rapidui:
     build: .
     ports:
-      - "127.0.0.1:8501:8501"
+      - "0.0.0.0:8501:8501"
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality/rapidui
@@ -57,4 +57,4 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "127.0.0.1:5432:5432"
+      - "0.0.0.0:5432:5432"

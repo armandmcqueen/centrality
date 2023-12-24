@@ -14,6 +14,7 @@ class VmHeartbeatORM(DatastoreBaseORM):
     )
 
 
+
 class VmHeartbeat(BaseModel):
     vm_id: str
     last_heartbeat_ts: datetime.datetime

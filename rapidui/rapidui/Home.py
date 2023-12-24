@@ -1,6 +1,7 @@
 from rapidui.header import header
 from rapidui.library.utils import load_config
 import typer
+import streamlit as st
 
 
 cli = typer.Typer()
@@ -10,6 +11,7 @@ cli = typer.Typer()
 def app():
     _ = load_config()
     header("Home")
+    st.markdown("# This was overridden")
 
 
 if __name__ == "__main__":

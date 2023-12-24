@@ -12,6 +12,8 @@
       <sourceFolder url="file://$MODULE_DIR$/vmagent/vmagent" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rapidui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rapidui/rapidui" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/previewer" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/previewer/previewer" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />

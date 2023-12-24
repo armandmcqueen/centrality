@@ -11,9 +11,10 @@ from common import constants
 from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
-from controlplane.rest.auth import auth
+from controlplane.rest.utils.auth import auth, security
+from controlplane.rest.previewer.api import router as previewer_router
 
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
@@ -35,7 +36,7 @@ app = FastAPI(
     title="centrality-controlplane",
     version="0.0.1",
 )
-security = HTTPBearer()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,6 +45,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(previewer_router)
 
 
 # Load config values from environment variables and setup connect to datastore

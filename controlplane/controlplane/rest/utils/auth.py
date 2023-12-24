@@ -3,7 +3,9 @@ from typing import Callable
 from functools import wraps
 from controlplane.datastore.client import DatastoreClient
 from fastapi import Request
+from fastapi.security import HTTPBearer
 
+security = HTTPBearer()
 
 def auth(datastore_client: DatastoreClient):
     def decorator(func: Callable):
