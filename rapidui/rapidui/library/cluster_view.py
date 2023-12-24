@@ -32,7 +32,8 @@ class LiveMachineCount:
         self.machine_type = machine_type
         self.num_machines = num_machines
         self.machine_count_container = self.parent.empty()
-        # We need to set the background color of the container if we don't want to highlight it as a card
+        # We need to set the background color of the container to match the main background color if
+        # we don't want to highlight it as a card
         self.machine_count_container.markdown(
             self._gen_markdown(machine_type, num_machines),
             unsafe_allow_html=True,

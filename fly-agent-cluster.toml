@@ -11,7 +11,7 @@ primary_region = "iad"
 [http_service]
   internal_port = 7777
   force_https = true
-  min_machines_running = 1  # This appears to be uselsss. Use `fly scale count X` instead.
+  min_machines_running = 1  # This appears to be useless. Use `fly scale count X` instead.
   processes = ["agent"]
 
 [processes]
