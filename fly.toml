@@ -35,7 +35,7 @@ primary_region = "iad"
 
 
 [processes]
-  fastapi = "python3.11 controlplane/controlplane/cli.py launch"
+  fastapi = "python controlplane/controlplane/cli.py launch"
   streamlit = "make -C rapidui launch-fly"
 
 [[vm]]

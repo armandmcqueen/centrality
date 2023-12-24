@@ -49,6 +49,19 @@ python vmagent/vmagent/cli.py launch -f tests/configs/quicktest/vmagent.yaml
 flyctl deploy
 ```
 
+To deploy the agent cluster app
+
+```bash
+fly --config fly-agent-cluster.toml deploy
+fly --config fly-agent-cluster.toml scale count --process-group agent 5
+```
+
+To run a local VM Agent that talks to the Fly control plane:
+
+```bash
+python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-local.yaml
+```
+
 
 # Development
 
