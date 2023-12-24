@@ -12,7 +12,8 @@ RUN apt-get update  \
     curl \
     gcc \
     sudo \
-    make
+    make \
+    git
 
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11

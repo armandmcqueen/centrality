@@ -5,6 +5,7 @@ import json
 
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
+from git import Repo
 from common.types.vmmetrics import CpuMeasurement
 from common import constants
 from controlplane.datastore.client import DatastoreClient
@@ -23,6 +24,9 @@ class OkResponse(BaseModel):
 
 
 class InfoResponse(BaseModel):
+    git_commit: str
+    git_branch: str
+    git_is_dirty: bool
     deploy_time: datetime.datetime
 
 
@@ -48,6 +52,10 @@ datastore_config = DatastoreConfig.from_envvar()
 datastore_client = DatastoreClient(config=datastore_config)
 
 
+# Check the git commit and branch of the repo we are currently in
+repo = Repo(search_parent_directories=True)
+
+
 @app.get(constants.HEALTHCHECK_ENDPOINT)
 def get_healthcheck():
     """ Basic healthcheck """
@@ -66,7 +74,16 @@ def get_auth_healthcheck(
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
     """ Return basic info about deployment """
-    return InfoResponse(deploy_time=deploy_time)
+    git_branch = repo.active_branch.name
+    git_commit = repo.head.commit.hexsha
+    git_is_dirty = repo.is_dirty(untracked_files=True)
+    return InfoResponse(
+        git_branch=git_branch,
+        git_commit=git_commit,
+        git_is_dirty=git_is_dirty,
+        deploy_time=deploy_time,
+    )
+
 
 @app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
