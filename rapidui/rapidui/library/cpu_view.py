@@ -3,9 +3,8 @@ from rapidui.library.flexbox import CardContents, BaseCard
 
 
 class CpuCardContents(CardContents):
-    def __init__(self, cpu_id: int, curr_cpu: float):
-        self.cpu_id = cpu_id
-        self.curr_cpu = curr_cpu
+    cpu_id: int
+    curr_cpu: float
 
 
 class CpuCard(BaseCard):

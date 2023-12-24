@@ -1,9 +1,12 @@
 import streamlit as st
+from pydantic import BaseModel
 from abc import ABC, abstractmethod
 
 
-class CardContents:
+class CardContents(BaseModel):
     pass
+
+
 
 
 class BaseCard(ABC):
@@ -67,5 +70,7 @@ class UniformFlexbox:
             )
             card = self.card_type(card_container, content)
             self.cards.append(card)
+
+
 
 

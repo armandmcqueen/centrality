@@ -13,3 +13,7 @@ format:
 launch:
 	./launch.bash ../tests/configs/quicktest/rapidui.yaml
 
+.PHONY: launch-fly
+launch-fly:
+	./launch.bash ../tests/configs/fly/rapidui.yaml
+

@@ -2,9 +2,8 @@ from rapidui.library.flexbox import CardContents, BaseCard
 
 
 class MachineOverviewCardContents(CardContents):
-    def __init__(self, vm_id: str, avg_cpu: float):
-        self.vm_id = vm_id
-        self.avg_cpu = avg_cpu
+    vm_id: str
+    avg_cpu: float
 
 
 class MachineOverviewCard(BaseCard):

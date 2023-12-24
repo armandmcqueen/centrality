@@ -43,6 +43,12 @@ To quickly run a test outside of a container, you can use the `quicktest` config
 python vmagent/vmagent/cli.py launch -f tests/configs/quicktest/vmagent.yaml
 ```
 
+## Fly
+
+```bash
+flyctl deploy
+```
+
 
 # Development
 

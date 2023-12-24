@@ -44,6 +44,8 @@ def gen_data(
         _sdk=control_plane_sdk,
         epoch=calculate_epoch(interval_ms=config.live_vm_interval_ms),
     )
+    if len(live_vms) == 0:
+        return [], []
     cpu_metrics = get_cpu_metrics(
         _sdk=control_plane_sdk,
         live_vms=live_vms,

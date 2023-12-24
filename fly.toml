@@ -8,16 +8,35 @@ primary_region = "iad"
 
 [build]
 
-[http_service]
+[[services]]
+  processes = ["fastapi"]
   internal_port = 8000
-  force_https = true
+  protocol = "tcp"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["fastapi"]
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+  #  handlers = ["tls", "http"]
+    port = "8000"
+#  force_https = true
+
+[[services]]
+  processes = ["streamlit"]
+  internal_port = 8501
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["tls"]
+  #  handlers = ["tls", "http"]
+    port = "443"
+#  force_https = true
+
 
 [processes]
   fastapi = "python3.11 controlplane/controlplane/cli.py launch"
+  streamlit = "make -C rapidui launch-fly"
 
 [[vm]]
   cpu_kind = "shared"
