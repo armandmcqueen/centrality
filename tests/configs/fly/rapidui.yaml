@@ -1,0 +1,4 @@
+control_plane_sdk:
+  host: centrality-dev.fly.dev
+  https: true
+  port: 8000

@@ -1,5 +1,5 @@
 import streamlit as st
-from rapidui.lib import constants
+from rapidui.library import constants
 from pathlib import Path
 
 GLOBAL_CSS_PATH = Path(__file__).parent / "app.css"

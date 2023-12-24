@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for centrality-agent-cluster on 2023-12-23T21:39:42-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "centrality-agent-cluster"
+primary_region = "iad"
+
+[build]
+
+[http_service]
+  internal_port = 7777
+  force_https = true
+  min_machines_running = 1  # This appears to be useless. Use `fly scale count X` instead.
+  processes = ["agent"]
+
+[processes]
+  agent = "python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-auto.yaml --vm-id auto"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

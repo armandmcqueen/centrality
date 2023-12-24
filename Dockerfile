@@ -17,6 +17,9 @@ RUN apt-get update  \
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
+# Make Python 3.11 the default Python
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
+
 # Copy the monorepo into the container
 COPY . /centrality
 WORKDIR /centrality
