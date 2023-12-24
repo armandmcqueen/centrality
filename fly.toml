@@ -18,9 +18,7 @@ primary_region = "iad"
 
   [[services.ports]]
     handlers = ["tls", "http"]
-  #  handlers = ["tls", "http"]
     port = "8000"
-#  force_https = true
 
 [[services]]
   processes = ["streamlit"]
@@ -29,9 +27,7 @@ primary_region = "iad"
 
   [[services.ports]]
     handlers = ["tls"]
-  #  handlers = ["tls", "http"]
     port = "443"
-#  force_https = true
 
 
 [processes]
