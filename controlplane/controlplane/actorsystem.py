@@ -1,5 +1,4 @@
 from controlplane.datastore.config import DatastoreConfig
-from controlplane.actors.previewer import Previewer
 import pykka
 from typing import Optional
 
@@ -15,27 +14,27 @@ class ControlPlaneActorSystem:
             datastore_config: DatastoreConfig,
     ):
         self.datastore_config = datastore_config
-        self.previewer_subsystem = PreviewerSubsystem(self.datastore_config)
+        self.previewer_subsystem = ExampleSubsystem(self.datastore_config)
 
     def start(self) -> "ControlPlaneActorSystem":
         self.previewer_subsystem.start()
         return self
 
 
-class PreviewerSubsystem:
+class ExampleSubsystem:
     """
-    Container for the Previewer subsystem
+    Container for an example subsystem
     """
     def __init__(
             self,
             datastore_config: DatastoreConfig,
     ):
         self.datastore_config = datastore_config
-        self.previewer_actor_ref: Optional[pykka.ActorRef] = None
+        self.example_actor_ref: Optional[pykka.ActorRef] = None
 
     def start(self):
-        self.previewer_actor_ref = Previewer.start(
-            datastore_config=self.datastore_config,
-        )
-
+        # self.example_actor_ref = ExampleActor.start(
+        #     datastore_config=self.datastore_config,
+        # )
+        pass
 
