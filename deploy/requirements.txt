@@ -1,4 +1,0 @@
-boto3
-typer[all]
-rich
-centrality-common

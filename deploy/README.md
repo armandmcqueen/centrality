@@ -15,7 +15,7 @@ only hopefully happen during development of this code.
 
 ### Getting started
 
-Empty `config.yaml`, and set these fields:
+Empty `config.yaml`, and set these fields with real values:
 ```yaml
 region: XXXXX
 vpc_id: vpc-XXXXX
@@ -31,19 +31,20 @@ python security_groups.py create
 ```
 
 An environment variable can be set to specify an alternate config file location. See `constants.py` for the name 
-of the environment variable.
+of that environment variable.
 
 ### Launching instances
 
 See `--help` for other options
+
 ```bash
 python instances.py launch m7g.medium --checkout mybranch --idempotency-token mybranch
 ```
 This will terminate any previous instances with the same idempotency token, launch new one, and run the
 docker compose stack with the code in `mybranch`. Idempotency tokens are useful for reducing cost.
 
-We keep a manual mapping between instance types and AMI (because there is an x64 ubuntu AMI and a 
-different arm ubuntu AMI). If you want to use a different instance type, you need to add it to the
+We keep a manual mapping between instance types and AMI (because there is an x64 Ubuntu AMI and a 
+different ARM Ubuntu AMI). If you want to use a different instance type, you need to add it to the
 `INSTANCE_TO_AMI` dict in `constants.py`.
 
 
