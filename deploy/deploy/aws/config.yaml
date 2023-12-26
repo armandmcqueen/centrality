@@ -1,0 +1,9 @@
+region: us-east-1
+vpc_id: vpc-07440ec1153cb2a0b
+subnet_id: subnet-0b7e0d8e896cb2dc2
+key_pair: armand-centrality
+
+# Auto-managed
+security_group_id: sg-0c9d1e82c81aed4a0
+iam_policy_arn: arn:aws:iam::664043321167:policy/EC2TerminateSelfPolicy
+iam_role_arn: arn:aws:iam::664043321167:role/EC2SelfTerminationRole

@@ -1,4 +1,0 @@
-vpc_id: vpc-07440ec1153cb2a0b
-iam_role_arn: arn:aws:iam::664043321167:role/EC2SelfTerminationRole
-security_group_id: sg-021272fb61c189da0
-key_pair: armand-centrality

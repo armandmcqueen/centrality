@@ -2,10 +2,8 @@ import datetime
 from typing import Optional, Annotated
 import json
 
-import git
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
-from git import Repo
 from common.types.vmmetrics import CpuMeasurement
 from common import constants
 from controlplane.datastore.client import DatastoreClient
@@ -54,11 +52,16 @@ datastore_config = DatastoreConfig.from_envvar()
 datastore_client = DatastoreClient(config=datastore_config)
 
 
-# Check the git commit and branch of the repo we are currently in
+# Add git support if we can - if there is a git executable and a git repo.
 try:
-    repo = Repo(search_parent_directories=True)
-except git.InvalidGitRepositoryError as e:
-    print(f"❗️Not in a git repository, can't get git commit/branch. Error: {e}")
+    from git import Repo, InvalidGitRepositoryError  # noqa
+    try:
+        repo = Repo(search_parent_directories=True)
+    except InvalidGitRepositoryError as e:
+        print(f"❗️Not in a git repository, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
+        repo = None
+except ImportError as e:
+    print(f"❗️Failed to import gitpython, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
     repo = None
 
 

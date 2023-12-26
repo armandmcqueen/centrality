@@ -20,13 +20,17 @@ class DatastoreClient:
         url = config.get_url()
         self.engine = create_engine(url, echo=self.config.verbose_orm)
 
+        # DatastoreBaseORM.metadata.create_all(self.engine)
+
+    def setup_db(self):
+        """Create all tables if they don't exist"""
         DatastoreBaseORM.metadata.create_all(self.engine)
+        self._add_dev_token()
 
     def reset_db(self):
         """Drop all tables and recreate them"""
         DatastoreBaseORM.metadata.drop_all(self.engine)
-        DatastoreBaseORM.metadata.create_all(self.engine)
-        self._add_dev_token()
+        self.setup_db()
 
     def new_token(self) -> UserToken:
         """Create a new token and add it to the database"""
@@ -38,10 +42,19 @@ class DatastoreClient:
 
     def _add_dev_token(self) -> None:
         """Add the dev token to the database"""
-        user_token = UserTokenORM(user_id="dev", token="dev")
         with Session(bind=self.engine) as session:
-            session.add(user_token)
+            upsert_stmt = insert(UserTokenORM).values(
+                user_id="dev",
+                token="dev",
+            ).on_conflict_do_update(
+                index_elements=['user_id'],
+                set_=dict(token="dev")
+            )
+            session.execute(upsert_stmt)
             session.commit()
+
+
+
 
     def get_tokens(self) -> List[UserToken]:
         """Get all tokens from the database"""

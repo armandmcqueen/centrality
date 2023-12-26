@@ -105,31 +105,6 @@ brew install flyctl
 ```
 
 
-
-### AWS - ec2
-
-To test a large-scale deployment, I manually created a large m7g.16xlarge instance with 64 cores and 256GB of RAM.
-This was able to run 500 agent containers, although it was very slow to start up. The application performance
-was also slow, but it's unclear what the root cause of that was. It might make sense to pair this with an aurora
-database to remove that from consideration a the performance bottleneck. And maybe separate the control plane
-from the agent cluster. 
-
-But at that point, you've sort of lost the benefit of using docker compose for simplicity and you might as well 
-use something more serious like Kubernetes or EC3.
-
-To get docker compose working:
-
-```bash
-git clone https://github.com/armandmcqueen/centrality
-sudo apt-get update
-sudo apt-get install -y docker.io
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-armv7" -o /usr/local/bin/docker-compos
-
-sudo docker-compose up
-```
-
-
-
 ## Conclib
 
 We use the pykka actor model with `conclib` extensions for lots of the Python code. This is partially for the

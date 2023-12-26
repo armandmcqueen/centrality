@@ -29,11 +29,17 @@ def launch(postgres_host: str = "localhost"):
     rest_config.save_to_envvar()
     datastore_config.save_to_envvar()
 
+    print("🌰 Setting up DB")
+    datastore_client = DatastoreClient(config=datastore_config)
+    datastore_client.setup_db()
+    print("✓ DB setup")
+
     print("🚀 Launching Control Plane actor system")
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
     actor_system = ControlPlaneActorSystem(datastore_config=datastore_config).start()
+    print("✓ Actor system started")
 
     print("🚀 Launching Control Plane API")
     api_thread = conclib.start_api(
@@ -45,6 +51,7 @@ def launch(postgres_host: str = "localhost"):
         startup_healthcheck_timeout=rest_config.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=rest_config.startup_healthcheck_poll_interval,
     )
+    print("✓ API started")
 
     try:
         while True:
@@ -57,10 +64,9 @@ def launch(postgres_host: str = "localhost"):
         print(e)
         print(f"❗️Control Plane API shutting down due to {type(e)} exception")
     finally:
-        # TODO: Think through this order
         api_thread.shutdown()
-        redis_daemon.shutdown()
         pykka.ActorRegistry.stop_all()
+        redis_daemon.shutdown()
         print("👋 Goodbye")
 
 
