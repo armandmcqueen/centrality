@@ -7,9 +7,10 @@ from controlplane.datastore.config import DatastoreConfig
 from fastapi.security import HTTPAuthorizationCredentials
 
 
+# TODO: Remove this as soon as we have a real subcomponent
 router = APIRouter(
-    prefix="/previewer",
-    tags=["previewer"],
+    prefix="/example",
+    tags=["example"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -17,8 +18,8 @@ datastore_config = DatastoreConfig.from_envvar()
 datastore_client = DatastoreClient(config=datastore_config)
 
 
-@router.get("/trigger/{branch}")
-def trigger_branch():
+@router.get("/hello")
+def hello():
     return {"Hello": "World"}
 
 

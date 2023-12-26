@@ -53,7 +53,8 @@ class CpuMetricCollector(conclib.PeriodicActor):
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendCpuMetrics):
             try:
-                print("⬆ CpuMetricCollector - sending cpu metric")
+                # TODO: Readd this once we have leveled logging?
+                # print("⬆ CpuMetricCollector - sending cpu metric")
                 self.send_cpu_metric()
             except Exception as e:
                 # TODO: Be more thoughtful about this

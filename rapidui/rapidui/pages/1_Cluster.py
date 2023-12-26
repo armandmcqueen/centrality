@@ -29,7 +29,6 @@ def get_cpu_metrics(
     _sdk: ControlPlaneSdk, live_vms: list[str], epoch: int
 ) -> list[MachineOverviewCardContents]:
     """Use epoch as a cache key to force a refresh at some interval"""
-    print("⬇ get_cpu_metrics for", live_vms)
     resp, measurements = _sdk.get_latest_cpu_measurements(vm_ids=live_vms)
     # TODO: Handle errors?
     return [
@@ -52,7 +51,6 @@ def gen_data(
         live_vms=live_vms,
         epoch=calculate_epoch(interval_ms=config.cpu_metric_interval_ms),
     )
-    print("⬇ got cpu metrics", cpu_metrics)
     return live_vms, cpu_metrics
 
 

@@ -34,7 +34,6 @@ class VmAgentActorSystem:
             vm_agent_config=self.vm_agent_config,
             control_plane_sdk=self.control_plane_sdk,
         )
-        print("✓ VM Agent actor system launched")
         return self
 
 

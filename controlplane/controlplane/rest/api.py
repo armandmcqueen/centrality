@@ -12,7 +12,7 @@ from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.rest.utils.auth import auth, security
-from controlplane.rest.previewer.api import router as previewer_router
+from controlplane.rest.example.api import router as example_router
 
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,7 +45,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(previewer_router)
+app.include_router(example_router)
 
 
 # Load config values from environment variables and setup connect to datastore

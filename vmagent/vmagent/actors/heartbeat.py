@@ -30,7 +30,7 @@ class HeartbeatSender(conclib.PeriodicActor):
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendHeartbeat):
-            print("💌 HeartbeatSender - sending heartbeat")
+            # print("💌 HeartbeatSender - sending heartbeat")  # TODO: Readd this once we have leveled logging
             try:
                 self.control_plane_sdk.send_heartbeat(vm_id=self.vm_agent_config.vm_id)
             except Exception as e:

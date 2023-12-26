@@ -14,10 +14,10 @@ class ControlPlaneActorSystem:
             datastore_config: DatastoreConfig,
     ):
         self.datastore_config = datastore_config
-        self.previewer_subsystem = ExampleSubsystem(self.datastore_config)
+        self.example_subsystem = ExampleSubsystem(self.datastore_config)
 
     def start(self) -> "ControlPlaneActorSystem":
-        self.previewer_subsystem.start()
+        self.example_subsystem.start()
         return self
 
 

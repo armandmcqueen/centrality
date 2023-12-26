@@ -1,7 +1,6 @@
 from rapidui.header import header
 from rapidui.library.utils import load_config
 import typer
-import streamlit as st
 
 
 cli = typer.Typer()
