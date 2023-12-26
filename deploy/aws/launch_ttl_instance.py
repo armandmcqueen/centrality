@@ -1,22 +1,24 @@
 import boto3
 import os
 
-import urllib3.exceptions
 from rich import print
 from rich.console import Console
 import time
 
+# TODO: Move these somewhere else
 KEY_PAIR = "armand-centrality"
-SLEEP_TIME_SECS = 60 * 5  # 5 minutes
+SLEEP_TIME_SECS = 60 * 60 * 5  # 5 hours
 IAM_ROLE_ARN = "arn:aws:iam::664043321167:role/EC2SelfTerminationRole"
 IAM_INSTANCE_PROFILE_ARN = "arn:aws:iam::664043321167:instance-profile/EC2SelfTerminationInstanceProfile"
 SECURITY_GROUP_ID = "sg-021272fb61c189da0"
-ami_x64 = "ami-0c7217cdde317cfec"
+ami_x64 = "ami-0c7217cdde317cfec"  # TODO: Automatically map instance type to AMI
 ami_arm = "ami-05d47d29a4c2d19e1"
 INSTANCE_TYPE = 'm7g.medium'
 VPC_ID = "vpc-07440ec1153cb2a0b"
 SUBNET_ID = "subnet-0b7e0d8e896cb2dc2"
 REGION = "us-east-1"
+MANAGEMENT_TAG_KEY = "ManagementTag"
+MANAGEMENT_TAG_VALUE = "centrality-ttl"
 
 def launch_instance(checkout: str):
     ec2 = boto3.resource('ec2')
@@ -29,7 +31,11 @@ def launch_instance(checkout: str):
                 'Tags': [
                     {
                         'Key': 'Name',
-                        'Value': 'centrality-test-instance (ttl)'
+                        'Value': 'centrality-test-instance (ttl)'  # TODO: Better name
+                    },
+                    {
+                        'Key': MANAGEMENT_TAG_KEY,
+                        'Value': MANAGEMENT_TAG_VALUE,
                     },
                 ]
             },
@@ -129,6 +135,29 @@ def launch_instance(checkout: str):
             print(e)
             raise e
 
+def terminate_all_instances():
+    ec2 = boto3.resource('ec2')
+    instances = ec2.instances.filter(
+        Filters=[
+            {
+                'Name': 'tag:' + MANAGEMENT_TAG_KEY,
+                'Values': [
+                    MANAGEMENT_TAG_VALUE,
+                ]
+            },
+        ]
+    )
+    print("Instances to Terminate:")
+    for instance in instances:
+        print(f"[red]- {instance.id}")
+
+    print()
+    print("Terminating instances...")
+    for instance in instances:
+        instance.terminate()
+        print(f"[green]✓ Termination triggered for: {instance.id}")
+
 
 if __name__ == "__main__":
-    launch_instance(checkout="preview-deployments")
+    terminate_all_instances()
+    # launch_instance(checkout="preview-deployments")
