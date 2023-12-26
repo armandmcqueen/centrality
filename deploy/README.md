@@ -51,7 +51,7 @@ different arm ubuntu AMI). If you want to use a different instance type, you nee
 
 To remove all resources created by this repo:
 ```
-python instances.py terminate-all
+python instances.py delete
 python security_groups.py delete
 python iam.py delete
 ```

@@ -34,6 +34,8 @@ docker compose up
 To use the current code without needing to build new containers, we use an override file that mounts the source code
 into the containers. This is much faster than rebuilding the containers.
 
+Note that the `-f` flags go before `up`
+
 ```bash
 docker compose -f compose.yaml -f compose-override-mountcode.yaml up
 ```

@@ -212,7 +212,7 @@ def launch(
         wait: bool = True,
         idempotency_token: Optional[str] = None,
 ):
-    terminate_all(
+    delete(
         wait=False,
         idempotency_token=idempotency_token
     )
@@ -227,7 +227,7 @@ def launch(
 
 
 @app.command()
-def terminate_all(
+def delete(
         wait: bool = True,
         idempotency_token: Optional[str] = None
 ):

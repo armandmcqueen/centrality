@@ -22,7 +22,8 @@ class AwsDeployConfig(CentralityConfig):
 
     def validate_full_config_set(self):
         for field in self.model_fields.keys():
-            if not getattr(self, field):
+            val = getattr(self, field)
+            if val == "":
                 raise ValueError(f"Missing required field {field}")
         return self
 
