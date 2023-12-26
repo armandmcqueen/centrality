@@ -2,7 +2,7 @@ import datetime
 from typing import Optional, Annotated
 import json
 
-
+import git
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from git import Repo
@@ -55,7 +55,11 @@ datastore_client = DatastoreClient(config=datastore_config)
 
 
 # Check the git commit and branch of the repo we are currently in
-repo = Repo(search_parent_directories=True)
+try:
+    repo = Repo(search_parent_directories=True)
+except git.InvalidGitRepositoryError as e:
+    print(f"❗️Not in a git repository, can't get git commit/branch. Error: {e}")
+    repo = None
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)
@@ -76,9 +80,14 @@ def get_auth_healthcheck(
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
     """ Return basic info about deployment """
-    git_branch = repo.active_branch.name
-    git_commit = repo.head.commit.hexsha
-    git_is_dirty = repo.is_dirty(untracked_files=True)
+    if repo is not None:
+        git_branch = repo.active_branch.name
+        git_commit = repo.head.commit.hexsha
+        git_is_dirty = repo.is_dirty(untracked_files=True)
+    else:
+        git_branch = "unknown"
+        git_commit = "unknown"
+        git_is_dirty = False
     return InfoResponse(
         git_branch=git_branch,
         git_commit=git_commit,

@@ -141,38 +141,9 @@ class DatastoreClient:
         if len(vm_ids) == 0:
             return []
         results = []
-        print("Getting latest cpu measurements for VMs:", vm_ids)
 
         with Session(bind=self.engine) as session:
-            # filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
 
-            # # Get the most recent metric for each VM by filtering on the vm_id
-            # # and then getting the most recent timestamp
-            # subquery = (
-            #
-            #     session.query(
-            #         CpuVmMetricORM.vm_id,
-            #         func.max(CpuVmMetricORM.ts).label('latest_ts')
-            #     )
-            #     .filter(*filter_args)
-            #     .group_by(CpuVmMetricORM.vm_id)
-            #     .subquery()
-            # )
-            # rows = (
-            #     # This query gets the most recent metric for each vm_id
-            #     session.query(CpuVmMetricORM)
-            #     .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
-            #     .filter(CpuVmMetricORM.ts == subquery.c.latest_ts)
-            #     .all()
-            # )
-
-            # New implementation: get from the latest table
-            # TODO: This has a bug I think - check out the warning message
-            # rows = (
-            #     session.query(CpuVmMetricLatestORM)
-            #     .filter(*filter_args)
-            #     .all()
-            # )
             rows = (
                 session.query(CpuVmMetricLatestORM)
                 .filter(CpuVmMetricLatestORM.vm_id.in_(vm_ids))
@@ -216,10 +187,9 @@ class DatastoreClient:
             )
             return [row.vm_id for row in rows]
 
-    # TODO: Rename this - it is a datastore update, not a previewer operation
-    def trigger_previewer(self, branch_name: str) -> None:
+    def previewer_mark_branch_active(self, branch_name: str) -> None:
         """
-        Trigger the previewer for a certain branch. If this is the first trigger for the
+        Mark a branch as active and update the last_update_ts. If this is the first trigger for the
         branch, it will create a new row. If the branch is already active, the last_update_ts
          will be updated to the current time and is_active will be set to True.
         """
@@ -261,7 +231,7 @@ class DatastoreClient:
         return row
 
     # TODO: Rename this - it is a datastore update, not a previewer operation
-    def previewer_report_new_deployment(
+    def previewer_update_branch_deployed_commit(
             self,
             branch_name: str,
             deployed_commit: str,
@@ -279,7 +249,7 @@ class DatastoreClient:
             session.commit()
 
     # TODO: Rename this - it is a datastore update, not a previewer operation
-    def previewer_report_cleaned_up(
+    def previewer_set_branch_inactive(
             self,
             branch_name: str,
     ):

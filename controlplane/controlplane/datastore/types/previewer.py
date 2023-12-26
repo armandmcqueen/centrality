@@ -29,5 +29,6 @@ class PreviewBranchState(BaseModel):
             branch_name=orm.branch_name,
             is_active=orm.is_active,
             deployed_commit=orm.deployed_commit,
+
             last_update_ts=orm.last_update_ts,
         )

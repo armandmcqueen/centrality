@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 import conclib
@@ -36,7 +37,10 @@ def launch(postgres_host: str = "localhost"):
 
     print("🚀 Launching Control Plane API")
     api_thread = conclib.start_api(
-        fast_api_command=f"uvicorn controlplane.rest.api:app --port {rest_config.port} --host 0.0.0.0",
+        fast_api_command=f"uvicorn controlplane.rest.api:app "
+                         f"--workers {os.cpu_count() * 2} "
+                         f"--port {rest_config.port} "
+                         f"--host 0.0.0.0",
         healthcheck_url=f"http://localhost:{rest_config.port}{constants.HEALTHCHECK_ENDPOINT}",
         startup_healthcheck_timeout=rest_config.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=rest_config.startup_healthcheck_poll_interval,

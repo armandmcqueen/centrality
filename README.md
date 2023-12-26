@@ -105,28 +105,19 @@ brew install flyctl
 ```
 
 
-### AWS - containers
-
-AWS CLI - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-```bash
-brew install gnupg
-brew install amazon-ecs-cli
-```
-
-To run docker compose with the AWS ECS backend, you need to configure the ECS CLI and create a cluster. 
-```
-ecs-cli configure --cluster centrality-ec2 --region us-east-1 --config-name centrality-ec2
-ecs-cli up --launch-type FARGATE
-```
-
-Need to copy compose.yaml to `docker-compose.yaml` for ECS CLI to work.
-```
-ecs-cli compose up
-```
 
 ### AWS - ec2
 
-Manually created a large m7g.16xlarge instance with 64 cores and 256GB of RAM. 
+To test a large-scale deployment, I manually created a large m7g.16xlarge instance with 64 cores and 256GB of RAM.
+This was able to run 500 agent containers, although it was very slow to start up. The application performance
+was also slow, but it's unclear what the root cause of that was. It might make sense to pair this with an aurora
+database to remove that from consideration a the performance bottleneck. And maybe separate the control plane
+from the agent cluster. 
+
+But at that point, you've sort of lost the benefit of using docker compose for simplicity and you might as well 
+use something more serious like Kubernetes or EC3.
+
+To get docker compose working:
 
 ```bash
 git clone https://github.com/armandmcqueen/centrality

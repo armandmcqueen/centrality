@@ -11,7 +11,6 @@ cli = typer.Typer()
 def app():
     _ = load_config()
     header("Home")
-    st.markdown("# This was overridden")
 
 
 if __name__ == "__main__":

@@ -17,8 +17,8 @@ datastore_config = DatastoreConfig.from_envvar()
 datastore_client = DatastoreClient(config=datastore_config)
 
 
-@router.get("/hello")
-def hello():
+@router.get("/trigger/{branch}")
+def trigger_branch():
     return {"Hello": "World"}
 
 
