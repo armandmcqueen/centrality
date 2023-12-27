@@ -6,6 +6,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+      - name: check cwd
+        run: pwd
+      - name: check ls
+        run: ls
       - name: Install dependencies including dev
         run: cd ${{ github.workspace }} && make install-dev
       - name: Run format checker
