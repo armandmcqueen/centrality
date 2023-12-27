@@ -11,6 +11,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
       - name: Install dependencies including dev
         run: make install-dev
 
