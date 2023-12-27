@@ -13,6 +13,9 @@ jobs:
       - name: Install dependencies including dev
         run: |
           cd ${{ github.workspace }} && make install-dev
+      - name: Run format checker
+        run: |
+          cd ${{ github.workspace }} && make check-format
       - name: Run linter
         run: |
             cd ${{ github.workspace }} && make lint
