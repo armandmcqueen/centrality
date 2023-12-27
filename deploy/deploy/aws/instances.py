@@ -17,30 +17,34 @@ if constants.CONFIG_PATH_OVERRIDE_ENVVAR in os.environ:
     CONFIG_FILE_PATH = Path(os.environ[constants.CONFIG_PATH_OVERRIDE_ENVVAR])
 config = AwsDeployConfig.from_yaml_file(CONFIG_FILE_PATH)
 
-# TODO: Move these somewhere else
-HEALTHCHECK_PATIENCE_SECS = 60 * 5
-DEFAULT_TTL = 60 * 60 * 5  # 5 hours
 
 app = typer.Typer()
 
 
 def get_log_lines(host: str) -> list[str]:
+    """ Get all non-empty lines from /var/log/cloud-init-output.log """
     out = subprocess.check_output(
         f"ssh ubuntu@{host} cat /var/log/cloud-init-output.log",
         shell=True,
         stderr=subprocess.DEVNULL,
     )
     lines = out.decode("utf-8").splitlines()
-    return [l for l in lines if l.strip() != ""]
+    return [line for line in lines if line.strip() != ""]
 
 
 def _launch(
         instance_type: str,
         checkout: str,
         ttl_secs: int,
-        wait,
+        wait: bool,
         idempotency_token: Optional[str] = None,
 ):
+    """
+    Launch an instance with the specified checkout (branch, tag, or commit hash). Will launch the instance,
+    set the cloud-init script to checkout code and download docker compose, and then terminate itself after
+    ttl_secs. If wait is True, will wait for the instance to be running and the API healthcheck to pass, while
+    tailing the cloud-init logs.
+    """
     # Validate config
     print()
     print("Checking config fully set...")
@@ -58,13 +62,18 @@ def _launch(
         raise ValueError(f"Instance type {instance_type} architecture not currently known (add it to "
                          f"INSTANCE_TO_AMI in constants.py)")
     ami = constants.INSTANCE_TO_AMI[instance_type]
+    if ami != constants.AMI_ARM:
+        raise NotImplementedError("Only ARM instances are currently supported because the cloud-init "
+                                  "script hardcodes downloading the ARM docker-compose binary. This is "
+                                  "easy to fix, but just needs someone to test out a non-ARM instance "
+                                  "and update the script to be correct.")
 
     ec2 = boto3.resource('ec2')
     iam = boto3.client('iam')
 
     # Get the instance profile ARN since we only save the Name. TODO: Check if we can just use name?
     instance_profile = iam.get_instance_profile(
-        InstanceProfileName='EC2SelfTerminationInstanceProfile'
+        InstanceProfileName=constants.IAM_PROFILE_NAME
     )
     instance_profile_arn = instance_profile['InstanceProfile']['Arn']
 
@@ -85,7 +94,7 @@ def _launch(
     if idempotency_token is not None:
         tags.append(
             {
-                'Key': 'centrality-deploy-idempotency-token',
+                'Key': constants.IDEMPOTENCY_TAG_KEY,
                 'Value': idempotency_token,
             }
         )
@@ -97,7 +106,6 @@ def _launch(
                 'Tags': tags
             },
         ],
-
         ImageId=ami,
         MinCount=1,
         MaxCount=1,
@@ -163,14 +171,12 @@ def _launch(
         print(f"[bright_black]ssh ubuntu@{instance.public_dns_name}")
         print()
 
-        start_time = time.time()
         health_check_url = f"http://{instance.public_dns_name}:8000/healthz"
-        progress_text = (f"[blue bold]Waiting for cloud-init to finish and API healthcheck to pass "
-                         f"(this can take some time)...")
-
+        start_time = time.time()
         logs = []
         log_index = 0
-        print(progress_text)
+        print(f"[blue bold]Waiting for cloud-init to finish and API healthcheck to pass "
+              f"(this can take some time)...")
         print("Tailing logs:")
         while True:
             try:
@@ -184,8 +190,8 @@ def _launch(
                 print(out)
                 log_index += 1
 
-            if time.time() - start_time > HEALTHCHECK_PATIENCE_SECS:
-                raise TimeoutError(f"Healthcheck not reachable after {HEALTHCHECK_PATIENCE_SECS} seconds")
+            if time.time() - start_time > constants.INSTANCE_HEALTHCHECK_PATIENCE_SECS:
+                raise TimeoutError(f"Healthcheck not reachable after {constants.INSTANCE_HEALTHCHECK_PATIENCE_SECS} seconds")
             try:
                 r = requests.get(health_check_url, timeout=0.5)
                 if r.status_code == 200:
@@ -208,7 +214,7 @@ def _launch(
 def launch(
         instance_type: str,
         checkout: str = "main",
-        ttl_secs: int = DEFAULT_TTL,
+        ttl_secs: int = constants.INSTANCE_DEFAULT_TTL,
         wait: bool = True,
         idempotency_token: Optional[str] = None,
 ):
@@ -243,7 +249,7 @@ def delete(
     if idempotency_token is not None:
         filters.append(
             {
-                'Name': 'tag:centrality-deploy-idempotency-token',
+                'Name': f'tag:{constants.IDEMPOTENCY_TAG_KEY}',
                 'Values': [
                     idempotency_token,
                 ]

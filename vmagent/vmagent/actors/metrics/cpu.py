@@ -57,7 +57,6 @@ class CpuMetricCollector(conclib.PeriodicActor):
                 # print("⬆ CpuMetricCollector - sending cpu metric")
                 self.send_cpu_metric()
             except Exception as e:
-                # TODO: Be more thoughtful about this
                 print(f"🚨 CpuMetricCollector - failed to send cpu metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)

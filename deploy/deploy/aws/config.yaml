@@ -1,3 +1,4 @@
+# Manually set
 region: us-east-1
 vpc_id: vpc-07440ec1153cb2a0b
 subnet_id: subnet-0b7e0d8e896cb2dc2

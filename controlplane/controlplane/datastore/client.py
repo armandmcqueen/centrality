@@ -20,8 +20,6 @@ class DatastoreClient:
         url = config.get_url()
         self.engine = create_engine(url, echo=self.config.verbose_orm)
 
-        # DatastoreBaseORM.metadata.create_all(self.engine)
-
     def setup_db(self):
         """Create all tables if they don't exist"""
         DatastoreBaseORM.metadata.create_all(self.engine)
@@ -53,9 +51,6 @@ class DatastoreClient:
             session.execute(upsert_stmt)
             session.commit()
 
-
-
-
     def get_tokens(self) -> List[UserToken]:
         """Get all tokens from the database"""
         results = []
@@ -82,6 +77,7 @@ class DatastoreClient:
     def add_cpu_measurement(
         self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime
     ) -> None:
+        """ Add a CPU measurement for a VM. Updates both the timeseries table and the point-in-time table """
         avg_cpu_percent = sum(cpu_percents) / len(cpu_percents)
         epoch_millis = int(ts.timestamp() * 1000)
         metric_id = f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"

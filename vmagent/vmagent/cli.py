@@ -87,10 +87,9 @@ def launch(
         print(e)
         print(f"❗️Control Plane API shutting down due to {type(e)} exception")
     finally:
-        # TODO: Think through this order
-        redis_daemon.shutdown()
         api_daemon_thread.shutdown()
         pykka.ActorRegistry.stop_all()
+        redis_daemon.shutdown()
         print("👋 Goodbye")
         return
 

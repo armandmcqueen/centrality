@@ -23,7 +23,7 @@ def create():
 
     # Create Security Group
     response = ec2.create_security_group(
-        Description='Centrality Deploy Security Group',
+        Description=constants.SECURITY_GROUP_DESCRIPTION,
         GroupName=constants.SECURITY_GROUP_NAME,
         VpcId=config.vpc_id,
     )
@@ -52,7 +52,7 @@ def create():
 
 
 @app.command(
-    help=f"Delete the security group created by create_security_group ({constants.SECURITY_GROUP_NAME}))"
+    help=f"Delete the security group created by create ({constants.SECURITY_GROUP_NAME}))"
 )
 def delete():
     ec2 = boto3.client('ec2')
@@ -65,7 +65,6 @@ def delete():
     config.security_group_id = ""
     config.write_yaml(config_file_path)
     print("[green]✓ config.yaml updated")
-
 
 
 if __name__ == '__main__':

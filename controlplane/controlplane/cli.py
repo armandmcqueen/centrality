@@ -31,7 +31,7 @@ def launch(postgres_host: str = "localhost"):
 
     print("🌰 Setting up DB")
     datastore_client = DatastoreClient(config=datastore_config)
-    datastore_client.setup_db()
+    datastore_client.setup_db()  # Runs DDL. TODO: Handle proper migrations?
     print("✓ DB setup")
 
     print("🚀 Launching Control Plane actor system")
