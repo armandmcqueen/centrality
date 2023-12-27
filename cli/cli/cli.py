@@ -21,7 +21,6 @@ def watch_vms():
         config=control_plane_sdk_config,
         token=TOKEN,
     )
-    print(b)
     rich.print("[bold underline cyan]Active Machines")
     text = Text()
 
