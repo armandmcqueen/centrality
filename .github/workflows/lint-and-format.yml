@@ -2,7 +2,7 @@ name: Lint and format
 #run-name: Running lint and format on branch ${{ github.ref }}
 on: [push]
 jobs:
-  lint-all:
+  lint-and-format-all:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
