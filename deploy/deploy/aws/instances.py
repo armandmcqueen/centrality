@@ -26,7 +26,6 @@ def get_log_lines(host: str) -> list[str]:
     out = subprocess.check_output(
         f"ssh ubuntu@{host} cat /var/log/cloud-init-output.log",
         shell=True,
-        stderr=subprocess.DEVNULL,
     )
     lines = out.decode("utf-8").splitlines()
     return [line for line in lines if line.strip() != ""]
