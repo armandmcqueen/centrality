@@ -18,6 +18,6 @@ jobs:
         run: make install-dev
 
       - name: Deploy Preview
-        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout {{ github.sha }} --idempotency-token {{ github.ref_name }}
+        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
           
