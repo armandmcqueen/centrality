@@ -1,7 +1,7 @@
 name: Deploy Preview
 on: [push]
 jobs:
-  lint-and-format-all:
+  deploy-preview:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
