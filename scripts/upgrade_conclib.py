@@ -2,21 +2,25 @@ import os
 import toml
 
 
-def update_dependency_custom(file_path, dependency_name, old_version, new_version):
+def update_dependency(file_path, dependency_name, old_version, new_version):
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
     updated = False
+    old_line = None
+    new_line = None
     for i, line in enumerate(lines):
-        if line.strip().startswith(f"{dependency_name} =="):
+        if line.strip().replace("'", "").replace('"', "").startswith(f"{dependency_name} =="):
             if old_version in line:
+                old_line = line
                 lines[i] = line.replace(old_version, new_version)
+                new_line = lines[i]
                 updated = True
                 break
 
     if updated:
-        print(f"Updated {file_path}:\n{''.join(lines)}")
+        print(f"Updating {file_path}: {old_line.strip()} -> {new_line.strip()}")
         confirm = input("Apply this change? (y/n): ")
         if confirm.lower() == 'y':
             with open(file_path, 'w', encoding='utf-8') as file:
@@ -26,6 +30,7 @@ def update_dependency_custom(file_path, dependency_name, old_version, new_versio
             print("No changes made.")
 
 def main():
+    # TODO: Make this a proper CLI, and extendible to other dependencies (specifically centrality-common)
     dependency_name = 'conclib'
     old_version = '0.0.8'
     new_version = '0.0.9'
