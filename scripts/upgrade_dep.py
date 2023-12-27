@@ -1,7 +1,11 @@
 import os
+import typer
+from rich import print
+
+app = typer.Typer()
 
 
-def update_dependency(file_path, dependency_name, old_version, new_version):
+def update_dependency(file_path: str, dependency_name: str, old_version: str, new_version: str):
     lines = []
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -10,7 +14,8 @@ def update_dependency(file_path, dependency_name, old_version, new_version):
     old_line = None
     new_line = None
     for i, line in enumerate(lines):
-        if line.strip().replace("'", "").replace('"', "").startswith(f"{dependency_name} =="):
+        raw_line = line.strip().replace("'", "").replace('"', "")
+        if raw_line.startswith(f"{dependency_name} ==") or raw_line.startswith(f"{dependency_name} ~=") or raw_line.startswith(f"{dependency_name} >="):
             if old_version in line:
                 old_line = line
                 lines[i] = line.replace(old_version, new_version)
@@ -28,11 +33,13 @@ def update_dependency(file_path, dependency_name, old_version, new_version):
         else:
             print("No changes made.")
 
-def main():
-    # TODO: Make this a proper CLI, and extendible to other dependencies (specifically centrality-common)
-    dependency_name = 'conclib'
-    old_version = '0.0.8'
-    new_version = '0.0.9'
+
+@app.command()
+def upgrade(
+        dependency_name: str,
+        old_version: str,
+        new_version: str,
+):
     for subdir, dirs, files in os.walk('.'):
         for file in files:
             if file == 'pyproject.toml':
@@ -44,4 +51,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    app()
