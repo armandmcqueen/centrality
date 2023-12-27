@@ -8,6 +8,10 @@ lint: format
 format:
 	ruff format .
 
+.PHONY: check-format
+check-format:
+	ruff format --check .
+
 .PHONY: rundb
 rundb:
 	docker run -d --rm --name datastore-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:16.1
@@ -32,6 +36,13 @@ gen-openapi-spec:
 launch:
 	python controlplane/cli.py launch --postgres-host localhost
 
+.PHONY: install
+install:
+	pip install -e .
+
+.PHONY: install-dev
+install-dev:
+	pip install -e ".[dev]"
 
 
 

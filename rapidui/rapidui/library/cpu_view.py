@@ -1,4 +1,3 @@
-
 from rapidui.library.flexbox import CardContents, BaseCard
 
 
@@ -20,4 +19,3 @@ class CpuCard(BaseCard):
     def update(self, contents: CpuCardContents):
         self.contents = contents
         self.progress.progress(contents.curr_cpu / 100)
-

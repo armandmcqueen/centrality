@@ -13,7 +13,9 @@ class MachineOverviewCard(BaseCard):
 
         self.title = self.parent.empty()
         self.title.write(f"{self.contents.vm_id}")
-        self.progress = self.parent.progress(self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%")
+        self.progress = self.parent.progress(
+            self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
+        )
 
     def empty(self):
         self.parent.empty()
@@ -23,7 +25,9 @@ class MachineOverviewCard(BaseCard):
     def update(self, contents: MachineOverviewCardContents):
         self.contents = contents
         self.title.write(f"{self.contents.vm_id}")
-        self.progress.progress(self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%")
+        self.progress.progress(
+            self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
+        )
 
 
 class LiveMachineCount:
@@ -54,5 +58,3 @@ class LiveMachineCount:
             self._gen_markdown(self.machine_type, self.num_machines),
             unsafe_allow_html=True,
         )
-
-

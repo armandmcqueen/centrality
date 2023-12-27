@@ -14,8 +14,8 @@ check-format:
 
 .PHONY: install
 install:
-	pip install -e .
+	pip install -r requirements.txt
 
 .PHONY: install-dev
 install-dev:
-	pip install -e ".[dev]"
+	pip install -r requirements.txt

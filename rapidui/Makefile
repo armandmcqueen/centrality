@@ -8,6 +8,9 @@ lint: format
 format:
 	ruff format .
 
+.PHONY: check-format
+check-format:
+	ruff format --check .
 
 .PHONY: launch
 launch:
@@ -17,3 +20,10 @@ launch:
 launch-fly:
 	./launch.bash ../tests/configs/fly/rapidui.yaml
 
+.PHONY: install
+install:
+	pip install -e .
+
+.PHONY: install-dev
+install-dev:
+	pip install -e ".[dev]"

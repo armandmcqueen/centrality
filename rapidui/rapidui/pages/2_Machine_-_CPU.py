@@ -20,7 +20,9 @@ def get_cpu_metrics_for_vm(
         len(measurements) == 1
     ), f"There should exactly 1 result, but there was {len(measurements)}."
     cpu_vals = measurements[0].cpu_percents
-    return [CpuCardContents(cpu_id=ind, curr_cpu=cpu) for ind, cpu in enumerate(cpu_vals)]
+    return [
+        CpuCardContents(cpu_id=ind, curr_cpu=cpu) for ind, cpu in enumerate(cpu_vals)
+    ]
 
 
 @st.cache_data
@@ -28,7 +30,6 @@ def get_live_vms(_sdk: ControlPlaneSdk, epoch: int) -> list[str]:
     resp, live_vms = _sdk.get_live_vms()
     # TODO: Handle errors?
     return sorted(live_vms)
-
 
 
 def main():
@@ -65,8 +66,6 @@ def main():
         )
         flexbox.update_cards(cpu_cards)
         time.sleep(0.1)
-
-
 
 
 main()
