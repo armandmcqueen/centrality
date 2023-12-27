@@ -17,6 +17,7 @@ lint:
 	make -C cli lint
 	make -C deploy lint
 	make -C rapidui lint
+	make -C scripts lint
 	make -C tests lint
 	make -C vmagent lint
 
@@ -27,6 +28,7 @@ check-format:
 	make -C cli check-format
 	make -C deploy check-format
 	make -C rapidui check-format
+	make -C scripts check-format
 	make -C tests check-format
 	make -C vmagent check-format
 
@@ -37,6 +39,7 @@ install:
 	make -C cli install
 	make -C deploy install
 	make -C rapidui install
+	make -C scripts install
 	make -C tests install
 	make -C vmagent install
 
@@ -47,6 +50,7 @@ install-dev:
 	make -C cli install-dev
 	make -C deploy install-dev
 	make -C rapidui install-dev
+	make -C scripts install-dev
 	make -C tests install-dev
 	make -C vmagent install-dev
 
