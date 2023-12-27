@@ -86,7 +86,9 @@ def watch_cpu():
                     vms_to_add = new_set - old_set
                     vms_to_remove = old_set - new_set
                     for vm_id in vms_to_add:
-                        vm_bars[vm_id] = progress.add_task(get_progress_descriptions(vm_id), total=100)
+                        vm_bars[vm_id] = progress.add_task(
+                            get_progress_descriptions(vm_id), total=100
+                        )
                     for vm_id in vms_to_remove:
                         progress.remove_task(vm_bars[vm_id])
                         del vm_bars[vm_id]
