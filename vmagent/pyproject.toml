@@ -10,7 +10,7 @@ authors = [
 ]
 description = "Centrality VM Agent"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "centrality-common ~= 0.0.1",
     "conclib == 0.0.8",

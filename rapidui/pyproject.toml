@@ -10,7 +10,7 @@ authors = [
 ]
 description = "Centrality Rapid UI"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "streamlit ~= 1.29.0",
     "centrality-common ~= 0.0.1",
