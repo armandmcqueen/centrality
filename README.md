@@ -31,6 +31,22 @@ docker compose build
 docker compose up
 ```
 
+To use the current code without needing to build new containers, we use an override file that mounts the source code
+into the containers. This is much faster than rebuilding the containers.
+
+Note that the `-f` flags go before `up`
+
+```bash
+docker compose -f compose.yaml -f compose-override-mountcode.yaml up
+```
+
+Add the `-d` flag to run in the background, which makes the logs more manageable.
+
+To see logs for all containers:
+```bash
+docker compose logs -f
+```
+
 ## Quick tests
 
 To quickly run a test outside of a container, you can use the `quicktest` config.
@@ -63,6 +79,11 @@ To run a local VM Agent that talks to the Fly control plane:
 python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-local.yaml
 ```
 
+To access the DB locally on port 5433:
+```bash
+fly proxy 5433 -a centrality-datastore-dev
+```
+
 
 # Development
 
@@ -80,10 +101,10 @@ and with minimal dependencies.
 
 
 ```bash
+brew install redis
 brew install openapi-generator
 brew install flyctl
 ```
-
 
 
 ## Conclib

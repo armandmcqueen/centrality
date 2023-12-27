@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
-from controlplane.datastore.types.vmmetrics import CpuVmMetricORM, CpuVmMetric
+from controlplane.datastore.types.vmmetrics import CpuVmMetricORM, CpuVmMetric, CpuVmMetricLatestORM, CpuVmMetricLatest
 from controlplane.datastore.types.vmliveness import VmHeartbeatORM, VmHeartbeat
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
@@ -20,13 +20,15 @@ class DatastoreClient:
         url = config.get_url()
         self.engine = create_engine(url, echo=self.config.verbose_orm)
 
+    def setup_db(self):
+        """Create all tables if they don't exist"""
         DatastoreBaseORM.metadata.create_all(self.engine)
+        self._add_dev_token()
 
     def reset_db(self):
         """Drop all tables and recreate them"""
         DatastoreBaseORM.metadata.drop_all(self.engine)
-        DatastoreBaseORM.metadata.create_all(self.engine)
-        self._add_dev_token()
+        self.setup_db()
 
     def new_token(self) -> UserToken:
         """Create a new token and add it to the database"""
@@ -38,9 +40,15 @@ class DatastoreClient:
 
     def _add_dev_token(self) -> None:
         """Add the dev token to the database"""
-        user_token = UserTokenORM(user_id="dev", token="dev")
         with Session(bind=self.engine) as session:
-            session.add(user_token)
+            upsert_stmt = insert(UserTokenORM).values(
+                user_id="dev",
+                token="dev",
+            ).on_conflict_do_update(
+                index_elements=['user_id'],
+                set_=dict(token="dev")
+            )
+            session.execute(upsert_stmt)
             session.commit()
 
     def get_tokens(self) -> List[UserToken]:
@@ -69,6 +77,7 @@ class DatastoreClient:
     def add_cpu_measurement(
         self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime
     ) -> None:
+        """ Add a CPU measurement for a VM. Updates both the timeseries table and the point-in-time table """
         avg_cpu_percent = sum(cpu_percents) / len(cpu_percents)
         epoch_millis = int(ts.timestamp() * 1000)
         metric_id = f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"
@@ -79,8 +88,30 @@ class DatastoreClient:
             cpu_percents=cpu_percents,
             avg_cpu_percent=avg_cpu_percent,
         )
+        latest_metric = CpuVmMetricLatestORM(
+            vm_id=vm_id,
+            ts=ts,
+            cpu_percents=cpu_percents,
+            avg_cpu_percent=avg_cpu_percent,
+        )
         with Session(bind=self.engine) as session:
             session.add(metric)
+
+            # Upsert latest metric
+            upsert_stmt = insert(CpuVmMetricLatestORM).values(
+                vm_id=vm_id,
+                ts=ts,
+                cpu_percents=cpu_percents,
+                avg_cpu_percent=avg_cpu_percent,
+            ).on_conflict_do_update(
+                index_elements=['vm_id'],
+                set_=dict(
+                    ts=ts,
+                    cpu_percents=cpu_percents,
+                    avg_cpu_percent=avg_cpu_percent,
+                )
+            )
+            session.execute(upsert_stmt)
             session.commit()
 
     def get_cpu_measurements(
@@ -114,35 +145,21 @@ class DatastoreClient:
     def get_latest_cpu_measurements(
         self,
         vm_ids: List[str],
-    ) -> List[CpuVmMetric]:
+    ) -> List[CpuVmMetricLatest]:
         if len(vm_ids) == 0:
             return []
         results = []
+
         with Session(bind=self.engine) as session:
-            filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
 
-            # Get the most recent metric for each VM by filtering on the vm_id
-            # and then getting the most recent timestamp
-            subquery = (
-
-                session.query(
-                    CpuVmMetricORM.vm_id,
-                    func.max(CpuVmMetricORM.ts).label('latest_ts')
-                )
-                .filter(*filter_args)
-                .group_by(CpuVmMetricORM.vm_id)
-                .subquery()
-            )
             rows = (
-                # This query gets the most recent metric for each vm_id
-                session.query(CpuVmMetricORM)
-                .join(subquery, CpuVmMetricORM.vm_id == subquery.c.vm_id)
-                .filter(CpuVmMetricORM.ts == subquery.c.latest_ts)
+                session.query(CpuVmMetricLatestORM)
+                .filter(CpuVmMetricLatestORM.vm_id.in_(vm_ids))
                 .all()
             )
             for row in rows:
-                row = cast(CpuVmMetricORM, row)
-                result_metric = CpuVmMetric.from_orm(row)
+                row = cast(CpuVmMetricLatestORM, row)
+                result_metric = CpuVmMetricLatest.from_orm(row)
                 results.append(result_metric)
         return results
 

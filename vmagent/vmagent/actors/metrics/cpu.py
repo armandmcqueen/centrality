@@ -49,9 +49,15 @@ class CpuMetricCollector(conclib.PeriodicActor):
         )
         self.control_plane_sdk.write_cpu_metric(measurement=measurement)
 
+
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendCpuMetrics):
-            self.send_cpu_metric()
+            try:
+                # TODO: Readd this once we have leveled logging?
+                # print("⬆ CpuMetricCollector - sending cpu metric")
+                self.send_cpu_metric()
+            except Exception as e:
+                print(f"🚨 CpuMetricCollector - failed to send cpu metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
 

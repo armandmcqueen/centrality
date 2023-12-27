@@ -17,5 +17,6 @@ lint:
 	make -C vmagent lint
 	make -C cli lint
 	make -C tests lint
+	make -C deploy lint
 
 

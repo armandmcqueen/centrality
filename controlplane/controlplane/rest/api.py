@@ -2,7 +2,6 @@ import datetime
 from typing import Optional, Annotated
 import json
 
-
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
@@ -10,9 +9,10 @@ from common import constants
 from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
-from controlplane.rest.auth import auth
+from controlplane.rest.utils.auth import auth, security
+from controlplane.rest.example.api import router as example_router
 
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
@@ -23,6 +23,9 @@ class OkResponse(BaseModel):
 
 
 class InfoResponse(BaseModel):
+    git_commit: str
+    git_branch: str
+    git_is_dirty: bool
     deploy_time: datetime.datetime
 
 
@@ -31,7 +34,7 @@ app = FastAPI(
     title="centrality-controlplane",
     version="0.0.1",
 )
-security = HTTPBearer()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,12 +43,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(example_router)
 
 
 # Load config values from environment variables and setup connect to datastore
 rest_config = ControlPlaneRestConfig.from_envvar()
 datastore_config = DatastoreConfig.from_envvar()
 datastore_client = DatastoreClient(config=datastore_config)
+
+
+# Add git support if we can - if there is a git executable and a git repo.
+try:
+    from git import Repo, InvalidGitRepositoryError  # noqa
+    try:
+        repo = Repo(search_parent_directories=True)
+    except InvalidGitRepositoryError as e:
+        print(f"❗️Not in a git repository, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
+        repo = None
+except ImportError as e:
+    print(f"❗️Failed to import gitpython, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
+    repo = None
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)
@@ -66,7 +83,21 @@ def get_auth_healthcheck(
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
     """ Return basic info about deployment """
-    return InfoResponse(deploy_time=deploy_time)
+    if repo is not None:
+        git_branch = repo.active_branch.name
+        git_commit = repo.head.commit.hexsha
+        git_is_dirty = repo.is_dirty(untracked_files=True)
+    else:
+        git_branch = "unknown"
+        git_commit = "unknown"
+        git_is_dirty = False
+    return InfoResponse(
+        git_branch=git_branch,
+        git_commit=git_commit,
+        git_is_dirty=git_is_dirty,
+        deploy_time=deploy_time,
+    )
+
 
 @app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)

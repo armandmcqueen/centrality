@@ -1,5 +1,8 @@
 # Control Plane
 
+## Dependencies
+
+- Relies on redis-server
 
 # Curl with Auth header
 

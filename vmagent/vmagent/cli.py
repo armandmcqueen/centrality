@@ -11,7 +11,7 @@ import conclib
 from common import constants
 
 from vmagent.config import VmAgentConfig
-from vmagent.actorsystem import ActorSystem
+from vmagent.actorsystem import VmAgentActorSystem
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from typing import Optional
 
@@ -56,6 +56,14 @@ def launch(
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
+    control_plane_sdk = ControlPlaneSdk(
+        config=config.controlplane_sdk,
+        token="dev",
+    )
+    actor_system = VmAgentActorSystem(
+        vm_agent_config=config,
+        control_plane_sdk=control_plane_sdk,
+    ).start()
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
@@ -68,16 +76,6 @@ def launch(
     )
 
     try:
-        control_plane_sdk = ControlPlaneSdk(
-            config=config.controlplane_sdk,
-            token="dev",
-        )
-        actor_system = ActorSystem(
-            vm_agent_config=config,
-            control_plane_sdk=control_plane_sdk,
-        )
-        actor_system.start()
-
         # Wait until something fails or the user kills the process
         while True:
             time.sleep(100)
@@ -89,9 +87,9 @@ def launch(
         print(e)
         print(f"❗️Control Plane API shutting down due to {type(e)} exception")
     finally:
-        redis_daemon.shutdown()
         api_daemon_thread.shutdown()
         pykka.ActorRegistry.stop_all()
+        redis_daemon.shutdown()
         print("👋 Goodbye")
         return
 

@@ -8,7 +8,7 @@ from vmagent.actors.heartbeat import HeartbeatSender
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 
 
-class ActorSystem:
+class VmAgentActorSystem:
     """
     Root container for the actor system. Just a container for keeping things organized.
 
@@ -28,12 +28,13 @@ class ActorSystem:
         )
         self.heartbeat_sender_ref: Optional[pykka.ActorRef] = None
 
-    def start(self):
+    def start(self) -> "VmAgentActorSystem":
         self.metric_subsystem.start()
         self.heartbeat_sender_ref = HeartbeatSender.start(
             vm_agent_config=self.vm_agent_config,
             control_plane_sdk=self.control_plane_sdk,
         )
+        return self
 
 
 class MetricSubsystem:

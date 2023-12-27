@@ -5,7 +5,7 @@ from typing import List
 from common.types.vmmetrics import CpuMeasurement
 
 
-from sqlalchemy import ARRAY, Float
+from sqlalchemy import ARRAY, Float, Index
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from controlplane.datastore.types.base import DatastoreBaseORM
@@ -39,6 +39,20 @@ class CpuVmMetricORM(DatastoreBaseORM):
     )
     # cpu_percents: Mapped[List[float]] = mapped_column(nullable=False)
     cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
+    avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)  # TODO: Remove this
+    __table_args__ = (
+        Index('idx_metrics_ts', 'ts'),  # Creating the index
+        Index('idx_vm_id_ts', 'vm_id', 'ts'),  # Composite index
+    )
+
+
+class CpuVmMetricLatestORM(DatastoreBaseORM):
+    __tablename__ = "vm_metric_cpu_latest"
+    vm_id: Mapped[str] = mapped_column(primary_key=True, nullable=False)
+    ts: Mapped[datetime.datetime] = mapped_column(
+        TIMESTAMP(timezone=True), nullable=False
+    )
+    cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
     avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)
 
 
@@ -55,6 +69,22 @@ class CpuVmMetric(BaseModel):
     def from_orm(cls, orm: CpuVmMetricORM) -> "CpuVmMetric":
         return cls(
             metric_id=orm.metric_id,
+            vm_id=orm.vm_id,
+            ts=orm.ts,
+            cpu_percents=orm.cpu_percents,
+            avg_cpu_percent=orm.avg_cpu_percent,
+        )
+
+
+class CpuVmMetricLatest(BaseModel):
+    vm_id: str
+    ts: datetime.datetime
+    cpu_percents: List[float]
+    avg_cpu_percent: float
+
+    @classmethod
+    def from_orm(cls, orm: CpuVmMetricLatestORM) -> "CpuVmMetricLatest":
+        return cls(
             vm_id=orm.vm_id,
             ts=orm.ts,
             cpu_percents=orm.cpu_percents,
