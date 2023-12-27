@@ -28,4 +28,13 @@ install:
 	make -C rapidui install
 	make -C vmagent install
 
+.PHONY: install-dev
+install-dev:
+	make -C common install-dev
+	make -C cli install-dev
+	make -C controlplane install-dev
+	make -C deploy install-dev
+	make -C rapidui install-dev
+	make -C vmagent install-dev
+
 

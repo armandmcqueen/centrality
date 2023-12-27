@@ -12,4 +12,6 @@ format:
 install:
 	pip install -e .
 
-
+.PHONY: install-dev
+install-dev:
+	pip install -e ".[dev]"
