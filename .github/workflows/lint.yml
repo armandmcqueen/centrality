@@ -1,0 +1,16 @@
+name: Lint
+run-name: Running lint on branch ${{ github.ref }}
+on: [push]
+jobs:
+  lint-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: Run linter
+        run: |
+            cd ${{ github.workspace }} && make lint
+          
