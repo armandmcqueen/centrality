@@ -1,5 +1,5 @@
-name: Lint
-run-name: Running lint on branch ${{ github.ref }}
+name: Lint and format
+#run-name: Running lint and format on branch ${{ github.ref }}
 on: [push]
 jobs:
   lint-all:
