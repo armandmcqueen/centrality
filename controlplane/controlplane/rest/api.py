@@ -88,14 +88,26 @@ def get_auth_healthcheck(
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
     """Return basic info about deployment"""
+    git_branch = "unknown"
+    git_commit = "unknown"
+    git_is_dirty = False
+
     if repo is not None:
-        git_branch = repo.active_branch.name
-        git_commit = repo.head.commit.hexsha
-        git_is_dirty = repo.is_dirty(untracked_files=True)
-    else:
-        git_branch = "unknown"
-        git_commit = "unknown"
-        git_is_dirty = False
+        try:
+            git_branch = repo.active_branch.name
+        except Exception:
+            print("❗️Failed to get git branch. NONFATAL error.")
+
+        try:
+            git_commit = repo.head.commit.hexsha
+        except Exception:
+            print("❗️Failed to get git commit. NONFATAL error.")
+
+        try:
+            git_is_dirty = repo.is_dirty(untracked_files=True)
+        except Exception:
+            print("❗️Failed to get git dirty status. NONFATAL error.")
+
     return InfoResponse(
         git_branch=git_branch,
         git_commit=git_commit,
