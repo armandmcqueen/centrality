@@ -11,15 +11,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-#      - name: Install AWS CLI
-#        run: |
-#          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-#          unzip awscliv2.zip
-#          sudo ./aws/install
+      - name: Install dependencies including dev
+        run: make install-dev
 
-#      - name: Install dependencies including dev
-#        run: make install-dev
+      - name: Deploy Preview
+        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout {{ github.sha }} --idempotency-token {{ github.ref_name }}
 
-      - name: List EC2 Instances
-        run: aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PublicIpAddress]" --output table
           
