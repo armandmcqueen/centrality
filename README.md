@@ -1,6 +1,44 @@
 # Centrality
 
-# Testing
+Centrality is a toolkit for managing GPU clusters and training workflows. 
+
+It is complementary to orchestrators like k8s and slurm, and is designed to allow users to easily add high-level, 
+cross-layer behavior such as:
+- if TrainingJob exits and 'Training Complete' not in logs, restart job from checkpoint
+- if TrainingJob fails 5 times, drain/taint the nodes, run a GPU and networking benchmark and send the results to Slack
+
+## High-level design
+
+It achieves this by providing a control plane that centralizes all data related to the cluster/jobs, providing a number 
+of agents that automatically collect the relevant data\*, offering a high-level abstraction for accessing that data, and 
+providing an event bus/hooks so that custom behavior can be trivially triggered given certain conditions. The agents are 
+also extensible, so you can add custom behavior to the system without needing to replicate the overall infrastructure.
+For example, it will be very easy to add a custom healthcheck to the existing healthchecks that are run by the Machine Agent.
+
+Additionally, Centrality defines a flexible, but structured view of how the basic building blocks of a training platform 
+should work, allowing for the development of reusable, higher-level components. For example, a tool that messages you when 
+a flagship training job fails shouldn't need to think about the details of whether a job is a Slurm sbatch or a Volcano Job,
+it should just be able to think in terms of TrainingJobs. However, Centrality is all about making your existing setup better,
+so the abstractions are broad and simple enough that the vast majority of set ups should have no problem fitting into them. 
+
+\*For more bespoke setups where the out-of-the-box agents won't work, there is an SDK that can be used to send the relevant 
+data to the control plane REST endpoints.
+
+## Development Status
+
+Early
+
+Currently the control plane exists and there is a VMAgent (technically a bad name because it works just as well on bare metal)
+that sends data to the control plane. Check out https://centrality-dev.fly.dev/Cluster for a rough UI that displays some of the
+data being collected.
+
+
+
+
+---
+# Developing Centrality
+
+## Testing
 
 There are a couple forms of testing. 
 
@@ -85,17 +123,12 @@ fly proxy 5433 -a centrality-datastore-dev
 ```
 
 
-# Development
+## Monorepo
 
-Each of `common`, `controlplane`, and `vmagent` are developed as independent Python packages, with 
-each of the others having a dependency on `common`. They are versioned together, so the monorepo 
+Each of `common`, `controlplane`, `vmagent`, `cli`, `rapidui` and `deploy` are developed as independent Python 
+packages, with many of them having a dependency on `common`. They are versioned together, so the monorepo 
 essentially has a single version number.
 
-This is developed for Python 3.11 and we embrace the newest features. I'm sure that won't be 
-painful in the future as software that needs to run in users' environments! :).
-
-The `cli` package should be focused on portability - being able to run on older version of Python 
-and with minimal dependencies. 
 
 ## Requirements
 
