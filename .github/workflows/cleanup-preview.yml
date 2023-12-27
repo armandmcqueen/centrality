@@ -20,13 +20,5 @@ jobs:
       - name: Install dependencies including dev
         run: make install-dev
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_PEM }}" > ~/.ssh/armand-centrality.pem
-          chmod 600 ~/.ssh/armand-centrality.pem
-          echo -e "Host *\n\tStrictHostKeyChecking no\n\tIdentityFile ~/.ssh/armand-centrality.pem\n\n" > ~/.ssh/config
-          cat ~/.ssh/config
-
       - name: Terminate Preview Deployment
         run: python deploy/deploy/aws/instances.py delete --idempotency-token ${{ github.ref_name }} --wait
