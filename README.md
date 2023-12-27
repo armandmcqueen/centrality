@@ -5,7 +5,7 @@ Centrality is a toolkit for managing GPU clusters and training workflows.
 It is complementary to orchestrators like k8s and slurm, and is designed to allow users to easily add high-level, 
 cross-layer behavior such as:
 - if TrainingJob exits and 'Training Complete' not in logs, restart job from checkpoint
-- if TrainingJob fails 5 times, drain/taint the nodes, run a GPU and networking benchmark and send the results to Slack
+- if TrainingJob fails 5 times on the same nodes, drain/taint the nodes, run a GPU and networking benchmark and send the results to Slack
 
 ## High-level design
 
