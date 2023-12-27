@@ -31,7 +31,18 @@ def launch(postgres_host: str = "localhost"):
 
     print("🌰 Setting up DB")
     datastore_client = DatastoreClient(config=datastore_config)
-    datastore_client.setup_db()  # Runs DDL. TODO: Handle proper migrations?
+    start_time = time.time()
+    while True:
+        if time.time() - start_time > 120:
+            raise RuntimeError("Timed out waiting for DB to start")
+        try:
+            datastore_client.setup_db()  # Runs DDL. TODO: Handle proper migrations?
+            break
+        except Exception as e:
+            print(e)
+            print("Waiting for DB to start...")
+            time.sleep(1)
+            continue
     print("✓ DB setup")
 
     print("🚀 Launching Control Plane actor system")

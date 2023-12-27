@@ -1,0 +1,32 @@
+name: Deploy Preview
+on: [push]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_PEM }}" > ~/.ssh/armand-centrality.pem
+          chmod 600 ~/.ssh/armand-centrality.pem
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\tIdentityFile ~/.ssh/armand-centrality.pem\n\n" > ~/.ssh/config
+          cat ~/.ssh/config
+
+      - name: Deploy Preview
+        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
