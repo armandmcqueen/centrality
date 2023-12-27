@@ -1,9 +1,9 @@
 SECURITY_GROUP_NAME = "centrality-deploy-security-group"
-SECURITY_GROUP_DESCRIPTION = 'Centrality Deploy Security Group'
+SECURITY_GROUP_DESCRIPTION = "Centrality Deploy Security Group"
 
-IAM_ROLE_NAME = 'EC2SelfTerminationRole'
-IAM_POLICY_NAME = 'EC2TerminateSelfPolicy'
-IAM_PROFILE_NAME = 'EC2SelfTerminationInstanceProfile'
+IAM_ROLE_NAME = "EC2SelfTerminationRole"
+IAM_POLICY_NAME = "EC2TerminateSelfPolicy"
+IAM_PROFILE_NAME = "EC2SelfTerminationInstanceProfile"
 
 MANAGEMENT_TAG_KEY = "ManagementTag"
 MANAGEMENT_TAG_VALUE = "centrality-deploy"

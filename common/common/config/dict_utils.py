@@ -1,5 +1,6 @@
 # Utilities for working with dicts. Converting between normal and flattened representations as well as merging.
 
+
 def flatten_dict(d: dict) -> dict:
     """
     Flatten a nested dict into a flat dict with keys separated by '.'

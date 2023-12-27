@@ -54,4 +54,3 @@ class ExampleTicker(conclib.Ticker):
 
     def execute(self):
         self.example_actor_ref.tell(TickMessage())
-

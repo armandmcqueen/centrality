@@ -1,8 +1,4 @@
-from types import TracebackType
-from typing import Optional
-
 import conclib
-import pykka
 
 from common import constants
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
@@ -20,9 +16,9 @@ class HeartbeatSender(conclib.PeriodicActor):
     }
 
     def __init__(
-            self,
-            vm_agent_config: VmAgentConfig,
-            control_plane_sdk: ControlPlaneSdk,
+        self,
+        vm_agent_config: VmAgentConfig,
+        control_plane_sdk: ControlPlaneSdk,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -37,6 +33,3 @@ class HeartbeatSender(conclib.PeriodicActor):
                 print(f"🚨 HeartbeatSender - failed to send heartbeat: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
-
-
-

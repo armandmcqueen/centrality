@@ -3,13 +3,9 @@ import datetime
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
 from common.types.vmmetrics import CpuMeasurement
-import time
 import rich
-from rich.progress import Progress
-from rich.spinner import Spinner
 
 console = rich.console.Console()
-
 
 
 def test_sdk(config: ControlPlaneSdkConfig, token: str):
@@ -17,7 +13,11 @@ def test_sdk(config: ControlPlaneSdkConfig, token: str):
 
     # Tests are too fast for this spinner to be useful, but keeping
     #  it around for now as reference
-    with console.status(spinner="aesthetic", status="[bold cyan]Running tests...", spinner_style="bold cyan") as status:
+    with console.status(
+        spinner="aesthetic",
+        status="[bold cyan]Running tests...",
+        spinner_style="bold cyan",
+    ):
         response = client.get_healthcheck()
         if response.status_code != 200:
             console.print("[bold red]Healthcheck failed")
@@ -33,7 +33,6 @@ def test_sdk(config: ControlPlaneSdkConfig, token: str):
             return
         else:
             console.print("[bold green]Auth healthcheck passed")
-
 
         vm_id = "sdk-examplevm"
         measurement = CpuMeasurement(
@@ -55,11 +54,10 @@ def test_sdk(config: ControlPlaneSdkConfig, token: str):
             rich.inspect(response)
             return
         else:
-
             console.print("[bold green]Get CPU metric passed")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     config = ControlPlaneSdkConfig()
     token = "dev"
 

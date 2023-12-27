@@ -55,34 +55,39 @@ datastore_client = DatastoreClient(config=datastore_config)
 # Add git support if we can - if there is a git executable and a git repo.
 try:
     from git import Repo, InvalidGitRepositoryError  # noqa
+
     try:
         repo = Repo(search_parent_directories=True)
     except InvalidGitRepositoryError as e:
-        print(f"❗️Not in a git repository, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
+        print(
+            f"❗️Not in a git repository, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error."
+        )
         repo = None
 except ImportError as e:
-    print(f"❗️Failed to import gitpython, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error.")
+    print(
+        f"❗️Failed to import gitpython, can't get git commit/branch. Error: {e}\nNote: this is a NONFATAL error."
+    )
     repo = None
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)
 def get_healthcheck():
-    """ Basic healthcheck """
+    """Basic healthcheck"""
     return OkResponse()
 
 
 @app.get(constants.AUTH_HEALTHCHECK_ENDPOINT)
 @auth(datastore_client)
 def get_auth_healthcheck(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> OkResponse:
-    """ Basic healthcheck that requires authentication """
+    """Basic healthcheck that requires authentication"""
     return OkResponse()
 
 
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
-    """ Return basic info about deployment """
+    """Return basic info about deployment"""
     if repo is not None:
         git_branch = repo.active_branch.name
         git_commit = repo.head.commit.hexsha
@@ -102,10 +107,10 @@ def get_info():
 @app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def get_cpu_metric(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-        vm_ids: Annotated[list[str], Query()],
-        from_ts: Optional[datetime.datetime] = None,
-        to_ts: Optional[datetime.datetime] = None
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+    from_ts: Optional[datetime.datetime] = None,
+    to_ts: Optional[datetime.datetime] = None,
 ) -> list[CpuMeasurement]:
     """
     Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.
@@ -116,53 +121,54 @@ def get_cpu_metric(
     :return: List of CpuMeasurement objects
     """
     results = datastore_client.get_cpu_measurements(
-        vm_ids=vm_ids,
-        start_ts=from_ts,
-        end_ts=to_ts
+        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [CpuMeasurement(
-        vm_id=result.vm_id,
-        cpu_percents=result.cpu_percents,
-        ts=result.ts
-    ) for result in results]
+    return [
+        CpuMeasurement(
+            vm_id=result.vm_id, cpu_percents=result.cpu_percents, ts=result.ts
+        )
+        for result in results
+    ]
 
 
 @app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def get_latest_cpu_measurements(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-        vm_ids: Annotated[list[str], Query()],
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
 ) -> list[CpuMeasurement]:
-    """ Get the most recent CPU measurements for each VM """
+    """Get the most recent CPU measurements for each VM"""
     results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
-    return [CpuMeasurement(
-        vm_id=result.vm_id,
-        cpu_percents=result.cpu_percents,
-        ts=result.ts
-    ) for result in results]
+    return [
+        CpuMeasurement(
+            vm_id=result.vm_id, cpu_percents=result.cpu_percents, ts=result.ts
+        )
+        for result in results
+    ]
 
 
 @app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
 @auth(datastore_client)
 def put_cpu_metric(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-        measurement: CpuMeasurement
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    measurement: CpuMeasurement,
 ) -> OkResponse:
-    """ Put a cpu metric measurement into the datastore """
+    """Put a cpu metric measurement into the datastore"""
     datastore_client.add_cpu_measurement(
         vm_id=measurement.vm_id,
         cpu_percents=measurement.cpu_percents,
-        ts=measurement.ts)
+        ts=measurement.ts,
+    )
     return OkResponse()
 
 
 @app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT)
 @auth(datastore_client)
 def report_heartbeat(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-        vm_id: str
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_id: str,
 ) -> OkResponse:
-    """ Report a heartbeat for a VM """
+    """Report a heartbeat for a VM"""
     datastore_client.report_heartbeat(vm_id=vm_id)
     return OkResponse()
 
@@ -170,15 +176,17 @@ def report_heartbeat(
 @app.get(constants.CONTROL_PLANE_VM_LIST_ENDPOINT)
 @auth(datastore_client)
 def list_vms(
-        credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> list[str]:
-    """ Return a list of the active VMs """
-    live_vms = datastore_client.get_live_vms(liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    """Return a list of the active VMs"""
+    live_vms = datastore_client.get_live_vms(
+        liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS
+    )
     return live_vms
 
 
 def generate_openapi_json():
-    """ Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this) """
+    """Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this)"""
     openapi_schema = app.openapi()
     # Write to stdout
     print(json.dumps(openapi_schema, indent=2))
@@ -202,6 +210,5 @@ def use_route_names_as_operation_ids(app: FastAPI) -> None:
 use_route_names_as_operation_ids(app)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_openapi_json()
-

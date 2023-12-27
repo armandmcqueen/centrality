@@ -14,10 +14,11 @@ class VmAgentActorSystem:
 
     Technically there is a conclib actor that is part of the pykka actor system, but isn't here
     """
+
     def __init__(
-            self,
-            vm_agent_config: VmAgentConfig,
-            control_plane_sdk: ControlPlaneSdk,
+        self,
+        vm_agent_config: VmAgentConfig,
+        control_plane_sdk: ControlPlaneSdk,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -41,10 +42,11 @@ class MetricSubsystem:
     """
     Container for all the metric actors
     """
+
     def __init__(
-            self,
-            vm_agent_config: VmAgentConfig,
-            control_plane_sdk: ControlPlaneSdk,
+        self,
+        vm_agent_config: VmAgentConfig,
+        control_plane_sdk: ControlPlaneSdk,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk

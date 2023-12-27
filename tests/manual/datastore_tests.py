@@ -36,7 +36,9 @@ def test_metrics(client: DatastoreClient):
     # Retrieve all metrics for the vm
     print()
     print("Testing get_cpu_measurements with no time filters")
-    all_metrics = client.get_cpu_measurements(vm_ids=[vm_id], start_ts=None, end_ts=None)
+    all_metrics = client.get_cpu_measurements(
+        vm_ids=[vm_id], start_ts=None, end_ts=None
+    )
     expected = 10
     matched = len(all_metrics) == expected
     output = "PASSED" if matched else "FAILED"

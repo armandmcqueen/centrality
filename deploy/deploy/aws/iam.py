@@ -17,10 +17,10 @@ config = AwsDeployConfig.from_yaml_file(CONFIG_FILE_PATH)
 
 
 @app.command(
-    help=f"Create an IAM policy, role, and instance profile for EC2 instances to terminate themselves"
+    help="Create an IAM policy, role, and instance profile for EC2 instances to terminate themselves"
 )
 def create():
-    iam = boto3.client('iam')
+    iam = boto3.client("iam")
 
     # Define the trust relationship
     trust_relationship = {
@@ -28,20 +28,18 @@ def create():
         "Statement": [
             {
                 "Effect": "Allow",
-                "Principal": {
-                    "Service": "ec2.amazonaws.com"
-                },
-                "Action": "sts:AssumeRole"
+                "Principal": {"Service": "ec2.amazonaws.com"},
+                "Action": "sts:AssumeRole",
             }
-        ]
+        ],
     }
 
     # Create the role
     role = iam.create_role(
         RoleName=constants.IAM_ROLE_NAME,
-        AssumeRolePolicyDocument=json.dumps(trust_relationship)
+        AssumeRolePolicyDocument=json.dumps(trust_relationship),
     )
-    role_arn = role['Role']['Arn']
+    role_arn = role["Role"]["Arn"]
 
     # Define the policy
     policy = {
@@ -49,35 +47,26 @@ def create():
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": [
-                    "ec2:DescribeInstances",
-                    "ec2:TerminateInstances"
-                ],
-                "Resource": "*"
+                "Action": ["ec2:DescribeInstances", "ec2:TerminateInstances"],
+                "Resource": "*",
             }
-        ]
+        ],
     }
 
     # Create the policy
     policy = iam.create_policy(
-        PolicyName=constants.IAM_POLICY_NAME,
-        PolicyDocument=json.dumps(policy)
+        PolicyName=constants.IAM_POLICY_NAME, PolicyDocument=json.dumps(policy)
     )
-    policy_arn = policy['Policy']['Arn']
+    policy_arn = policy["Policy"]["Arn"]
     print(f"IAM Policy Created: [blue bold]{policy_arn}")
 
     # Attach the policy to the role
-    iam.attach_role_policy(
-        RoleName=constants.IAM_ROLE_NAME,
-        PolicyArn=policy_arn
-    )
+    iam.attach_role_policy(RoleName=constants.IAM_ROLE_NAME, PolicyArn=policy_arn)
     print(f"IAM Role Created: [blue bold]{role_arn}")
 
     # Create an instance profile
     # Don't save arn because deletion happens by name
-    iam.create_instance_profile(
-        InstanceProfileName=constants.IAM_PROFILE_NAME
-    )
+    iam.create_instance_profile(InstanceProfileName=constants.IAM_PROFILE_NAME)
 
     iam.add_role_to_instance_profile(
         InstanceProfileName=constants.IAM_PROFILE_NAME,
@@ -92,21 +81,18 @@ def create():
 
 
 @app.command(
-    help=f"Delete the IAM policy, role, and instance profile created by create_iam_role"
+    help="Delete the IAM policy, role, and instance profile created by create_iam_role"
 )
 def delete():
-    iam = boto3.client('iam')
+    iam = boto3.client("iam")
 
     # Detach the policy from the role
     iam.detach_role_policy(
-        RoleName=constants.IAM_ROLE_NAME,
-        PolicyArn=config.iam_policy_arn
+        RoleName=constants.IAM_ROLE_NAME, PolicyArn=config.iam_policy_arn
     )
 
     # Delete the policy
-    iam.delete_policy(
-        PolicyArn=config.iam_policy_arn
-    )
+    iam.delete_policy(PolicyArn=config.iam_policy_arn)
     print(f"IAM Policy Deleted: [red bold]{config.iam_policy_arn}")
 
     # Detach role from instance profile
@@ -133,5 +119,5 @@ def delete():
     print("[green]✓ config.yaml updated")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()

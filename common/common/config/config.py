@@ -9,6 +9,7 @@ from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
 
 class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
+
     pass
 
 
@@ -17,6 +18,7 @@ class CentralityConfigInvalidEnvvarOverrideError(Exception):
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
+
     pass
 
 
@@ -133,9 +135,7 @@ class CentralityConfig(pydantic.BaseModel):
 
     @classmethod
     def from_yaml_file(
-            cls,
-            yaml_path: Path | str,
-            config_overrides: dict | None = None
+        cls, yaml_path: Path | str, config_overrides: dict | None = None
     ) -> "CentralityConfig":
         """Load a YAML file and return a config object."""
         # TODO: Allow loading from a URL
@@ -154,9 +154,7 @@ class CentralityConfig(pydantic.BaseModel):
 
     @classmethod
     def from_json_file(
-            cls,
-            json_path: Path | str,
-            config_overrides: dict | None = None
+        cls, json_path: Path | str, config_overrides: dict | None = None
     ) -> "CentralityConfig":
         """Load a JSON file and return a config object."""
         # TODO: Allow loading from a URL
@@ -174,7 +172,9 @@ class CentralityConfig(pydantic.BaseModel):
             json.dump(self.to_dict(), f)
 
     @classmethod
-    def from_dict(cls, d: dict, config_overrides: dict | None = None) -> "CentralityConfig":
+    def from_dict(
+        cls, d: dict, config_overrides: dict | None = None
+    ) -> "CentralityConfig":
         """
         Load a dict and return a config object. Exists for code clarity.
         """

@@ -1,6 +1,5 @@
 from typing import Callable, Optional
 from types import TracebackType
-import sys
 
 
 def _no_op():
@@ -8,7 +7,8 @@ def _no_op():
 
 
 class CliContextManager:
-    """ Context manager that handles keyboard interrupts, exceptions and goodbye messages """
+    """Context manager that handles keyboard interrupts, exceptions and goodbye messages"""
+
     def __init__(self, finally_func: Callable = _no_op):
         self.finally_func = finally_func
 

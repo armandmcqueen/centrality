@@ -22,7 +22,7 @@ app = typer.Typer()
 
 
 def get_log_lines(host: str) -> list[str]:
-    """ Get all non-empty lines from /var/log/cloud-init-output.log """
+    """Get all non-empty lines from /var/log/cloud-init-output.log"""
     out = subprocess.check_output(
         f"ssh ubuntu@{host} cat /var/log/cloud-init-output.log",
         shell=True,
@@ -33,11 +33,11 @@ def get_log_lines(host: str) -> list[str]:
 
 
 def _launch(
-        instance_type: str,
-        checkout: str,
-        ttl_secs: int,
-        wait: bool,
-        idempotency_token: Optional[str] = None,
+    instance_type: str,
+    checkout: str,
+    ttl_secs: int,
+    wait: bool,
+    idempotency_token: Optional[str] = None,
 ):
     """
     Launch an instance with the specified checkout (branch, tag, or commit hash). Will launch the instance,
@@ -52,59 +52,62 @@ def _launch(
         config.validate_full_config_set()
     except ValueError as e:
         print(e)
-        print("Not all config values are set. Did you create the security group and IAM resources?")
+        print(
+            "Not all config values are set. Did you create the security group and IAM resources?"
+        )
         return
     print("[green]✓[/green] Config fully set")
     print()
 
     # Get appropriate AMI for architecture
     if instance_type not in constants.INSTANCE_TO_AMI:
-        raise ValueError(f"Instance type {instance_type} architecture not currently known (add it to "
-                         f"INSTANCE_TO_AMI in constants.py)")
+        raise ValueError(
+            f"Instance type {instance_type} architecture not currently known (add it to "
+            "INSTANCE_TO_AMI in constants.py)"
+        )
     ami = constants.INSTANCE_TO_AMI[instance_type]
     if ami != constants.AMI_ARM:
-        raise NotImplementedError("Only ARM instances are currently supported because the cloud-init "
-                                  "script hardcodes downloading the ARM docker-compose binary. This is "
-                                  "easy to fix, but just needs someone to test out a non-ARM instance "
-                                  "and update the script to be correct.")
+        raise NotImplementedError(
+            "Only ARM instances are currently supported because the cloud-init "
+            "script hardcodes downloading the ARM docker-compose binary. This is "
+            "easy to fix, but just needs someone to test out a non-ARM instance "
+            "and update the script to be correct."
+        )
 
-    ec2 = boto3.resource('ec2')
-    iam = boto3.client('iam')
+    ec2 = boto3.resource("ec2")
+    iam = boto3.client("iam")
 
     # Get the instance profile ARN since we only save the Name. TODO: Check if we can just use name?
     instance_profile = iam.get_instance_profile(
         InstanceProfileName=constants.IAM_PROFILE_NAME
     )
-    instance_profile_arn = instance_profile['InstanceProfile']['Arn']
+    instance_profile_arn = instance_profile["InstanceProfile"]["Arn"]
 
-    instances_name = f'centrality-deploy'
+    instances_name = "centrality-deploy"
     if idempotency_token is not None:
-        instances_name += f'-{idempotency_token}'
+        instances_name += f"-{idempotency_token}"
 
     tags = [
         {
-            'Key': 'Name',
-            'Value': instances_name,
+            "Key": "Name",
+            "Value": instances_name,
         },
         {
-            'Key': constants.MANAGEMENT_TAG_KEY,
-            'Value': constants.MANAGEMENT_TAG_VALUE,
-        }
+            "Key": constants.MANAGEMENT_TAG_KEY,
+            "Value": constants.MANAGEMENT_TAG_VALUE,
+        },
     ]
     if idempotency_token is not None:
         tags.append(
             {
-                'Key': constants.IDEMPOTENCY_TAG_KEY,
-                'Value': idempotency_token,
+                "Key": constants.IDEMPOTENCY_TAG_KEY,
+                "Value": idempotency_token,
             }
         )
 
     instances = ec2.create_instances(
         TagSpecifications=[
-            {
-                'ResourceType': 'instance',
-                'Tags': tags
-            },
+            {"ResourceType": "instance", "Tags": tags},
         ],
         ImageId=ami,
         MinCount=1,
@@ -112,20 +115,20 @@ def _launch(
         InstanceType=instance_type,
         KeyName=config.key_pair,
         IamInstanceProfile={
-            'Arn': instance_profile_arn,
+            "Arn": instance_profile_arn,
         },
-        InstanceInitiatedShutdownBehavior='terminate',
+        InstanceInitiatedShutdownBehavior="terminate",
         NetworkInterfaces=[
             {
-                'AssociatePublicIpAddress': True,
-                'DeviceIndex': 0,
-                'Groups': [
+                "AssociatePublicIpAddress": True,
+                "DeviceIndex": 0,
+                "Groups": [
                     config.security_group_id,
                 ],
-                'SubnetId': config.subnet_id,
+                "SubnetId": config.subnet_id,
             },
         ],
-        UserData=f'''#!/bin/bash
+        UserData=f"""#!/bin/bash
         
                     # Install repo
                     git clone https://github.com/armandmcqueen/centrality
@@ -148,26 +151,32 @@ def _launch(
                     sleep {ttl_secs}
                     sudo apt-get update && sudo apt-get install -y awscli
                     aws ec2 terminate-instances --region {config.region} --instance-ids $(curl http://169.254.169.254/latest/meta-data/instance-id)
-                  '''
+                  """,
     )
     instance = instances[0]
 
     console = Console()
-    print(f'Launched instance: {instance.id}')
-    url = f'https://console.aws.amazon.com/ec2/v2/home?region={config.region}#Instances:instanceId={instance.id}'
-    console.print(f"EC2 Instance Console Link: [link={url}]{url}[/link]", style="bold blue")
+    print(f"Launched instance: {instance.id}")
+    url = f"https://console.aws.amazon.com/ec2/v2/home?region={config.region}#Instances:instanceId={instance.id}"
+    console.print(
+        f"EC2 Instance Console Link: [link={url}]{url}[/link]", style="bold blue"
+    )
 
     if wait:
         print()
-        print(f'Waiting for instance to be running...')
+        print("Waiting for instance to be running...")
         instance.wait_until_running()
         instance.load()
         print()
         print("[green bold]Instance is running!")
         print("Startup logs can be found at [pink bold]/var/log/cloud-init-output.log")
         print()
-        print("The instance is available for SSH, but the cloud-init is probably still running")
-        print(f"[bright_black]ssh ubuntu@{instance.public_dns_name} tail -f /var/log/cloud-init-output.log")
+        print(
+            "The instance is available for SSH, but the cloud-init is probably still running"
+        )
+        print(
+            f"[bright_black]ssh ubuntu@{instance.public_dns_name} tail -f /var/log/cloud-init-output.log"
+        )
         print(f"[bright_black]ssh ubuntu@{instance.public_dns_name}")
         print()
 
@@ -175,13 +184,15 @@ def _launch(
         start_time = time.time()
         logs = []
         log_index = 0
-        print(f"[blue bold]Waiting for cloud-init to finish and API healthcheck to pass "
-              f"(this can take some time)...")
+        print(
+            "[blue bold]Waiting for cloud-init to finish and API healthcheck to pass "
+            "(this can take some time)..."
+        )
         print("Tailing logs:")
         while True:
             try:
                 logs = get_log_lines(instance.public_dns_name)
-            except Exception as e:
+            except Exception:
                 pass
 
             logs_to_print = logs[log_index:]
@@ -191,12 +202,16 @@ def _launch(
                 log_index += 1
 
             if time.time() - start_time > constants.INSTANCE_HEALTHCHECK_PATIENCE_SECS:
-                raise TimeoutError(f"Healthcheck not reachable after {constants.INSTANCE_HEALTHCHECK_PATIENCE_SECS} seconds")
+                raise TimeoutError(
+                    f"Healthcheck not reachable after {constants.INSTANCE_HEALTHCHECK_PATIENCE_SECS} seconds"
+                )
             try:
                 r = requests.get(health_check_url, timeout=0.5)
                 if r.status_code == 200:
                     print()
-                    print(f"[green]Healthcheck passed after {round(time.time() - start_time, 2)} seconds!")
+                    print(
+                        f"[green]Healthcheck passed after {round(time.time() - start_time, 2)} seconds!"
+                    )
                     print(f"UI available at: http://{instance.public_dns_name}:8501")
                     break
 
@@ -209,19 +224,16 @@ def _launch(
 
 
 @app.command(
-    help=f"Launch a Centrality instance with the specified checkout (branch, tag, or commit hash)"
+    help="Launch a Centrality instance with the specified checkout (branch, tag, or commit hash)"
 )
 def launch(
-        instance_type: str,
-        checkout: str = "main",
-        ttl_secs: int = constants.INSTANCE_DEFAULT_TTL,
-        wait: bool = True,
-        idempotency_token: Optional[str] = None,
+    instance_type: str,
+    checkout: str = "main",
+    ttl_secs: int = constants.INSTANCE_DEFAULT_TTL,
+    wait: bool = True,
+    idempotency_token: Optional[str] = None,
 ):
-    delete(
-        wait=False,
-        idempotency_token=idempotency_token
-    )
+    delete(wait=False, idempotency_token=idempotency_token)
     print("[green bold]✓ Termination triggered for all instances")
     _launch(
         instance_type=instance_type,
@@ -233,31 +245,26 @@ def launch(
 
 
 @app.command()
-def delete(
-        wait: bool = True,
-        idempotency_token: Optional[str] = None
-):
-    ec2 = boto3.resource('ec2')
+def delete(wait: bool = True, idempotency_token: Optional[str] = None):
+    ec2 = boto3.resource("ec2")
     filters = [
-            {
-                'Name': 'tag:' + constants.MANAGEMENT_TAG_KEY,
-                'Values': [
-                    constants.MANAGEMENT_TAG_VALUE,
-                ]
-            },
-        ]
+        {
+            "Name": "tag:" + constants.MANAGEMENT_TAG_KEY,
+            "Values": [
+                constants.MANAGEMENT_TAG_VALUE,
+            ],
+        },
+    ]
     if idempotency_token is not None:
         filters.append(
             {
-                'Name': f'tag:{constants.IDEMPOTENCY_TAG_KEY}',
-                'Values': [
+                "Name": f"tag:{constants.IDEMPOTENCY_TAG_KEY}",
+                "Values": [
                     idempotency_token,
-                ]
+                ],
             }
         )
-    instances = ec2.instances.filter(
-        Filters=filters
-    )
+    instances = ec2.instances.filter(Filters=filters)
     print("Instances to Terminate:")
     for instance in instances:
         print(f"[red]- {instance.id}")
@@ -267,8 +274,6 @@ def delete(
     for instance in instances:
         instance.terminate()
         print(f"[green]✓[/green] Termination triggered for: {instance.id}")
-
-
 
     if wait:
         print()

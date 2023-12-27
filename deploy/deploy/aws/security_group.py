@@ -19,7 +19,7 @@ config = AwsDeployConfig.from_yaml_file(config_file_path)
     help=f"Create a security group for the Centrality deploy script named {constants.SECURITY_GROUP_NAME}"
 )
 def create():
-    ec2 = boto3.client('ec2')
+    ec2 = boto3.client("ec2")
 
     # Create Security Group
     response = ec2.create_security_group(
@@ -27,15 +27,17 @@ def create():
         GroupName=constants.SECURITY_GROUP_NAME,
         VpcId=config.vpc_id,
     )
-    security_group_id = response['GroupId']
+    security_group_id = response["GroupId"]
 
     ports = [8000, 8501, 5432, 22]
     ip_permissions = [
-        {'IpProtocol': 'tcp',
-         'FromPort': port,
-         'ToPort': port,
-         'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-         } for port in ports
+        {
+            "IpProtocol": "tcp",
+            "FromPort": port,
+            "ToPort": port,
+            "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
+        }
+        for port in ports
     ]
 
     # Add Inbound Rules
@@ -50,14 +52,13 @@ def create():
     print("[green]✓ config.yaml updated")
 
 
-
 @app.command(
     help=f"Delete the security group created by create ({constants.SECURITY_GROUP_NAME}))"
 )
 def delete():
-    ec2 = boto3.client('ec2')
+    ec2 = boto3.client("ec2")
     # Delete Security Group
-    response = ec2.delete_security_group(
+    _ = ec2.delete_security_group(
         GroupId=config.security_group_id,
     )
 
@@ -67,7 +68,5 @@ def delete():
     print("[green]✓ config.yaml updated")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
-
-

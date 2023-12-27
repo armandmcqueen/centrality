@@ -33,7 +33,8 @@ class FakeMetricConfig(CentralityConfig):
 
 # TODO: Write tests once useful.
 class FakeMetricGenerator:
-    """ Generate fake values for metrics, with support for cyclic and random patterns."""
+    """Generate fake values for metrics, with support for cyclic and random patterns."""
+
     def __init__(self, config: FakeMetricConfig):
         self.config = config
         self.start_time = time.time()
@@ -53,7 +54,9 @@ class FakeMetricGenerator:
         elif self.config.algorithm == FakeMetricAlgorithms.RANDOM.value:
             vals = self._generate_random()
         else:
-            raise RuntimeError("This should be impossible unless I forgot to handle a new AlgorithmType")
+            raise RuntimeError(
+                "This should be impossible unless I forgot to handle a new AlgorithmType"
+            )
         return vals
 
     def _generate_random(self) -> list[float]:
@@ -72,13 +75,16 @@ class FakeMetricGenerator:
         # Vary by up to ± $JITTER_FACTOR % and then bound by min and max
         if self.config.jitter:
             jitter_deltas = [
-                random.uniform(-self.config.jitter_factor, self.config.jitter_factor) * pre_jitter_val
+                random.uniform(-self.config.jitter_factor, self.config.jitter_factor)
+                * pre_jitter_val
                 for _ in range(self.config.num_vals)
             ]
         else:
             jitter_deltas = [0 for _ in range(self.config.num_vals)]
 
-        jittered_vals = [pre_jitter_val + jitter_delta for jitter_delta in jitter_deltas]
+        jittered_vals = [
+            pre_jitter_val + jitter_delta for jitter_delta in jitter_deltas
+        ]
         # Bound by min and max
         final_vals = [
             min(max(jittered_val, self.config.min_val), self.config.max_val)
@@ -87,14 +93,17 @@ class FakeMetricGenerator:
         return final_vals
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     def pretty_float(num: float):
         pretty_val = "{0:,.2f}".format(num)
         if len(pretty_val) == 4:
             pretty_val = f"0{pretty_val}"
         return pretty_val
 
-    config = FakeMetricConfig(num_vals=4, jitter=False, algorithm=FakeMetricAlgorithms.RANDOM)
+    config = FakeMetricConfig(
+        num_vals=4, jitter=False, algorithm=FakeMetricAlgorithms.RANDOM
+    )
     generator = FakeMetricGenerator(config)
     start_time = time.time()
     while True:
@@ -103,4 +112,3 @@ if __name__ == '__main__':
         pretty_vals = [pretty_float(val) for val in vals]
         print(f"{elapsed_secs_str}: {pretty_vals}")
         time.sleep(1)
-

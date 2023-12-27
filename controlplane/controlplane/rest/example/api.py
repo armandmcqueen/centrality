@@ -1,4 +1,4 @@
-from typing import Optional, Annotated
+from typing import Annotated
 from fastapi import APIRouter, Depends
 from controlplane.rest.utils.auth import auth, security
 from controlplane.datastore.client import DatastoreClient

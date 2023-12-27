@@ -2,9 +2,6 @@ import datetime
 from pydantic import BaseModel
 from typing import List
 
-from common.types.vmmetrics import CpuMeasurement
-
-
 from sqlalchemy import ARRAY, Float, Index
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import TIMESTAMP
@@ -41,8 +38,8 @@ class CpuVmMetricORM(DatastoreBaseORM):
     cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
     avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)  # TODO: Remove this
     __table_args__ = (
-        Index('idx_metrics_ts', 'ts'),  # Creating the index
-        Index('idx_vm_id_ts', 'vm_id', 'ts'),  # Composite index
+        Index("idx_metrics_ts", "ts"),  # Creating the index
+        Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
     )
 
 

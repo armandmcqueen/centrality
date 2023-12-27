@@ -31,16 +31,18 @@ rest_config = VmAgentRestConfig.from_envvar()
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)
 def get_healthcheck():
-    """ Basic healthcheck """
+    """Basic healthcheck"""
     return OkResponse()
+
 
 @app.get(constants.INFO_ENDPOINT)
 def get_info():
-    """ Return basic info about deployment """
+    """Return basic info about deployment"""
     return InfoResponse(deploy_time=deploy_time)
 
+
 def generate_openapi_json():
-    """ Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this) """
+    """Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this)"""
     openapi_schema = app.openapi()
     # Write to stdout
     print(json.dumps(openapi_schema, indent=2))
@@ -64,6 +66,5 @@ def use_route_names_as_operation_ids(app: FastAPI) -> None:
 use_route_names_as_operation_ids(app)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_openapi_json()
-

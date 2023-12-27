@@ -2,7 +2,6 @@ import time
 import typer
 import pykka
 import socket
-import sys
 from typing import Annotated
 
 from pathlib import Path
@@ -21,9 +20,9 @@ app = typer.Typer()
 
 @app.command()
 def launch(
-        control_plane_host: Optional[str] = None,
-        vm_id: Optional[str] = None,
-        file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
+    control_plane_host: Optional[str] = None,
+    vm_id: Optional[str] = None,
+    file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
 ):
     """
     Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
@@ -60,7 +59,7 @@ def launch(
         config=config.controlplane_sdk,
         token="dev",
     )
-    actor_system = VmAgentActorSystem(
+    _ = VmAgentActorSystem(
         vm_agent_config=config,
         control_plane_sdk=control_plane_sdk,
     ).start()
@@ -96,7 +95,7 @@ def launch(
 
 @app.command()
 def hello():
-    """ Do nothing command to make typer think there are multiple subcommands"""
+    """Do nothing command to make typer think there are multiple subcommands"""
     print("Hello")
 
 

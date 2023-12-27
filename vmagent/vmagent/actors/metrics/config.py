@@ -5,9 +5,9 @@ from pydantic import Field
 
 class CpuMetricConfig(CentralityConfig):
     use_fake: bool = False
-    fake: FakeMetricConfig = Field(default_factory=lambda: FakeMetricConfig(
-        num_vals=16
-    ))
+    fake: FakeMetricConfig = Field(
+        default_factory=lambda: FakeMetricConfig(num_vals=16)
+    )
 
 
 class MetricsConfig(CentralityConfig):

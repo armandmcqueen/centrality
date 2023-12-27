@@ -1,4 +1,3 @@
-
 from typing import Callable
 from functools import wraps
 from controlplane.datastore.client import DatastoreClient
@@ -6,6 +5,7 @@ from fastapi import Request
 from fastapi.security import HTTPBearer
 
 security = HTTPBearer()
+
 
 def auth(datastore_client: DatastoreClient):
     def decorator(func: Callable):
@@ -20,7 +20,9 @@ def auth(datastore_client: DatastoreClient):
                 # Expected format is: Bearer <token>
                 auth_header_parts = auth_header.split(" ")
                 if len(auth_header_parts) != 2 or auth_header_parts[0] != "Bearer":
-                    return {"error": "Invalid Authorization header. Expected format is 'Bearer <token>'"}, 401
+                    return {
+                        "error": "Invalid Authorization header. Expected format is 'Bearer <token>'"
+                    }, 401
                 # Validate the token
                 token = auth_header_parts[1]
                 if not datastore_client.validate_token(token):
@@ -29,7 +31,7 @@ def auth(datastore_client: DatastoreClient):
             # Call the actual endpoint function
             response = func(*args, **kwargs)
             return response
+
         return wrapper
+
     return decorator
-
-

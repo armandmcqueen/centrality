@@ -1,13 +1,9 @@
-from types import TracebackType
-from typing import Optional
-
 import psutil
-import pykka
 import datetime
 import conclib
 from common import constants
 from common.types.vmmetrics import CpuMeasurement
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk, ControlPlaneSdkConfig
+from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
 
@@ -23,9 +19,9 @@ class CpuMetricCollector(conclib.PeriodicActor):
     }
 
     def __init__(
-            self,
-            vm_agent_config: VmAgentConfig,
-            control_plane_sdk: ControlPlaneSdk,
+        self,
+        vm_agent_config: VmAgentConfig,
+        control_plane_sdk: ControlPlaneSdk,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -33,7 +29,9 @@ class CpuMetricCollector(conclib.PeriodicActor):
         self.fake_metrics = self.vm_agent_config.metrics.cpu.use_fake
         self.fake_metric_generator: FakeMetricGenerator | None = None
         if self.fake_metrics:
-            self.fake_metric_generator = FakeMetricGenerator(self.vm_agent_config.metrics.cpu.fake)
+            self.fake_metric_generator = FakeMetricGenerator(
+                self.vm_agent_config.metrics.cpu.fake
+            )
         super().__init__()
 
     def send_cpu_metric(self) -> None:
@@ -49,7 +47,6 @@ class CpuMetricCollector(conclib.PeriodicActor):
         )
         self.control_plane_sdk.write_cpu_metric(measurement=measurement)
 
-
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendCpuMetrics):
             try:
@@ -60,4 +57,3 @@ class CpuMetricCollector(conclib.PeriodicActor):
                 print(f"🚨 CpuMetricCollector - failed to send cpu metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
-
