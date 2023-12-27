@@ -7,3 +7,8 @@ lint: format
 .PHONY: format
 format:
 	ruff format .
+
+.PHONY: install
+install:
+	pip install -e .
+

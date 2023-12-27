@@ -11,3 +11,8 @@ format:
 .PHONY: launch
 launch:
 	python vmagent/cli.py launch
+
+.PHONY: install
+install:
+	pip install -e .
+

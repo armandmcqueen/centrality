@@ -17,3 +17,8 @@ launch:
 launch-fly:
 	./launch.bash ../tests/configs/fly/rapidui.yaml
 
+.PHONY: install
+install:
+	pip install -e .
+
+

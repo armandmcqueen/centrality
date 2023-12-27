@@ -32,6 +32,11 @@ gen-openapi-spec:
 launch:
 	python controlplane/cli.py launch --postgres-host localhost
 
+.PHONY: install
+install:
+	pip install -e .
+
+
 
 
 

@@ -10,6 +10,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Install dependencies
+        run: |
+          cd ${{ github.workspace }} && make install
       - name: Run linter
         run: |
             cd ${{ github.workspace }} && make lint
