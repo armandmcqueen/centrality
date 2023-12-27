@@ -21,8 +21,8 @@ lint:
 
 .PHONY: install
 install:
-	make -C cli install
 	make -C common install
+	make -C cli install
 	make -C controlplane install
 	make -C deploy install
 	make -C rapidui install
