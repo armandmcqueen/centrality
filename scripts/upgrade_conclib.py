@@ -1,5 +1,4 @@
 import os
-import toml
 
 
 def update_dependency(file_path, dependency_name, old_version, new_version):

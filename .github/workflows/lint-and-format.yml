@@ -1,5 +1,4 @@
 name: Lint and format
-#run-name: Running lint and format on branch ${{ github.ref }}
 on: [push]
 jobs:
   lint-and-format-all:
@@ -7,16 +6,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
       - name: Install dependencies including dev
-        run: |
-          cd ${{ github.workspace }} && make install-dev
+        run: cd ${{ github.workspace }} && make install-dev
       - name: Run format checker
-        run: |
-          cd ${{ github.workspace }} && make check-format
+        run: cd ${{ github.workspace }} && make check-format
       - name: Run linter
-        run: |
-            cd ${{ github.workspace }} && make lint
+        run: cd ${{ github.workspace }} && make lint
           
