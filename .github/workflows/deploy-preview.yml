@@ -1,4 +1,4 @@
-name: Lint and format
+name: Deploy Preview
 on: [push]
 jobs:
   lint-and-format-all:
@@ -9,7 +9,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ variables.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install AWS CLI
         run: |
