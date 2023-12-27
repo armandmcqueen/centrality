@@ -18,6 +18,17 @@ lint:
 	make -C cli lint
 	make -C tests lint
 	make -C deploy lint
+	make -C rapidui lint
+
+.PHONY: check-format
+check-format:
+	make -C common check-format
+	make -C cli check-format
+	make -C controlplane check-format
+	make -C deploy check-format
+	make -C rapidui check-format
+	make -C vmagent check-format
+	make -C tests check-format
 
 .PHONY: install
 install:

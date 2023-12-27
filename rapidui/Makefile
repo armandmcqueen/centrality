@@ -8,6 +8,9 @@ lint: format
 format:
 	ruff format .
 
+.PHONY: check-format
+check-format:
+	ruff format --check .
 
 .PHONY: launch
 launch:

@@ -7,12 +7,10 @@ class CardContents(BaseModel):
     pass
 
 
-
-
 class BaseCard(ABC):
     @abstractmethod
     def __init__(self, parent_container, contents: CardContents):
-        """ This should create the card and set (render) its initial contents """
+        """This should create the card and set (render) its initial contents"""
         pass
 
     @abstractmethod
@@ -70,7 +68,3 @@ class UniformFlexbox:
             )
             card = self.card_type(card_container, content)
             self.cards.append(card)
-
-
-
-
