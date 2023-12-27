@@ -21,8 +21,6 @@ def watch_vms():
         config=control_plane_sdk_config,
         token=TOKEN,
     )
-    # a = 2
-    b = "lorum ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum"
     print(b)
     rich.print("[bold underline cyan]Active Machines")
     text = Text()
@@ -88,9 +86,7 @@ def watch_cpu():
                     vms_to_add = new_set - old_set
                     vms_to_remove = old_set - new_set
                     for vm_id in vms_to_add:
-                        vm_bars[vm_id] = progress.add_task(
-                            get_progress_descriptions(vm_id), total=100
-                        )
+                        vm_bars[vm_id] = progress.add_task(get_progress_descriptions(vm_id), total=100)
                     for vm_id in vms_to_remove:
                         progress.remove_task(vm_bars[vm_id])
                         del vm_bars[vm_id]
