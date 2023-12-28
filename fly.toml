@@ -31,7 +31,7 @@ primary_region = "iad"
 
 
 [processes]
-  fastapi = "python controlplane/controlplane/cli.py launch"
+  fastapi = "python controlplane/controlplane/cli.py launch --postgres-host centrality-datastore-dev.flycast"
   streamlit = "make -C rapidui launch-fly"
 
 [[vm]]

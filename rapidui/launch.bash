@@ -9,9 +9,13 @@ if [ $# -eq 0 ]; then
     $(python config_util.py set)
 else
     echo "Loading config $1"
-    $(python config_util.py set -f $1)
+    # TODO: This can go really wrong if there are any other log messages that get printed, even by dependencies
+#    output=$(python config_util.py set -f "$1")
+    $(python config_util.py set -f "$1")
 fi
 
+
+echo "Filtered env"
 env | grep CENT
 pushd rapidui
 streamlit run Home.py
