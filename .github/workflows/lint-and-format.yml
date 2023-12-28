@@ -11,7 +11,7 @@ jobs:
         run: make install-dev
 
       - name: Run format checker
-        run: make check-format
+        run: make formatcheck
 
       - name: Run linter
         run: make lint

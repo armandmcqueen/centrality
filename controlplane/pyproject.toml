@@ -30,7 +30,8 @@ dependencies = [
 dev = [
     "ruff ~= 0.1.7",
     "flit ~= 3.9.0",
-    "docker ~= 7.0.0",
+    "docker ~= 7.0.0",  # TODO: Is this actually needed? I think deps were removed
+    "mypy ~= 1.8.0",
 ]
 
 [tool.flit.module]

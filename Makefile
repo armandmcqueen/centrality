@@ -21,16 +21,16 @@ lint:
 	make -C tests lint
 	make -C vmagent lint
 
-.PHONY: check-format
-check-format:
-	make -C common check-format
-	make -C controlplane check-format
-	make -C cli check-format
-	make -C deploy check-format
-	make -C rapidui check-format
-	make -C scripts check-format
-	make -C tests check-format
-	make -C vmagent check-format
+.PHONY: formatcheck
+formatcheck:
+	make -C common formatcheck
+	make -C controlplane formatcheck
+	make -C cli formatcheck
+	make -C deploy formatcheck
+	make -C rapidui formatcheck
+	make -C scripts formatcheck
+	make -C tests formatcheck
+	make -C vmagent formatcheck
 
 .PHONY: install
 install:
@@ -54,4 +54,14 @@ install-dev:
 	make -C tests install-dev
 	make -C vmagent install-dev
 
+.PHONY: typecheck
+typecheck:
+	make -C common typecheck
+	make -C controlplane typecheck
+	make -C cli typecheck
+	make -C deploy typecheck
+	make -C rapidui typecheck
+	make -C scripts typecheck
+	make -C tests typecheck
+	make -C vmagent typecheck
 

@@ -8,9 +8,13 @@ lint: format
 format:
 	ruff format .
 
-.PHONY: check-format
-check-format:
+.PHONY: formatcheck
+formatcheck:
 	ruff format --check .
+
+.PHONY: typecheck
+typecheck:
+	mypy --strict .
 
 .PHONY: launch
 launch:
