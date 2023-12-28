@@ -1,15 +1,17 @@
 import json
 import os
 from pathlib import Path
+from typing import Any, TypeVar, Type
 
 import pydantic
 import yaml
 from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
 
+Dict = dict[str, Any]
+
 
 class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
-
     pass
 
 
@@ -18,7 +20,6 @@ class CentralityConfigInvalidEnvvarOverrideError(Exception):
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
-
     pass
 
 
@@ -47,12 +48,15 @@ def to_slug(s: str) -> str:
     return s.lower().replace(".", "").replace("_", "")
 
 
+T = TypeVar('T', bound='CentralityConfig')
+
+
 class CentralityConfig(pydantic.BaseModel):
     """
     Overridable config for use in Centrality. See README.md for more details.
     """
 
-    def __init__(self, config_overrides: dict | None = None, **kwargs):
+    def __init__(self, config_overrides: Dict | None = None, **kwargs: Any):
         # Apply envvar overrides
         flattened_envvars = self._find_envvars()
         if flattened_envvars:
@@ -87,10 +91,14 @@ class CentralityConfig(pydantic.BaseModel):
 
         # Had issues before, leaving this in case (probably don't need it, see note above)
         # for field_name, field_info in cls.model_fields.items():
-        for field_name in list(cls.model_json_schema(False).get("properties")):
+        for field_name in list(cls.model_json_schema(False).get("properties", [])):
             field_info = cls.model_fields[field_name]
-            if issubclass(field_info.annotation, CentralityConfig):
-                sub_tree = field_info.annotation._build_field_tree()
+            if field_info.annotation is None:
+                raise RuntimeError(f"Field {field_name} in {cls.__name__} has no annotation")
+            annotation_type: type = field_info.annotation
+
+            if issubclass(annotation_type, CentralityConfig):
+                sub_tree = annotation_type._build_field_tree()
                 for sub_field_name in sub_tree:
                     tree.append(f"{field_name}.{sub_field_name}")
             else:
@@ -104,7 +112,7 @@ class CentralityConfig(pydantic.BaseModel):
         """
         field_tree = cls._build_field_tree()
         undeduped_slugs = [(to_slug(dot), dot) for dot in field_tree]
-        existing_slugs = {}  # dict[slug, dot]
+        existing_slugs: dict[str, str] = {}  # dict[slug, dot]
         for new_slug, new_dot in undeduped_slugs:
             if new_slug in existing_slugs:
                 existing_dot = existing_slugs[new_slug]
@@ -112,7 +120,7 @@ class CentralityConfig(pydantic.BaseModel):
             existing_slugs[new_slug] = new_dot
 
     @classmethod
-    def _find_envvars(cls) -> dict:
+    def _find_envvars(cls) -> dict[str, str]:
         """
         Find all environment variables that match the config schema and return ovverrides in
         flattened dict format.
@@ -135,8 +143,8 @@ class CentralityConfig(pydantic.BaseModel):
 
     @classmethod
     def from_yaml_file(
-        cls, yaml_path: Path | str, config_overrides: dict | None = None
-    ) -> "CentralityConfig":
+        cls: Type[T], yaml_path: Path | str, config_overrides: Dict | None = None
+    ) -> T:
         """Load a YAML file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(yaml_path, str):
@@ -154,8 +162,8 @@ class CentralityConfig(pydantic.BaseModel):
 
     @classmethod
     def from_json_file(
-        cls, json_path: Path | str, config_overrides: dict | None = None
-    ) -> "CentralityConfig":
+        cls: Type[T], json_path: Path | str, config_overrides: Dict | None = None
+    ) -> T:
         """Load a JSON file and return a config object."""
         # TODO: Allow loading from a URL
         if isinstance(json_path, str):
@@ -173,8 +181,8 @@ class CentralityConfig(pydantic.BaseModel):
 
     @classmethod
     def from_dict(
-        cls, d: dict, config_overrides: dict | None = None
-    ) -> "CentralityConfig":
+        cls: Type[T], d: Dict, config_overrides: Dict | None = None
+    ) -> T:
         """
         Load a dict and return a config object. Exists for code clarity.
         """
@@ -182,7 +190,7 @@ class CentralityConfig(pydantic.BaseModel):
             return cls(**d, config_overrides=config_overrides)
         return cls(**d)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict:
         """
         Return the config as a dict. Exists for code clarity.
         """
@@ -195,13 +203,13 @@ class CentralityConfig(pydantic.BaseModel):
         return self.model_dump_json()
 
     @classmethod
-    def envvar_name(cls):
+    def envvar_name(cls) -> str:
         """Return the environment variable name for saving and loading this config."""
         # SAVELOAD ensures it doesn't conflict with ENVOVERRIDEs pattern
         return f"CENTRALITY_SAVELOAD_{cls.__name__}".upper()
 
     @classmethod
-    def from_envvar(cls) -> "CentralityConfig":
+    def from_envvar(cls: Type[T]) -> T:
         """Load the config from the environment variable."""
         envvar_name = cls.envvar_name()
         envvar_value = os.environ.get(envvar_name, None)

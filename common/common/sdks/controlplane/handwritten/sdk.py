@@ -48,9 +48,9 @@ class ControlPlaneSdk:
             vm_ids=vm_ids,
         )
         if from_ts is not None:
-            params["from_ts"] = from_ts.isoformat()
+            params["from_ts"] = from_ts.isoformat()  # type: ignore
         if to_ts is not None:
-            params["to_ts"] = to_ts.isoformat()
+            params["to_ts"] = to_ts.isoformat()  # type: ignore
         response = requests.get(url, headers=self.headers, params=params)
         measurements = [CpuMeasurement(**j) for j in response.json()]
         return response, measurements

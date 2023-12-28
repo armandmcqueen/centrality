@@ -1,14 +1,18 @@
 # Utilities for working with dicts. Converting between normal and flattened representations as well as merging.
 
+from typing import Any
 
-def flatten_dict(d: dict) -> dict:
+Dict = dict[str, Any]
+
+
+def flatten_dict(d: Dict) -> Dict:
     """
     Flatten a nested dict into a flat dict with keys separated by '.'
 
     NOTE: Fully AI generated code
     """
 
-    def expand(key, value):
+    def expand(key: str, value: Any) -> list[tuple[str, Any]]:
         if isinstance(value, dict):
             return [(key + "." + k, v) for k, v in flatten_dict(value).items()]
         else:
@@ -18,7 +22,7 @@ def flatten_dict(d: dict) -> dict:
     return dict(items)
 
 
-def test_flatten_dict():
+def test_flatten_dict() -> None:
     d = {
         "a": 1,
         "b": {
@@ -39,7 +43,7 @@ def test_flatten_dict():
     }
 
 
-def merge_flattened_into_nested(flattened: dict, nested: dict) -> dict:
+def merge_flattened_into_nested(flattened: Dict, nested: Dict) -> Dict:
     """
     Given a flattened dict and a nested dict, merge the flattened dict into the nested
     dict, overwriting values in the nested dict. Pure function, no mutation of inputs.
@@ -60,7 +64,7 @@ def merge_flattened_into_nested(flattened: dict, nested: dict) -> dict:
     return out
 
 
-def test_merge_flattened_into_nested():
+def test_merge_flattened_into_nested() -> None:
     # Test 1
     flattened = {
         "a": 1,

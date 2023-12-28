@@ -52,7 +52,7 @@ class Subconfig(CentralityConfig):
 
 
 class ParentConfig(CentralityConfig):
-    subconfig: Subconfig = pydantic.Field(default_factory=Subconfig)
+    subconfig: Subconfig = pydantic.Field(default_factory=Subconfig) # type: ignore
 
 
 class NameConflictChildOneConfig(CentralityConfig):
@@ -72,67 +72,67 @@ class NameConflictParentConfig(CentralityConfig):
     )
 
 
-def test_basic_config_with_defaults():
+def test_basic_config_with_defaults() -> None:
     config = BasicConfigWithDefaults()
     assert config.int_field_with_default == INT_VAL_1
 
 
-def test_basic_config_without_default_errors():
+def test_basic_config_without_default_errors() -> None:
     with pytest.raises(pydantic.ValidationError):
-        _ = BasicConfigWithoutDefaults()
+        _ = BasicConfigWithoutDefaults()  #  type: ignore
 
 
-def test_basic_config_without_default_works_when_value_set():
+def test_basic_config_without_default_works_when_value_set() -> None:
     config = BasicConfigWithoutDefaults(int_field_no_default=INT_VAL_1)
     assert config.int_field_no_default == INT_VAL_1
 
 
-def test_nested_config():
+def test_nested_config() -> None:
     config = BasicNestedConfigParent()
     assert isinstance(config.subconfig, BasicConfigWithDefaults)
     assert config.subconfig.int_field_with_default == INT_VAL_1
 
 
-def test_argument_overrides():
+def test_argument_overrides() -> None:
     config = BasicConfigWithoutDefaults(
-        config_overrides=dict(int_field_no_default=INT_VAL_1)
+        config_overrides=dict(int_field_no_default=INT_VAL_1)  # type: ignore
     )
     assert config.int_field_no_default == INT_VAL_1
 
 
-def test_envvar_override():
+def test_envvar_override() -> None:
     os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULT"] = str(
         INT_VAL_1
     )
-    config = BasicConfigWithoutDefaults()
+    config = BasicConfigWithoutDefaults()  # type: ignore
     assert config.int_field_no_default == INT_VAL_1
     del os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULT"]
 
 
-def test_invalid_envvar_override():
+def test_invalid_envvar_override() -> None:
     with pytest.raises(CentralityConfigInvalidEnvvarOverrideError):
         os.environ[
             "CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULTSSS"
         ] = str(INT_VAL_1)
-        config = BasicConfigWithoutDefaults()
+        config = BasicConfigWithoutDefaults()  # type: ignore
         assert config.int_field_no_default == INT_VAL_1
         del os.environ["CENTRALITY_BASICCONFIGWITHOUTDEFAULTS_INT_FIELD_NO_DEFAULTSSS"]
 
 
-def test_nested_config_override():
-    config = ParentConfig(
+def test_nested_config_override() -> None:
+    config = ParentConfig(  # type: ignore
         config_overrides={"subconfig.string_field_without_default": STRING_VAL_2}
     )
     assert config.subconfig.string_field_with_default == STRING_VAL_1
     assert config.subconfig.string_field_without_default == STRING_VAL_2
 
 
-def test_naming_conflict():
+def test_naming_conflict() -> None:
     with pytest.raises(CentralityConfigNameConflictError):
         _ = NameConflictParentConfig()
 
 
-def test_to_from_yaml():
+def test_to_from_yaml() -> None:
     yaml_path = Path(__file__).parent / "test.yaml"
     if yaml_path.exists():
         raise RuntimeError("Temp file yaml path already exists")
@@ -147,7 +147,7 @@ def test_to_from_yaml():
     os.remove(yaml_path)
 
 
-def test_to_from_json():
+def test_to_from_json() -> None:
     json_path = Path(__file__).parent / "test.json"
     if json_path.exists():
         raise RuntimeError("Temp file json path already exists")
@@ -163,7 +163,7 @@ def test_to_from_json():
     os.remove(json_path)
 
 
-def test_to_from_envvar():
+def test_to_from_envvar() -> None:
     if BasicNestedConfigParent.envvar_name() in os.environ:
         raise RuntimeError("Environment Variable already set")
 
@@ -178,7 +178,7 @@ def test_to_from_envvar():
     del os.environ[BasicNestedConfigParent.envvar_name()]
 
 
-def test_from_unset_envvar_errors():
+def test_from_unset_envvar_errors() -> None:
     with pytest.raises(CentralityConfigEnvvarUnsetError):
         _ = BasicNestedConfigParent.from_envvar()
 
