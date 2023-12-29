@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 
 
-def gen_random_token():
+def gen_random_token() -> str:
     """Generate a random UUID as a string"""
     return f"centrality-{uuid.uuid4()}"
 
@@ -24,9 +24,9 @@ class UserToken(BaseModel):
     user_id: str
     token: str
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"UserToken(user_id={self.user_id}, token={self.token})"
 
     @classmethod
     def from_orm(cls, orm: UserTokenORM) -> "UserToken":
-        return cls(orm.user_id, orm.token)
+        return cls(user_id=orm.user_id, token=orm.token)

@@ -8,5 +8,5 @@ class DatastoreConfig(CentralityConfig):
     password: str = "postgres"
     verbose_orm: bool = False
 
-    def get_url(self):
+    def get_url(self) -> str:
         return f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}"

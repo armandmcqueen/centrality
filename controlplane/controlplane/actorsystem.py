@@ -32,9 +32,9 @@ class ExampleSubsystem:
         datastore_config: DatastoreConfig,
     ):
         self.datastore_config = datastore_config
-        self.example_actor_ref: Optional[pykka.ActorRef] = None
+        # self.example_actor_ref: Optional[pykka.ActorRef[ExampleActor]] = None
 
-    def start(self):
+    def start(self) -> None:
         # self.example_actor_ref = ExampleActor.start(
         #     datastore_config=self.datastore_config,
         # )

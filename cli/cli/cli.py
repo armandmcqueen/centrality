@@ -15,7 +15,7 @@ TOKEN = "dev"
 
 
 @app.command()
-def watch_vms():
+def watch_vms() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
     control_plane_sdk = ControlPlaneSdk(
         config=control_plane_sdk_config,
@@ -44,7 +44,7 @@ def watch_vms():
 
 
 @app.command()
-def watch_cpu():
+def watch_cpu() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
     control_plane_sdk = ControlPlaneSdk(
         config=control_plane_sdk_config,
@@ -53,7 +53,7 @@ def watch_cpu():
 
     console = rich.console.Console()
 
-    def get_progress_descriptions(vm_id: str):
+    def get_progress_descriptions(vm_id: str) -> str:
         return f"[cyan]VM {vm_id}"
 
     with CliContextManager():

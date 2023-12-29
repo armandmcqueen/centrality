@@ -1,5 +1,5 @@
 import datetime
-from typing import List, cast, Sequence, Optional
+from typing import List, cast, Sequence, Optional, Any
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -24,12 +24,12 @@ class DatastoreClient:
         url = config.get_url()
         self.engine = create_engine(url, echo=self.config.verbose_orm)
 
-    def setup_db(self):
+    def setup_db(self) -> None:
         """Create all tables if they don't exist"""
         DatastoreBaseORM.metadata.create_all(self.engine)
         self._add_dev_token()
 
-    def reset_db(self):
+    def reset_db(self) -> None:
         """Drop all tables and recreate them"""
         DatastoreBaseORM.metadata.drop_all(self.engine)
         self.setup_db()
@@ -64,8 +64,8 @@ class DatastoreClient:
         with Session(bind=self.engine) as session:
             rows = session.query(UserTokenORM).all()
             for row in rows:
-                row = cast(UserTokenORM, row)
-                result_token = UserToken.from_orm(row)
+                row = cast(UserTokenORM, row)  # type: ignore
+                result_token = UserToken.from_orm(orm=row)
                 results.append(result_token)
         return results
 
@@ -127,7 +127,7 @@ class DatastoreClient:
         with Session(bind=self.engine) as session:
             if len(vm_ids) == 0:
                 return []
-            filter_args = [CpuVmMetricORM.vm_id.in_(vm_ids)]
+            filter_args: list[Any] = [CpuVmMetricORM.vm_id.in_(vm_ids)]
             if start_ts is not None:
                 filter_args.append(CpuVmMetricORM.ts >= start_ts)
             if end_ts is not None:
@@ -140,7 +140,7 @@ class DatastoreClient:
                 .all()
             )
             for row in rows:
-                row = cast(CpuVmMetricORM, row)
+                row = cast(CpuVmMetricORM, row)  # type: ignore
                 result_metric = CpuVmMetric.from_orm(row)
                 results.append(result_metric)
         return results
@@ -160,7 +160,7 @@ class DatastoreClient:
                 .all()
             )
             for row in rows:
-                row = cast(CpuVmMetricLatestORM, row)
+                row = cast(CpuVmMetricLatestORM, row)  # type: ignore
                 result_metric = CpuVmMetricLatest.from_orm(row)
                 results.append(result_metric)
         return results
@@ -168,7 +168,7 @@ class DatastoreClient:
     def report_heartbeat(
         self,
         vm_id: str,
-    ):
+    ) -> None:
         """Set the last heartbeat for a VM to be the current time"""
         with Session(bind=self.engine) as session:
             upsert_stmt = (
