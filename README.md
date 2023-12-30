@@ -44,17 +44,18 @@ There are a couple forms of testing.
 
 Docker compose (`dockercompose`) is the primary local development environment. This will spin up all the 
 components locally with a small number of agents. It is easy to add and remove agents to test dynamism 
-(see instructions at top of compose.yaml). This currently does a build of the Docker images, so it isn't 
-super fast. This could be improved by mounting the source code into the containers, so a rebuild isn't 
-necessary.
+(see instructions at top of compose.yaml). This does a build of the Docker images, so it isn't 
+super fast. This can be improved by mounting the source code into the containers, so a rebuild isn't 
+necessary - see below for detials.
 
 Python testing (`quicktest`) is also possible for rapid iteration, but it is preferable to do unit testing. However, 
 if a docker compose stack is running, it is possible to launch an agent/webui outside of docker for rapid
 iteration. See the `quicktest` config for an example.
 
 There is a missing testing piece that allows us to simulate very large-scale deployments with ~1000+ agents. This
-will require external machines as my laptop isn't powerful enough to run that many agents. Possibly we can use a 
-single, very large machine with docker compose?
+will require external machines as my laptop isn't powerful enough to run that many agents. With an m7g.16xlarge, we 
+can simulate a 500 agent cluster, which is useful when designing the UI for large clusters, but it doesn't really
+test the scalability in a useful way.
 
 Fly (`fly`) is the fully deployed environment. There is a fly application for the control plane + rapidui and a 
 separate fly application for the agent cluster. There is currently only a single Fly stack (i.e. no dev/prod).
