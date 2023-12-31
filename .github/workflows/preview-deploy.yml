@@ -41,7 +41,7 @@ jobs:
         run: |
           URL=$(cat /tmp/preview-url)
           echo ${URL}
-          ENVSET=PREVIEW_URL=${url}
+          ENVSET=PREVIEW_URL=${URL}
           echo ${ENVSET}
           echo "${ENVSET}" >> "$GITHUB_OUTPUT"
 
