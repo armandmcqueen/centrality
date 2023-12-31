@@ -32,4 +32,36 @@ jobs:
           cat ~/.ssh/config
 
       - name: Deploy Preview
+        id: deploy-preview
         run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
+
+      - name: Save Preview URL
+        id: preview-url
+        run: |
+          URL=$(cat /tmp/preview-url)
+          echo ${URL}
+          ENVSET=PREVIEW_URL=${URL}
+          echo ${ENVSET}
+          echo "${ENVSET}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment Preview URL
+        # Note: This is all AI generated
+        env:
+          REPO: ${{ github.repository }}
+          PREVIEW_URL: ${{ steps.preview-url.outputs.PREVIEW_URL }}
+          COMMENT_IDENTIFIER: "Preview Deployment:"
+          GH_TOKEN: ${{ github.token }}
+
+        run: |
+          export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
+          
+          # Search for an existing comment with the unique identifier
+          COMMENT_ID=$(gh api repos/${REPO}/issues/${PR_NUMBER}/comments --jq '.[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
+          if [ -z "$COMMENT_ID" ]; then
+            # Create new comment
+            gh pr comment $PR_NUMBER --body "$COMMENT_IDENTIFIER $PREVIEW_URL" --repo $REPO
+          else
+            # Update existing comment
+            gh api repos/$REPO/issues/comments/$COMMENT_ID --method PATCH --field body="$COMMENT_IDENTIFIER $PREVIEW_URL"
+          fi
+          
