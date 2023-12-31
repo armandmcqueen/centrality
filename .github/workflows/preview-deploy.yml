@@ -50,7 +50,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
           PREVIEW_URL: ${{ steps.preview-url.outputs.PREVIEW_URL }}
-          COMMENT_IDENTIFIER: "🔎 Preview Deployment:"
+          COMMENT_IDENTIFIER: "Preview Deployment:"
           GH_TOKEN: ${{ github.token }}
 
         run: |
@@ -61,7 +61,6 @@ jobs:
           
           echo "end 2"
           # Search for an existing comment with the unique identifier
-          COMMENT_ID=$(gh pr view $PR_NUMBER --repo $REPO --json comments --jq '.comments[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
           COMMENT_ID=$(gh api repos/${REPO}/issues/${PR_NUMBER}/comments --jq '.[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
           echo "3"
           echo $COMMENT_ID
