@@ -60,6 +60,7 @@ jobs:
           env
           
           echo "end 2"
+          
           # Search for an existing comment with the unique identifier
           COMMENT_ID=$(gh api repos/${REPO}/issues/${PR_NUMBER}/comments --jq '.[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
           echo "3"
