@@ -45,6 +45,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
         run: |
+          echo "1"
+          env
+          
+          
+          export PR_NUMBER=${{ github.event.pull_request.number }}
+          export REPO=${{ github.repository }}
+          export PREVIEW_URL=${{ steps.deploy-preview.outputs.preview_url }}
+          export COMMENT_IDENTIFIER="Preview Deployment:"
+          export GH_TOKEN=${{ github.token }}
+          
+          echo "2"
           env
           
           # Search for an existing comment with the unique identifier
