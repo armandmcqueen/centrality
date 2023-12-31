@@ -34,7 +34,7 @@ def test_get_latest_cpu_measurements(docker_compose, sdk):
         len(cpu_measurements) == 4
     ), f"Expected 4 cpu measurements, got {len(cpu_measurements)}"
     for cpu_measurement in cpu_measurements:
-        assert len(cpu_measurement.cpu_usage) > 0, "CPU usage was empty"
+        assert len(cpu_measurement.cpu_percents) > 0, "CPU usage was empty"
         # check that ts was within the last 30 seconds
         now = datetime.datetime.now(datetime.timezone.utc)
         assert (

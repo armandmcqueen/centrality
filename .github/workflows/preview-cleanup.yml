@@ -5,6 +5,7 @@ on:
 
 jobs:
   cleanup-preview:
+    name: Cleanup Preview
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
