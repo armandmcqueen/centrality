@@ -8,7 +8,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies including dev
-        run: make install-dev
+        run: make -C tests install-dev
 
       - name: Run e2e test
 #        run: make test
