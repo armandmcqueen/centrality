@@ -24,7 +24,7 @@ def sdk_config():
 
 @pytest.fixture(scope="session")
 def sdk(sdk_config):
-    """ Make the SDK available to all tests, pointed at the compose stack """
+    """Make the SDK available to all tests, pointed at the compose stack"""
     sdk = ControlPlaneSdk(
         config=sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
