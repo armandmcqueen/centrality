@@ -13,6 +13,8 @@ The instances will automatically shut down after a certain amount of time, which
 `--ttl-secs` flag. Note that this might not work correctly if the cloud-init script fails, but that should
 only hopefully happen during development of this code.
 
+
+
 ### Getting started
 
 Empty `config.yaml`, and set these fields with real values:
@@ -47,6 +49,8 @@ We keep a manual mapping between instance types and AMI (because there is an x64
 different ARM Ubuntu AMI). If you want to use a different instance type, you need to add it to the
 `INSTANCE_TO_AMI` dict in `constants.py`.
 
+Note: the preview URL will be written to `/tmp/preview-url` if `--wait` is true. This is for 
+github actions to pick up.
 
 ### Cleanup
 
@@ -55,6 +59,8 @@ To remove all resources created by this repo:
 python instances.py delete
 python security_groups.py delete
 python iam.py delete
+
+rm /tmp/preview-url
 ```
 
 

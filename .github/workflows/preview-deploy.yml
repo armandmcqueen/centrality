@@ -41,7 +41,7 @@ jobs:
           URL=$(cat /tmp/preview-url)
           echo ${URL}
           ENVSET=PREVIEW_URL=${url}
-          echo ENVSET >> $GITHUB_OUTPUT
+          echo ${ENVSET} >> $GITHUB_OUTPUT
 
       - name: Comment Preview URL
         # Note: This is all AI generated
