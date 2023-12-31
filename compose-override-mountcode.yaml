@@ -5,7 +5,7 @@ services:
   vmagent-auto:
     volumes:
       - .:/centrality
-  vmagent-manual:
+  vmagent-real-data:
     volumes:
       - .:/centrality
   vmagent-many-cpus:

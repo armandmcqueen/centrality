@@ -52,7 +52,7 @@ class Subconfig(CentralityConfig):
 
 
 class ParentConfig(CentralityConfig):
-    subconfig: Subconfig = pydantic.Field(default_factory=Subconfig) # type: ignore
+    subconfig: Subconfig = pydantic.Field(default_factory=Subconfig)  # type: ignore
 
 
 class NameConflictChildOneConfig(CentralityConfig):

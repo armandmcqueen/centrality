@@ -1,6 +1,10 @@
 # lint with ruff
 .PHONY: lint
 lint: format
+	ruff check . --fix
+
+.PHONY: lintcheck
+lintcheck:
 	ruff check .
 
 # format with ruff
@@ -23,5 +27,7 @@ install:
 .PHONY: install-dev
 install-dev:
 	pip install -r requirements.txt
+
+
 
 

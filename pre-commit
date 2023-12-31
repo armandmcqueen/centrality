@@ -1,0 +1,6 @@
+#!/bin/sh
+
+make lint
+
+# Include any format changes in the commit
+git add --update

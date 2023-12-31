@@ -1,3 +1,4 @@
+vm_id: many-cpus
 controlplane_sdk:
   host: controlplane
 metrics:

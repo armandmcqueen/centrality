@@ -10,6 +10,14 @@ docker-run:
 docker-push:
 	docker push armandmcqueen/centrality-dev:latest
 
+.PHONY: test
+test:
+	pytest tests/e2e/
+
+.PHONY: test-verbose
+test-verbose:
+	pytest --capture=no tests/e2e/
+
 .PHONY: lint
 lint:
 	make -C common lint
@@ -21,6 +29,17 @@ lint:
 	make -C tests lint
 	make -C vmagent lint
 
+.PHONY: lintcheck
+lintcheck:
+	make -C common lintcheck
+	make -C controlplane lintcheck
+	make -C cli lintcheck
+	make -C deploy lintcheck
+	make -C rapidui lintcheck
+	make -C scripts lintcheck
+	make -C tests lintcheck
+	make -C vmagent lintcheck
+
 .PHONY: formatcheck
 formatcheck:
 	make -C common formatcheck
@@ -31,6 +50,17 @@ formatcheck:
 	make -C scripts formatcheck
 	make -C tests formatcheck
 	make -C vmagent formatcheck
+
+.PHONY: typecheck
+typecheck:
+	make -C common typecheck
+	make -C controlplane typecheck
+	make -C cli typecheck
+	make -C deploy typecheck
+	make -C rapidui typecheck
+	make -C scripts typecheck
+	make -C tests typecheck
+	make -C vmagent typecheck
 
 .PHONY: install
 install:
@@ -54,14 +84,12 @@ install-dev:
 	make -C tests install-dev
 	make -C vmagent install-dev
 
-.PHONY: typecheck
-typecheck:
-	make -C common typecheck
-	make -C controlplane typecheck
-	make -C cli typecheck
-	make -C deploy typecheck
-	make -C rapidui typecheck
-	make -C scripts typecheck
-	make -C tests typecheck
-	make -C vmagent typecheck
+
+.PHONY: pre-commit-install
+pre-commit-install:
+	cp pre-commit .git/hooks/pre-commit
+
+.PHONY: pre-commit-uninstall
+pre-commit-uninstall:
+	rm .git/hooks/pre-commit
 
