@@ -74,4 +74,11 @@ install-dev:
 	make -C vmagent install-dev
 
 
+.PHONY: pre-commit-install
+pre-commit-install:
+	cp pre-commit .git/hooks/pre-commit
+
+.PHONY: pre-commit-uninstall
+pre-commit-uninstall:
+	rm .git/hooks/pre-commit
 

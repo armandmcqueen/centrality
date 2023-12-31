@@ -16,7 +16,6 @@ compose_override_file_path = (
 logs_file_path = Path(__file__).parent / "docker_logs.txt"
 
 
-
 @pytest.fixture(scope="session")
 def sdk_config():
     config = ControlPlaneSdkConfig()
@@ -25,7 +24,9 @@ def sdk_config():
 
 @pytest.fixture(scope="session")
 def sdk(sdk_config):
-    sdk = ControlPlaneSdk(config=sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN)
+    sdk = ControlPlaneSdk(
+        config=sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
+    )
     return sdk
 
 
@@ -62,13 +63,17 @@ def docker_compose(sdk):
     max_time = time.time() + 20
     while True:
         if time.time() > max_time:
-            raise Exception("Timed out waiting for live vms endpoint to show 4 machines")
+            raise Exception(
+                "Timed out waiting for live vms endpoint to show 4 machines"
+            )
         resp, live_vms = sdk.get_live_vms()
         if len(live_vms) == 4:
-            print(f"Live vms endpoint shows 4 machines as expected.")
+            print("Live vms endpoint shows 4 machines as expected.")
             break
         else:
-            print(f"Waiting for live vms endpoint to show 4 machines, currently {len(live_vms)}")
+            print(
+                f"Waiting for live vms endpoint to show 4 machines, currently {len(live_vms)}"
+            )
         time.sleep(0.5)
 
     print("[green bold]Compose stack is ready for testing")
@@ -81,5 +86,3 @@ def docker_compose(sdk):
     print(f"\n\nLogs written to {logs_file_path}")
     print("Tearing down Docker Compose stack")
     subprocess.run("docker compose down", shell=True, check=True)
-
-
