@@ -45,6 +45,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
         run: |
+          env
+          
           # Search for an existing comment with the unique identifier
           COMMENT_ID=$(gh pr view $PR_NUMBER --repo $REPO --json comments --jq '.comments[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
 
