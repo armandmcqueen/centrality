@@ -3,6 +3,10 @@
 lint: format
 	ruff check . --fix
 
+.PHONY: lintcheck
+lintcheck:
+	ruff check .
+
 # format with ruff
 .PHONY: format
 format:

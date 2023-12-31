@@ -29,6 +29,17 @@ lint:
 	make -C tests lint
 	make -C vmagent lint
 
+.PHONY: lintcheck
+lintcheck:
+	make -C common lintcheck
+	make -C controlplane lintcheck
+	make -C cli lintcheck
+	make -C deploy lintcheck
+	make -C rapidui lintcheck
+	make -C scripts lintcheck
+	make -C tests lintcheck
+	make -C vmagent lintcheck
+
 .PHONY: formatcheck
 formatcheck:
 	make -C common formatcheck

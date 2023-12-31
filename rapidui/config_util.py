@@ -16,7 +16,6 @@ def set_var(
     file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
 ):
     """Print out the correct export command to set the envvar. This should then be exec'd verbatim"""
-
     if file:
         config = StreamlitUiConfig.from_yaml_file(Path(file))
     else:

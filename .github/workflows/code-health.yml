@@ -1,0 +1,43 @@
+name: Code Health
+
+on: [push]
+
+jobs:
+  check-format:
+    name: Format Checker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Run format checker
+        run: make formatcheck
+
+  check-lint:
+    name: Lint Checker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Run linter
+        run: make lintcheck
+
+  check-mypu:
+    name: Type Checker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Run mypy
+        run: make typecheck
