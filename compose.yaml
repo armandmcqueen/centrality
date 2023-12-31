@@ -4,7 +4,7 @@ services:
   vmagent-auto:
     build: .
     deploy:
-      replicas: 1
+      replicas: 2
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
@@ -12,12 +12,12 @@ services:
     depends_on:
       - controlplane
 
-  vmagent-manual:
+  vmagent-real-data:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
-    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-manual.yaml"
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-real-data.yaml"
     depends_on:
       - controlplane
 
@@ -26,7 +26,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
-    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-auto-many-cpus.yaml --vm-id many-cpus"
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-many-cpus.yaml"
     depends_on:
       - controlplane
 

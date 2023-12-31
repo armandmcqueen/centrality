@@ -11,6 +11,7 @@ class HealthcheckTimeoutError(Exception):
 HealthcheckSucceededBool = bool
 
 
+# TODO: Is this worth keeping around? It doesn't use the SDK, which is useful in some ways
 def wait_for_healthy(
     healthcheck_url: str,
     startup_healthcheck_timeout: int,

@@ -1,0 +1,6 @@
+vm_id: real-data
+controlplane_sdk:
+  host: controlplane
+metrics:
+  cpu:
+    use_fake: false

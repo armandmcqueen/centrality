@@ -12,6 +12,10 @@ docker-push:
 
 .PHONY: test
 test:
+	pytest tests/e2e/
+
+.PHONY: test-verbose
+test-verbose:
 	pytest --capture=no tests/e2e/
 
 .PHONY: lint
@@ -36,6 +40,17 @@ formatcheck:
 	make -C tests formatcheck
 	make -C vmagent formatcheck
 
+.PHONY: typecheck
+typecheck:
+	make -C common typecheck
+	make -C controlplane typecheck
+	make -C cli typecheck
+	make -C deploy typecheck
+	make -C rapidui typecheck
+	make -C scripts typecheck
+	make -C tests typecheck
+	make -C vmagent typecheck
+
 .PHONY: install
 install:
 	make -C common install
@@ -58,14 +73,5 @@ install-dev:
 	make -C tests install-dev
 	make -C vmagent install-dev
 
-.PHONY: typecheck
-typecheck:
-	make -C common typecheck
-	make -C controlplane typecheck
-	make -C cli typecheck
-	make -C deploy typecheck
-	make -C rapidui typecheck
-	make -C scripts typecheck
-	make -C tests typecheck
-	make -C vmagent typecheck
+
 

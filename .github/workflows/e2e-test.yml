@@ -1,0 +1,22 @@
+name: E2E test
+on: [push]
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Run e2e test
+#        run: make test
+        run: make test-verbose  # For testing, uncomment this
+
+      - name: Save docker compose logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-compose-logs
+          path: tests/e2e/docker_logs.txt
+          

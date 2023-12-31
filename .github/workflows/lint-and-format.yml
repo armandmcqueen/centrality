@@ -1,7 +1,7 @@
 name: Lint and format
 on: [push]
 jobs:
-  lint-and-format-all:
+  lint-and-format:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
