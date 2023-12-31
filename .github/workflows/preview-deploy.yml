@@ -36,12 +36,15 @@ jobs:
         run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
       - name: Comment Preview URL
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          REPO=${{ github.repository }}
-          PREVIEW_URL=${{ steps.deploy-preview.outputs.preview_url }}
-          COMMENT_IDENTIFIER="Preview Deployment:"
+        # Note: This is all AI generated
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          PREVIEW_URL: ${{ steps.deploy-preview.outputs.preview_url }}
+          COMMENT_IDENTIFIER: "Preview Deployment:"
+          GH_TOKEN: ${{ github.token }}
 
+        run: |
           # Search for an existing comment with the unique identifier
           COMMENT_ID=$(gh pr view $PR_NUMBER --repo $REPO --json comments --jq '.comments[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
 
