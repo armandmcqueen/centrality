@@ -20,8 +20,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-#      - name: Install dependencies including dev
-#        run: make install-dev
+      - name: Install dependencies including dev
+        run: make install-dev
 
       - name: Setup SSH key
         run: |
