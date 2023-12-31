@@ -12,6 +12,7 @@ Dict = dict[str, Any]
 
 class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
+
     pass
 
 
@@ -20,6 +21,7 @@ class CentralityConfigInvalidEnvvarOverrideError(Exception):
     When an envvar override is found for this config, but doesn't match any fields.
     To help users catch typos
     """
+
     pass
 
 
@@ -48,7 +50,7 @@ def to_slug(s: str) -> str:
     return s.lower().replace(".", "").replace("_", "")
 
 
-T = TypeVar('T', bound='CentralityConfig')
+T = TypeVar("T", bound="CentralityConfig")
 
 
 class CentralityConfig(pydantic.BaseModel):
@@ -94,7 +96,9 @@ class CentralityConfig(pydantic.BaseModel):
         for field_name in list(cls.model_json_schema(False).get("properties", [])):
             field_info = cls.model_fields[field_name]
             if field_info.annotation is None:
-                raise RuntimeError(f"Field {field_name} in {cls.__name__} has no annotation")
+                raise RuntimeError(
+                    f"Field {field_name} in {cls.__name__} has no annotation"
+                )
             annotation_type: type = field_info.annotation
 
             if issubclass(annotation_type, CentralityConfig):
@@ -180,9 +184,7 @@ class CentralityConfig(pydantic.BaseModel):
             json.dump(self.to_dict(), f)
 
     @classmethod
-    def from_dict(
-        cls: Type[T], d: Dict, config_overrides: Dict | None = None
-    ) -> T:
+    def from_dict(cls: Type[T], d: Dict, config_overrides: Dict | None = None) -> T:
         """
         Load a dict and return a config object. Exists for code clarity.
         """

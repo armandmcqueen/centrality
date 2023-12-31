@@ -1,5 +1,5 @@
 # test_feature_a.py
-import requests
+import requests  # noqa
 
 from common.utils.wait_for_healthy import wait_for_healthy
 
@@ -20,4 +20,3 @@ def test_api_endpoint(docker_compose):
         log_progress=True,
         suppress_error=False,
     )
-

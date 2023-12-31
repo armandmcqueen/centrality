@@ -1,6 +1,4 @@
 from controlplane.datastore.config import DatastoreConfig
-import pykka
-from typing import Optional
 
 
 class ControlPlaneActorSystem:

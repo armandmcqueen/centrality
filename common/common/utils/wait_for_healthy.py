@@ -10,12 +10,13 @@ class HealthcheckTimeoutError(Exception):
 
 HealthcheckSucceededBool = bool
 
+
 def wait_for_healthy(
-        healthcheck_url: str,
-        startup_healthcheck_timeout: int,
-        startup_healthcheck_poll_interval: float = 0.5,
-        log_progress: bool = False,
-        suppress_error: bool = False,
+    healthcheck_url: str,
+    startup_healthcheck_timeout: int,
+    startup_healthcheck_poll_interval: float = 0.5,
+    log_progress: bool = False,
+    suppress_error: bool = False,
 ) -> HealthcheckSucceededBool:
     """Query the healthcheck endpoint until either it returns a 200 or we timeout."""
 
@@ -30,9 +31,7 @@ def wait_for_healthy(
                 log("✅  API is healthy")
                 return True
         except requests.exceptions.ConnectionError:
-            log(
-                f"⏳  ConnectionError when trying to connect to {healthcheck_url}"
-            )
+            log(f"⏳  ConnectionError when trying to connect to {healthcheck_url}")
         except requests.exceptions.ReadTimeout:
             log(f"⌛️ ReadTimeout when trying to connect to {healthcheck_url}")
         time.sleep(startup_healthcheck_poll_interval)
