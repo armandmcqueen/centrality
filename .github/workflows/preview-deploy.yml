@@ -33,8 +33,7 @@ jobs:
 
       - name: Deploy Preview
         id: deploy-preview
-#        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
-        run: echo "testurl-3:8501" > /tmp/preview-url
+        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
       - name: Save Preview URL
         id: preview-url
@@ -56,22 +55,13 @@ jobs:
         run: |
           export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
           
-          echo "2 start"
-          env
-          
-          echo "end 2"
-          
           # Search for an existing comment with the unique identifier
           COMMENT_ID=$(gh api repos/${REPO}/issues/${PR_NUMBER}/comments --jq '.[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
-          echo "3"
-          echo $COMMENT_ID
           if [ -z "$COMMENT_ID" ]; then
             # Create new comment
-            echo "4"
             gh pr comment $PR_NUMBER --body "$COMMENT_IDENTIFIER $PREVIEW_URL" --repo $REPO
           else
             # Update existing comment
-            echo "4-2"
             gh api repos/$REPO/issues/comments/$COMMENT_ID --method PATCH --field body="$COMMENT_IDENTIFIER $PREVIEW_URL"
           fi
           
