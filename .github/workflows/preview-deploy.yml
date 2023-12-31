@@ -33,7 +33,8 @@ jobs:
 
       - name: Deploy Preview
         id: deploy-preview
-        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
+#        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
+        run: echo "testurl:8501" > /preview-url
 
       - name: Save Preview URL
         id: preview-url
