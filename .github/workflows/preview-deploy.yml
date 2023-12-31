@@ -35,12 +35,20 @@ jobs:
         id: deploy-preview
         run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
+      - name: Save Preview URL
+        id: preview-url
+        run: |
+          URL=$(cat /tmp/preview-url)
+          echo ${URL}
+          ENVSET=PREVIEW_URL=${url}
+          echo ENVSET >> $GITHUB_OUTPUT
+
       - name: Comment Preview URL
         # Note: This is all AI generated
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
-          PREVIEW_URL: ${{ steps.deploy-preview.outputs.preview_url }}
+          PREVIEW_URL: ${{ steps.preview-url.outputs.PREVIEW_URL }}
           COMMENT_IDENTIFIER: "Preview Deployment:"
           GH_TOKEN: ${{ github.token }}
 
@@ -51,7 +59,7 @@ jobs:
           
           export PR_NUMBER=${{ github.event.pull_request.number }}
           export REPO=${{ github.repository }}
-          export PREVIEW_URL=${{ steps.deploy-preview.outputs.preview_url }}
+          export PREVIEW_URL=${{ steps.preview-url.outputs.PREVIEW_URL }}
           export COMMENT_IDENTIFIER="Preview Deployment:"
           export GH_TOKEN=${{ github.token }}
           

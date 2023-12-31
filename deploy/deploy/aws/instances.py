@@ -12,6 +12,8 @@ from rich.console import Console
 import subprocess
 import os
 
+PREVIEW_URL_FILE = Path("/tmp/preview-url")
+
 CONFIG_FILE_PATH = Path(__file__).parent / "config.yaml"
 if constants.CONFIG_PATH_OVERRIDE_ENVVAR in os.environ:
     CONFIG_FILE_PATH = Path(os.environ[constants.CONFIG_PATH_OVERRIDE_ENVVAR])
@@ -214,7 +216,9 @@ def _launch(
                     url = f"http://{instance.public_dns_name}:8501"
 
                     # Make the URL available to GitHub Actions
-                    print(f"::set-output name=preview_url::{url}")
+                    with PREVIEW_URL_FILE.open("w+") as f:
+                        f.write(url)
+
                     print(f"UI available at: {url}")
                     break
 
