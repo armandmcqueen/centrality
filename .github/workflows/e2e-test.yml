@@ -2,7 +2,7 @@ name: E2E test
 on: [push]
 jobs:
   e2e-test:
-    name: E2E test
+    name: E2E Test
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
