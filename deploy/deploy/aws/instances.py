@@ -211,7 +211,11 @@ def _launch(
                     print(
                         f"[green]Healthcheck passed after {round(time.time() - start_time, 2)} seconds!"
                     )
-                    print(f"UI available at: http://{instance.public_dns_name}:8501")
+                    url = f"http://{instance.public_dns_name}:8501"
+
+                    # Make the URL available to GitHub Actions
+                    print(f"::set-output name=preview_url::{url}")
+                    print(f"UI available at: {url}")
                     break
 
             except requests.exceptions.ConnectionError:
