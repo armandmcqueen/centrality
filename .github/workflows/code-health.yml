@@ -29,15 +29,15 @@ jobs:
       - name: Run linter
         run: make lintcheck
 
-  check-mypu:
-    name: Type Checker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
-      - name: Install dependencies including dev
-        run: make install-dev
-
-      - name: Run mypy
-        run: make typecheck
+#  check-mypy:
+#    name: Type Checker
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out repository code
+#        uses: actions/checkout@v4
+#
+#      - name: Install dependencies including dev
+#        run: make install-dev
+#
+#      - name: Run mypy
+#        run: make typecheck

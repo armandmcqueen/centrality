@@ -24,6 +24,7 @@ def sdk_config():
 
 @pytest.fixture(scope="session")
 def sdk(sdk_config):
+    """ Make the SDK available to all tests, pointed at the compose stack """
     sdk = ControlPlaneSdk(
         config=sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
@@ -32,6 +33,14 @@ def sdk(sdk_config):
 
 @pytest.fixture(scope="session")
 def docker_compose(sdk):
+    """
+    Start the Docker Compose stack, wait for it to be healthy, and clean up after tests are done.
+
+    Saves logs to a file. Corrects for some common errors:
+    - Check if docker compose stack is already running and shut it down if so
+    - Check if `docker compose build` needs to be run.
+        TODO: This should be smarter, currently just runs build if compose up fails
+    """
     print()
     print("Ensuring Docker Compose stack is not currently running")
     subprocess.run("docker compose down", shell=True, check=True)
