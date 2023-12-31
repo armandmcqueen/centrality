@@ -61,10 +61,6 @@ jobs:
           env
           
           export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
-#          export REPO=${{ github.repository }}
-#          export PREVIEW_URL=${{ steps.preview-url.outputs.PREVIEW_URL }}
-#          export COMMENT_IDENTIFIER="🔎 Preview Deployment:"
-#          export GH_TOKEN=${{ github.token }}
           
           echo "2"
           env
