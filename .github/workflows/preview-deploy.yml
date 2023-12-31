@@ -41,7 +41,8 @@ jobs:
           URL=$(cat /tmp/preview-url)
           echo ${URL}
           ENVSET=PREVIEW_URL=${url}
-          echo ${ENVSET} >> $GITHUB_OUTPUT
+          echo ${ENVSET}
+          echo "${ENVSET}" >> "$GITHUB_OUTPUT"
 
       - name: Comment Preview URL
         # Note: This is all AI generated
@@ -49,15 +50,18 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           PREVIEW_URL: ${{ steps.preview-url.outputs.PREVIEW_URL }}
-          COMMENT_IDENTIFIER: "Preview Deployment:"
+          COMMENT_IDENTIFIER: "🔎 Preview Deployment:"
           GH_TOKEN: ${{ github.token }}
 
         run: |
+          echo "0"
+          cat $GITHUB_EVENT_PATH
+          
           echo "1"
           env
           
           
-          export PR_NUMBER=${{ github.event.pull_request.number }}
+          export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
           export REPO=${{ github.repository }}
           export PREVIEW_URL=${{ steps.preview-url.outputs.PREVIEW_URL }}
           export COMMENT_IDENTIFIER="Preview Deployment:"
