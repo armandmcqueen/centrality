@@ -20,8 +20,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Install dependencies including dev
-        run: make install-dev
+#      - name: Install dependencies including dev
+#        run: make install-dev
 
       - name: Setup SSH key
         run: |
@@ -34,7 +34,7 @@ jobs:
       - name: Deploy Preview
         id: deploy-preview
 #        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
-        run: echo "testurl:8501" > /preview-url
+        run: echo "testurl:8501" > /tmp/preview-url
 
       - name: Save Preview URL
         id: preview-url
