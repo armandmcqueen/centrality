@@ -3,6 +3,7 @@
 **/.ignore
 **/.DS_Store
 **/dump.rdb
+**/docker_logs.txt
 
 
 # Byte-compiled / optimized / DLL files

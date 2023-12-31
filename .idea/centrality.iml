@@ -22,6 +22,16 @@
       <excludeFolder url="file://$MODULE_DIR$/controlplane/.ruff_cache/0.1.7" />
       <excludeFolder url="file://$MODULE_DIR$/vmagent/.ruff_cache/0.1.7" />
       <excludeFolder url="file://$MODULE_DIR$/cli/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/.mypy_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/cli/.mypy_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/common/.mypy_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/controlplane/.mypy_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/deploy/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/rapidui/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/scripts/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/.ruff_cache/0.1.7" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (centrality)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

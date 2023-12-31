@@ -10,6 +10,10 @@ docker-run:
 docker-push:
 	docker push armandmcqueen/centrality-dev:latest
 
+.PHONY: test
+test:
+	pytest --capture=no tests/e2e/
+
 .PHONY: lint
 lint:
 	make -C common lint

@@ -1,3 +1,6 @@
+# TODO: This should probably be moved somewhere - I think the only time you need
+#       this is for datastore unit tests.
+
 import docker
 import uuid
 
