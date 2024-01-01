@@ -53,7 +53,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
         run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "Skipping preview deployment for main branch"
+              exit 0
+          fi
           export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
+          
           
           # Search for an existing comment with the unique identifier
           COMMENT_ID=$(gh api repos/${REPO}/issues/${PR_NUMBER}/comments --jq '.[] | select(.body | contains("'"$COMMENT_IDENTIFIER"'")) | .id')
