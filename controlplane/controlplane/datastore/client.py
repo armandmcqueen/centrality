@@ -69,7 +69,11 @@ class DatastoreClient:
                 results.append(result_token)
         return results
 
-    def validate_token(self, token: str) -> bool:
+    def validate_token(
+        self, token: str
+    ) -> bool:  # TODO: Rename this so it is clear that it returns a bool.
+        #       Also rename this to be datastore oriented, not
+        #       applicateion oriented
         """Check if a token is valid"""
         with Session(bind=self.engine) as session:
             row = (

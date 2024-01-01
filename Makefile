@@ -10,11 +10,11 @@ docker-run:
 docker-push:
 	docker push armandmcqueen/centrality-dev:latest
 
-.PHONY: test
+.PHONY: test  # TODO: Add makefile to each test type and change this to use that makefile
 test:
 	pytest tests/e2e/
 
-.PHONY: test-verbose
+.PHONY: test-verbose  # TODO: Add makefile to each test type and change this to use that makefile
 test-verbose:
 	pytest --capture=no tests/e2e/
 
