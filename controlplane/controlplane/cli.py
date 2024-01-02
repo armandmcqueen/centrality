@@ -9,6 +9,7 @@ from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
 from controlplane.actorsystem import ControlPlaneActorSystem
+from controlplane.actors.datastore_sweeper import DatastoreSweeperConfig
 from common import constants
 
 
@@ -26,6 +27,7 @@ def launch(postgres_host: str = "localhost"):
     conclib_config = conclib.DefaultConfig()
     rest_config = ControlPlaneRestConfig()
     datastore_config = DatastoreConfig(config_overrides=dict(host=postgres_host))
+    datastore_sweeper_configs = DatastoreSweeperConfig()
     rest_config.save_to_envvar()
     datastore_config.save_to_envvar()
 

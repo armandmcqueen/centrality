@@ -168,6 +168,19 @@ class DatastoreClient:
                 results.append(result_metric)
         return results
 
+    def delete_old_cpu_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        """Delete all CPU measurements older than oldest_ts_to_keep"""
+        filters = [CpuVmMetricORM.ts < oldest_ts_to_keep]
+        if vm_ids is not None:
+            filters.append(CpuVmMetricORM.vm_id.in_(vm_ids))
+        with Session(bind=self.engine) as session:
+            session.query(CpuVmMetricORM).filter(*filters).delete()
+            session.commit()
+
     def report_heartbeat(
         self,
         vm_id: str,
