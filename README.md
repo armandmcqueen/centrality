@@ -130,6 +130,18 @@ Each of `common`, `controlplane`, `vmagent`, `cli`, `rapidui` and `deploy` are d
 packages, with many of them having a dependency on `common`. They are versioned together, so the monorepo 
 essentially has a single version number.
 
+## pre-commit
+
+There is a pre-commit script (`pre-commit`) for automatically formatting code. It is recommended to install this.
+
+```bash
+make pre-commit-install
+```
+
+```bash
+make pre-commit-uninstall
+```
+
 
 ## Requirements
 
