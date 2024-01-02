@@ -6,6 +6,7 @@ from common import constants
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
 from common.config.config import CentralityConfig
+from rich import print
 
 
 class DatastoreSweeperConfig(CentralityConfig):
@@ -48,8 +49,11 @@ class DatastoreSweeper(conclib.PeriodicActor):
         if isinstance(message, SweepDatastore):
             try:
                 now = datetime.now(timezone.utc)
+                # print(f"🧹 DatastoreSweeper - current time is {now}")
                 delta = timedelta(seconds=self.sweeper_config.data_retention_secs)
+                # print(f"🧹 DatastoreSweeper - retention window is {delta}")
                 oldest_ts = now - delta
+                print(f"🧹 DatastoreSweeper - pruning data older than {oldest_ts}")
                 self.datastore_client.delete_old_cpu_measurements(
                     oldest_ts_to_keep=oldest_ts,
                 )

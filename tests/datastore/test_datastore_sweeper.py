@@ -45,20 +45,22 @@ def test_sweeper(datastore: tuple[DatastoreConfig, DatastoreClient]):
     # Start the sweeper so it runs frequently and deletes the 10 old data points
     datastore_sweeper_config = DatastoreSweeperConfig(
         sweep_interval_secs=1,
-        retention_secs=60,
+        data_retention_secs=60,
     )
     sweeper = DatastoreSweeper.start(
         datastore_sweeper_config=datastore_sweeper_config,
         datastore_config=datastore_config,
     )
-    time.sleep(2)
+    try:
+        time.sleep(2)
 
-    # Confirm that we now only have 10 data points
-    current_data = client.get_cpu_measurements(vm_ids=[VM_ID])
-    assert (
-        len(current_data) == num_metrics
-    ), f"Expected {num_metrics} data points, but got {len(current_data)}"
+        # Confirm that we now only have 10 data points
+        current_data = client.get_cpu_measurements(vm_ids=[VM_ID])
+        assert (
+            len(current_data) == num_metrics
+        ), f"Expected {num_metrics} data points, but got {len(current_data)}"
 
-    # Cleanup
-    print("Sweeper test passed")
-    sweeper.stop()
+        # Cleanup
+        print("Sweeper test passed")
+    finally:
+        sweeper.stop()
