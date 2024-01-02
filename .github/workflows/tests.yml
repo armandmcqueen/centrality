@@ -1,0 +1,18 @@
+name: Unit and Integration Tests
+on: [push]
+jobs:
+  datastore-test:
+    name: Datastore Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies including dev
+        run: make install-dev
+
+      - name: Run datastore unit test
+        run: make -C tests/datastore test
+#        run: make test-verbose  # For debugging, uncomment this
+
+          

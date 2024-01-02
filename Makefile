@@ -12,11 +12,14 @@ docker-push:
 
 .PHONY: test
 test:
-	pytest tests/e2e/
+	# TODO: Incorporate CentralityCommon tests
+	make -C tests/e2e test
+	make -C tests/datastore test
 
 .PHONY: test-verbose
 test-verbose:
-	pytest --capture=no tests/e2e/
+	make -C tests/e2e test-verbose
+	make -C tests/datastore test-verbose
 
 .PHONY: lint
 lint:

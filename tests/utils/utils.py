@@ -1,16 +1,5 @@
-# TODO: This should probably be moved somewhere - I think the only time you need
-#       this is for datastore unit tests.
-
 import docker
 import uuid
-
-
-def run_postgres_docker():
-    pass
-
-
-def run_postgres_process():
-    pass
 
 
 class PostgresContainer:
@@ -25,7 +14,7 @@ class PostgresContainer:
     def __enter__(self):
         try:
             self.container = self.client.containers.run(
-                image="postgres:16.1",
+                image="postgres:16.1",  # TODO: Change this
                 name=self.name,
                 ports={"5432": "5432"},
                 environment={"POSTGRES_PASSWORD": "postgres"},

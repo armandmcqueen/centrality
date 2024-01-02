@@ -70,6 +70,9 @@ class DatastoreClient:
         return results
 
     def validate_token(self, token: str) -> bool:
+        # TODO: Rename this so it is clear that it returns a bool.
+        #       Also rename this to be datastore oriented, not
+        #       applicateion oriented
         """Check if a token is valid"""
         with Session(bind=self.engine) as session:
             row = (
@@ -120,8 +123,8 @@ class DatastoreClient:
     def get_cpu_measurements(
         self,
         vm_ids: List[str],
-        start_ts: Optional[datetime.datetime],
-        end_ts: Optional[datetime.datetime],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
     ) -> List[CpuVmMetric]:
         results = []
         with Session(bind=self.engine) as session:
