@@ -100,7 +100,9 @@ def test_cpu_measurement_deletion(datastore: tuple[DatastoreConfig, DatastoreCli
     ), f"Expected {num_metrics} measurement, but got {len(measurements)}"
     retrieved_timestamps = set([measurement.ts for measurement in measurements])
     all_timestamps = set(timestamps)
-    assert retrieved_timestamps == all_timestamps, f"Expected {all_timestamps}, got {retrieved_timestamps}"
+    assert (
+        retrieved_timestamps == all_timestamps
+    ), f"Expected {all_timestamps}, got {retrieved_timestamps}"
 
     # Delete all but the last 5 measurements
     cutoff_ts = timestamps[5] + datetime.timedelta(seconds=0.01)
@@ -113,5 +115,6 @@ def test_cpu_measurement_deletion(datastore: tuple[DatastoreConfig, DatastoreCli
     ), f"Expected 5 measurement, but got {len(measurements)}"
     retrieved_timestamps = set([measurement.ts for measurement in measurements])
     print(retrieved_timestamps)
-    assert retrieved_timestamps == expected_timestamps, f"Expected {expected_timestamps}, got {retrieved_timestamps}"
-
+    assert (
+        retrieved_timestamps == expected_timestamps
+    ), f"Expected {expected_timestamps}, got {retrieved_timestamps}"

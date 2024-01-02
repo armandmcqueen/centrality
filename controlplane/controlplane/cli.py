@@ -27,7 +27,7 @@ def launch(postgres_host: str = "localhost"):
     conclib_config = conclib.DefaultConfig()
     rest_config = ControlPlaneRestConfig()
     datastore_config = DatastoreConfig(config_overrides=dict(host=postgres_host))
-    datastore_sweeper_configs = DatastoreSweeperConfig()
+    datastore_sweeper_config = DatastoreSweeperConfig()
     rest_config.save_to_envvar()
     datastore_config.save_to_envvar()
 
@@ -51,7 +51,10 @@ def launch(postgres_host: str = "localhost"):
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
-    _ = ControlPlaneActorSystem(datastore_config=datastore_config).start()
+    _ = ControlPlaneActorSystem(
+        datastore_config=datastore_config,
+        datastore_sweeper_config=datastore_sweeper_config,
+    ).start()
     print("✓ Actor system started")
 
     print("🚀 Launching Control Plane API")
