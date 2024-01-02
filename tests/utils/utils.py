@@ -1,5 +1,7 @@
 import docker
 import uuid
+import inspect
+from rich import print
 
 
 class PostgresContainer:
@@ -34,3 +36,8 @@ class PostgresContainer:
     def __exit__(self, exc_type, exc_value, traceback):
         if self.container:
             self.container.stop()
+
+
+def print_test_function_name():
+    fname = inspect.stack()[1][3]
+    print(f"\nLogs for: [magenta]{fname}")

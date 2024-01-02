@@ -65,6 +65,12 @@ typecheck:
 	make -C tests typecheck
 	make -C vmagent typecheck
 
+.PHONY: check
+check:
+	make formatcheck
+	make lintcheck
+	#make typecheck  # TODO: Enable once mypy passes
+
 .PHONY: install
 install:
 	make -C common install

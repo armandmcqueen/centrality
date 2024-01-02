@@ -22,6 +22,9 @@ def get_control_plane_vm_heartbeat_endpoint(vm_id: str) -> str:
 # Actors                                                            #
 #####################################################################
 
+# Control Plane actors
+CONTROL_PLANE_DATASTORE_SWEEPER_ACTOR = "datastore_sweeper"
+
 # VM Agent actors
 VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR = "cpu_metric_collector"
 VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"

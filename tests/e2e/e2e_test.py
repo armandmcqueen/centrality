@@ -1,11 +1,6 @@
 import datetime
 from rich import print
-import inspect
-
-
-def print_test_function_name():
-    fname = inspect.stack()[1][3]
-    print(f"\nLogs for: [magenta]{fname}")
+from ..utils.utils import print_test_function_name
 
 
 def test_live_vms(docker_compose, sdk):
@@ -40,3 +35,6 @@ def test_get_latest_cpu_measurements(docker_compose, sdk):
         assert (
             (now - cpu_measurement.ts).total_seconds() < 30
         ), f"CPU measurement timestamp was not within the last 30 seconds: {cpu_measurement.ts}"
+
+
+# TODO: test e2e datastore sweeper

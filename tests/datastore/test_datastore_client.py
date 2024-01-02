@@ -1,5 +1,6 @@
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
+from ..utils.utils import print_test_function_name
 
 from common import constants
 import datetime
@@ -8,6 +9,7 @@ VM_ID = "testvm"
 
 
 def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
+    print_test_function_name()
     config, client = datastore
 
     # Validate that create a new token works
@@ -38,6 +40,7 @@ def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
 
 
 def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
+    print_test_function_name()
     config, client = datastore
 
     now = datetime.datetime.now(datetime.timezone.utc)
@@ -73,3 +76,45 @@ def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
 
 # TODO: Test with multiple VM IDs in the db
 # TODO: Test filtering by timestamp
+
+
+def test_cpu_measurement_deletion(datastore: tuple[DatastoreConfig, DatastoreClient]):
+    print_test_function_name()
+    config, client = datastore
+
+    # Addd some example data
+    now = datetime.datetime.now(datetime.timezone.utc)
+    num_metrics = 10
+    timestamps = [now - datetime.timedelta(seconds=i) for i in range(num_metrics)]
+    for ind, ts in enumerate(timestamps):
+        client.add_cpu_measurement(
+            vm_id=VM_ID,
+            cpu_percents=[ind, ind, ind, ind],
+            ts=ts,
+        )
+
+    # Check the entire timeseries
+    measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
+    assert (
+        len(measurements) == num_metrics
+    ), f"Expected {num_metrics} measurement, but got {len(measurements)}"
+    retrieved_timestamps = set([measurement.ts for measurement in measurements])
+    all_timestamps = set(timestamps)
+    assert (
+        retrieved_timestamps == all_timestamps
+    ), f"Expected {all_timestamps}, got {retrieved_timestamps}"
+
+    # Delete all but the last 5 measurements
+    cutoff_ts = timestamps[5] + datetime.timedelta(seconds=0.01)
+    expected_timestamps = set(timestamps[:5])
+
+    client.delete_old_cpu_measurements(oldest_ts_to_keep=cutoff_ts)
+    measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
+    assert (
+        len(measurements) == 5
+    ), f"Expected 5 measurement, but got {len(measurements)}"
+    retrieved_timestamps = set([measurement.ts for measurement in measurements])
+    print(retrieved_timestamps)
+    assert (
+        retrieved_timestamps == expected_timestamps
+    ), f"Expected {expected_timestamps}, got {retrieved_timestamps}"
