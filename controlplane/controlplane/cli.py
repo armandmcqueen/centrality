@@ -53,7 +53,7 @@ def launch(postgres_host: str = "localhost"):
     conclib.start_proxy(config=conclib_config)
     _ = ControlPlaneActorSystem(
         datastore_config=datastore_config,
-        # datastore_sweeper_config=datastore_sweeper_config,
+        datastore_sweeper_config=datastore_sweeper_config,
     ).start()
     print("✓ Actor system started")
 
