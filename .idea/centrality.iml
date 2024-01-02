@@ -32,6 +32,8 @@
       <excludeFolder url="file://$MODULE_DIR$/scripts/.ruff_cache/0.1.7" />
       <excludeFolder url="file://$MODULE_DIR$/tests/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/tests/.ruff_cache/0.1.7" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/datastore/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/e2e/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (centrality)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
