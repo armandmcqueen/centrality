@@ -33,11 +33,20 @@ jobs:
 
       - name: Deploy Preview
         id: deploy-preview
-        run: python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "Skipping preview deployment for main branch"
+              exit 0
+          fi
+          python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
       - name: Save Preview URL
         id: preview-url
         run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "Skipping preview deployment for main branch"
+              exit 0
+          fi
           URL=$(cat /tmp/preview-url)
           echo ${URL}
           ENVSET=PREVIEW_URL=${URL}
