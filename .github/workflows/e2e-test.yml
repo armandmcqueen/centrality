@@ -12,8 +12,8 @@ jobs:
         run: make install-dev
 
       - name: Run e2e test
-        run: make test
-#        run: make test-verbose  # For debugging, uncomment this
+        run: make -C tests/e2e test
+#        run: make -C tests/e2e test-verbose  # For debugging, uncomment this
 
       - name: Save docker compose logs
         uses: actions/upload-artifact@v3
