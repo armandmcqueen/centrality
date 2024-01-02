@@ -47,9 +47,9 @@ class DatastoreSweeper(conclib.PeriodicActor):
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SweepDatastore):
             try:
-                oldest_ts = datetime.now(timezone.utc) - timedelta(
-                    seconds=self.sweeper_config.data_retention_secs
-                )
+                now = datetime.now(timezone.utc)
+                delta = timedelta(seconds=self.sweeper_config.data_retention_secs)
+                oldest_ts = now - delta
                 self.datastore_client.delete_old_cpu_measurements(
                     oldest_ts_to_keep=oldest_ts,
                 )
