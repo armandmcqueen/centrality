@@ -38,7 +38,7 @@ psql:
 
 .PHONY: gen-openapi-spec
 gen-openapi-spec:
-	python controlplane/cli.py openapi > ../common/common/sdks/controlplane/openapi.json
+	python controlplane/cli.py openapi > openapi.json
 
 .PHONY: launch
 launch:

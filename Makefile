@@ -102,3 +102,27 @@ pre-commit-install:
 pre-commit-uninstall:
 	rm .git/hooks/pre-commit
 
+
+.PHONY: validate-openapi-spec
+validate-openapi-spec:
+	openapi-generator validate -i controlplane/openapi.json
+
+.PHONY: generate-sdk
+generate-sdk:
+	make -C controlplane gen-openapi-spec
+	openapi-generator generate \
+	  --input-spec controlplane/openapi.json \
+	  --generator-name python \
+	  --output common/common/sdks/controlplane/gen \
+	  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk,generateSourceCodeOnly=true
+	#  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk,generateSourceCodeOnly=true
+#	openapi-generator generate \
+#	  --input-spec controlplane/openapi.json \
+#	  --generator-name python-pydantic-v1 \
+#	  --output sdk_controlplane \
+#	  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk
+	#  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk,generateSourceCodeOnly=true
+
+.PHONY: delete-sdk
+delete-sdk:
+	rm -rf common/common/sdks/controlplane/gen

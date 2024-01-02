@@ -150,6 +150,7 @@ make pre-commit-uninstall
 brew install redis
 brew install openapi-generator
 brew install flyctl
+pip install openapi-python-generator
 ```
 
 
