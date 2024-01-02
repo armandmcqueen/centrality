@@ -85,6 +85,7 @@ Class | Method | HTTP request | Description
 
  - [CpuMeasurement](controlplane_sdk/docs/CpuMeasurement.md)
  - [HTTPValidationError](controlplane_sdk/docs/HTTPValidationError.md)
+ - [InfoResponse](controlplane_sdk/docs/InfoResponse.md)
  - [OkResponse](controlplane_sdk/docs/OkResponse.md)
  - [ValidationError](controlplane_sdk/docs/ValidationError.md)
  - [ValidationErrorLocInner](controlplane_sdk/docs/ValidationErrorLocInner.md)

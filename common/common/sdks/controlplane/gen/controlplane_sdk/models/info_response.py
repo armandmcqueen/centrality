@@ -18,21 +18,22 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, StrictBool, StrictStr
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class CpuMeasurement(BaseModel):
+class InfoResponse(BaseModel):
     """
-    A single CPU measurement, with a list of CPU percents for each core
+    InfoResponse
     """ # noqa: E501
-    vm_id: StrictStr
-    ts: datetime
-    cpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "cpu_percents"]
+    git_commit: StrictStr
+    git_branch: StrictStr
+    git_is_dirty: StrictBool
+    deploy_time: datetime
+    __properties: ClassVar[List[str]] = ["git_commit", "git_branch", "git_is_dirty", "deploy_time"]
 
     model_config = {
         "populate_by_name": True,
@@ -51,7 +52,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of CpuMeasurement from a JSON string"""
+        """Create an instance of InfoResponse from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,7 +75,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of CpuMeasurement from a dict"""
+        """Create an instance of InfoResponse from a dict"""
         if obj is None:
             return None
 
@@ -82,9 +83,10 @@ class CpuMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
-            "ts": obj.get("ts"),
-            "cpu_percents": obj.get("cpu_percents")
+            "git_commit": obj.get("git_commit"),
+            "git_branch": obj.get("git_branch"),
+            "git_is_dirty": obj.get("git_is_dirty"),
+            "deploy_time": obj.get("deploy_time")
         })
         return _obj
 

@@ -65,7 +65,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
               }
             }
           }
@@ -383,6 +385,35 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "InfoResponse": {
+        "properties": {
+          "git_commit": {
+            "type": "string",
+            "title": "Git Commit"
+          },
+          "git_branch": {
+            "type": "string",
+            "title": "Git Branch"
+          },
+          "git_is_dirty": {
+            "type": "boolean",
+            "title": "Git Is Dirty"
+          },
+          "deploy_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Deploy Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "git_commit",
+          "git_branch",
+          "git_is_dirty",
+          "deploy_time"
+        ],
+        "title": "InfoResponse"
       },
       "OkResponse": {
         "properties": {

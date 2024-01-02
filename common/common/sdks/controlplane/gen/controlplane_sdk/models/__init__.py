@@ -16,6 +16,7 @@
 # import models into model package
 from controlplane_sdk.models.cpu_measurement import CpuMeasurement
 from controlplane_sdk.models.http_validation_error import HTTPValidationError
+from controlplane_sdk.models.info_response import InfoResponse
 from controlplane_sdk.models.ok_response import OkResponse
 from controlplane_sdk.models.validation_error import ValidationError
 from controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner

@@ -7,6 +7,7 @@ controlplane_sdk/configuration.py
 controlplane_sdk/docs/CpuMeasurement.md
 controlplane_sdk/docs/DataApi.md
 controlplane_sdk/docs/HTTPValidationError.md
+controlplane_sdk/docs/InfoResponse.md
 controlplane_sdk/docs/OkResponse.md
 controlplane_sdk/docs/ValidationError.md
 controlplane_sdk/docs/ValidationErrorLocInner.md
@@ -14,10 +15,11 @@ controlplane_sdk/exceptions.py
 controlplane_sdk/models/__init__.py
 controlplane_sdk/models/cpu_measurement.py
 controlplane_sdk/models/http_validation_error.py
+controlplane_sdk/models/info_response.py
 controlplane_sdk/models/ok_response.py
 controlplane_sdk/models/validation_error.py
 controlplane_sdk/models/validation_error_loc_inner.py
 controlplane_sdk/rest.py
 controlplane_sdk/test/__init__.py
-controlplane_sdk/test/test_data_api.py
+controlplane_sdk/test/test_info_response.py
 controlplane_sdk_README.md

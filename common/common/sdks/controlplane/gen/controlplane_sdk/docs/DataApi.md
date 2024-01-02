@@ -230,7 +230,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_info**
-> get_info()
+> InfoResponse get_info()
 
 Get Info
 
@@ -242,6 +242,7 @@ Return basic info about deployment
 import time
 import os
 import controlplane_sdk
+from controlplane_sdk.models.info_response import InfoResponse
 from controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -259,7 +260,9 @@ with controlplane_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Get Info
-        api_instance.get_info()
+        api_response = api_instance.get_info()
+        print("The response of DataApi->get_info:\n")
+        pprint(api_response)
     except Exception as e:
         print("Exception when calling DataApi->get_info: %s\n" % e)
 ```
@@ -271,7 +274,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-void (empty response body)
+[**InfoResponse**](InfoResponse.md)
 
 ### Authorization
 

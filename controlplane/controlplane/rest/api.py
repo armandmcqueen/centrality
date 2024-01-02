@@ -88,7 +88,7 @@ def get_auth_healthcheck(
 
 
 @app.get(constants.INFO_ENDPOINT, tags=[MAIN_TAG])
-def get_info():
+def get_info() -> InfoResponse:
     """Return basic info about deployment"""
     git_branch = "unknown"
     git_commit = "unknown"
