@@ -4,10 +4,11 @@ from controlplane.datastore.client import DatastoreClient
 from common import constants
 import datetime
 
+VM_ID = "testvm"
+
 
 def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
     config, client = datastore
-    client.reset_db()
 
     # Validate that create a new token works
     user_token = client.new_token()
@@ -37,9 +38,7 @@ def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
 
 
 def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
-    VM_ID = "examplevm"
     config, client = datastore
-    client.reset_db()
 
     now = datetime.datetime.now(datetime.timezone.utc)
     # Create a timestamp for each of the last 5 seconds
