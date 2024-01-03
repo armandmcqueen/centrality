@@ -2,8 +2,8 @@ name: Deploy to Fly
 
 on:
   push:
-    branches:
-      - main
+#    branches:
+#      - main
 
 jobs:
   deploy:
@@ -27,7 +27,12 @@ jobs:
           version: 0.1.136
 
       # Deploy to Fly
-      - name: Deploy to Fly
+      - name: Deploy control plane to Fly
         run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Deploy agent cluster to Fly
+        run: flyctl --config fly-agent-cluster.toml deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
