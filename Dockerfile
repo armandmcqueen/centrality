@@ -26,10 +26,7 @@ COPY . /centrality
 WORKDIR /centrality
 
 # Install the monorepo
-RUN pip install -e ./common && \
-    pip install -e ./vmagent && \
-    pip install -e ./controlplane && \
-    pip install -e ./rapidui
+RUN make install-dev
 
 # VM agent port
 EXPOSE 7777

@@ -73,6 +73,7 @@ check:
 
 .PHONY: install
 install:
+	pip install -e sdk_controlplane
 	make -C common install
 	make -C controlplane install
 	make -C cli install
@@ -84,6 +85,7 @@ install:
 
 .PHONY: install-dev
 install-dev:
+	pip install -e sdk_controlplane
 	make -C common install-dev
 	make -C controlplane install-dev
 	make -C cli install-dev
