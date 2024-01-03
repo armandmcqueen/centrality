@@ -73,6 +73,7 @@ check:
 
 .PHONY: install
 install:
+	make -C sdk_controlplane install
 	make -C common install
 	make -C controlplane install
 	make -C cli install
@@ -84,6 +85,7 @@ install:
 
 .PHONY: install-dev
 install-dev:
+	make -C sdk_controlplane install-dev
 	make -C common install-dev
 	make -C controlplane install-dev
 	make -C cli install-dev
@@ -102,3 +104,21 @@ pre-commit-install:
 pre-commit-uninstall:
 	rm .git/hooks/pre-commit
 
+
+.PHONY: validate-openapi-spec
+validate-openapi-spec:
+	openapi-generator validate -i controlplane/openapi.json
+
+.PHONY: generate-sdk
+generate-sdk: delete-sdk
+	make -C controlplane gen-openapi-spec
+	openapi-generator generate \
+	  --input-spec controlplane/openapi.json \
+	  --generator-name python \
+	  --output sdk_controlplane \
+	  --additional-properties=packageName=centrality_controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk
+	  cp Makefile_sdk_controlplane sdk_controlplane/Makefile
+
+.PHONY: delete-sdk
+delete-sdk:
+	rm -rf sdk_controlplane

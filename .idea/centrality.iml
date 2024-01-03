@@ -14,6 +14,8 @@
       <sourceFolder url="file://$MODULE_DIR$/rapidui/rapidui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/deploy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/deploy/deploy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sdk_controlplane" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sdk_controlplane/controlplane_sdk" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
@@ -34,6 +36,7 @@
       <excludeFolder url="file://$MODULE_DIR$/tests/.ruff_cache/0.1.7" />
       <excludeFolder url="file://$MODULE_DIR$/tests/datastore/.pytest_cache" />
       <excludeFolder url="file://$MODULE_DIR$/tests/e2e/.pytest_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/.aider.tags.cache.v3" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11 (centrality)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

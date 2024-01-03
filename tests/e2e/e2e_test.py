@@ -15,7 +15,7 @@ def test_live_vms(docker_compose, sdk):
     assert len(live_vms) == 4, f"Expected 4 live vms, got {len(live_vms)}"
 
 
-def test_get_latest_cpu_measurements(docker_compose, sdk):
+def test_get_latest_cpu_metrics(docker_compose, sdk):
     """
     Check if the get latest cpu measurements endpoint is working correctly.
     """

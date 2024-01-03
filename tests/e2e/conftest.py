@@ -2,9 +2,10 @@ import pytest
 import subprocess
 from pathlib import Path
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
+from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 from common.utils.wait_for_healthy import wait_for_healthy
 from common import constants
+from common.sdks.controlplane.sdk import get_sdk
 from rich import print
 import time
 
@@ -32,7 +33,14 @@ def sdk(sdk_config):
 
 
 @pytest.fixture(scope="session")
-def docker_compose(sdk):
+def sdk_v2(sdk_config):
+    """Make the new SDK available to all tests, pointed at the compose stack"""
+    client = get_sdk(sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN)
+    return client
+
+
+@pytest.fixture(scope="session")
+def docker_compose(sdk):  # TODO: Replace with sdk v2
     """
     Start the Docker Compose stack, wait for it to be healthy, and clean up after tests are done.
 
@@ -43,7 +51,7 @@ def docker_compose(sdk):
     """
     print()
     print("Ensuring Docker Compose stack is not currently running")
-    subprocess.run("docker compose down", shell=True, check=True)
+    subprocess.run("docker compose down --timeout 1", shell=True, check=True)
 
     def docker_compose_up():
         subprocess.run(
@@ -53,13 +61,13 @@ def docker_compose(sdk):
         )
 
     try:
+        print("Launching docker compose")
         docker_compose_up()
     except subprocess.CalledProcessError as e:
         print(e)
         print("[bold red]Docker Compose failed to start. Retrying after a rebuild.")
         subprocess.run("docker compose build", shell=True, check=True)
         docker_compose_up()
-
     wait_for_healthy(
         healthcheck_url=sdk._build_url(constants.HEALTHCHECK_ENDPOINT),  # noqa
         startup_healthcheck_timeout=120,
@@ -94,4 +102,4 @@ def docker_compose(sdk):
     subprocess.run(f"docker compose logs > {logs_file_path}", shell=True, check=True)
     print(f"\n\nLogs written to {logs_file_path}")
     print("Tearing down Docker Compose stack")
-    subprocess.run("docker compose down", shell=True, check=True)
+    subprocess.run("docker compose down --timeout 1", shell=True, check=True)

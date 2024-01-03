@@ -4,7 +4,7 @@ from pydantic import Field
 from common.config.config import CentralityConfig
 from vmagent.rest.config import VmAgentRestConfig
 from vmagent.actors.metrics.config import MetricsConfig
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
+from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 
 
 class VmAgentConfig(CentralityConfig):

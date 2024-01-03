@@ -7,14 +7,20 @@
   "paths": {
     "/healthz": {
       "get": {
+        "tags": [
+          "data"
+        ],
         "summary": "Get Healthcheck",
-        "operationId": "get_healthcheck_healthz_get",
+        "description": "Basic healthcheck",
+        "operationId": "get_healthcheck",
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
               }
             }
           }
@@ -23,8 +29,12 @@
     },
     "/healthz/auth": {
       "get": {
+        "tags": [
+          "data"
+        ],
         "summary": "Get Auth Healthcheck",
-        "operationId": "get_auth_healthcheck_healthz_auth_get",
+        "description": "Basic healthcheck that requires authentication",
+        "operationId": "get_auth_healthcheck",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -44,11 +54,36 @@
         ]
       }
     },
+    "/info": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Info",
+        "description": "Return basic info about deployment",
+        "operationId": "get_info",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/metrics/cpu": {
       "get": {
-        "summary": "Get Cpu Metric",
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Cpu Metrics",
         "description": "Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
-        "operationId": "get_cpu_metric_metrics_cpu_get",
+        "operationId": "get_cpu_metrics",
         "security": [
           {
             "HTTPBearer": []
@@ -112,7 +147,7 @@
                   "items": {
                     "$ref": "#/components/schemas/CpuMeasurement"
                   },
-                  "title": "Response Get Cpu Metric Metrics Cpu Get"
+                  "title": "Response Get Cpu Metrics Metrics Cpu Get"
                 }
               }
             }
@@ -130,8 +165,12 @@
         }
       },
       "post": {
+        "tags": [
+          "data"
+        ],
         "summary": "Put Cpu Metric",
-        "operationId": "put_cpu_metric_metrics_cpu_post",
+        "description": "Put a cpu metric measurement into the datastore",
+        "operationId": "put_cpu_metric",
         "security": [
           {
             "HTTPBearer": []
@@ -169,6 +208,140 @@
             }
           }
         }
+      }
+    },
+    "/metrics/cpu/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Cpu Metrics",
+        "description": "Get the most recent CPU measurements for each VM",
+        "operationId": "get_latest_cpu_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CpuMeasurement"
+                  },
+                  "title": "Response Get Latest Cpu Metrics Metrics Cpu Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vm/heartbeat/{vm_id}": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Report Heartbeat",
+        "description": "Report a heartbeat for a VM",
+        "operationId": "report_heartbeat",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Vm Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vm/live": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "List Live Vms",
+        "description": "Return a list of the active VMs",
+        "operationId": "list_live_vms",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response List Live Vms Vm Live Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     }
   },
@@ -214,6 +387,35 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "InfoResponse": {
+        "properties": {
+          "git_commit": {
+            "type": "string",
+            "title": "Git Commit"
+          },
+          "git_branch": {
+            "type": "string",
+            "title": "Git Branch"
+          },
+          "git_is_dirty": {
+            "type": "boolean",
+            "title": "Git Is Dirty"
+          },
+          "deploy_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Deploy Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "git_commit",
+          "git_branch",
+          "git_is_dirty",
+          "deploy_time"
+        ],
+        "title": "InfoResponse"
       },
       "OkResponse": {
         "properties": {

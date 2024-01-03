@@ -10,12 +10,14 @@ from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.rest.utils.auth import auth, security
-from controlplane.rest.example.api import router as example_router
+# from controlplane.rest.example.api import router as example_router
 
 from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
+
+MAIN_TAG = "data"
 
 
 class OkResponse(BaseModel):
@@ -43,7 +45,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(example_router)
+# app.include_router(example_router)
 
 
 # Load config values from environment variables and setup connect to datastore
@@ -70,13 +72,13 @@ except ImportError as e:
     repo = None
 
 
-@app.get(constants.HEALTHCHECK_ENDPOINT)
-def get_healthcheck():
+@app.get(constants.HEALTHCHECK_ENDPOINT, tags=[MAIN_TAG])
+def get_healthcheck() -> OkResponse:
     """Basic healthcheck"""
     return OkResponse()
 
 
-@app.get(constants.AUTH_HEALTHCHECK_ENDPOINT)
+@app.get(constants.AUTH_HEALTHCHECK_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def get_auth_healthcheck(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
@@ -85,8 +87,8 @@ def get_auth_healthcheck(
     return OkResponse()
 
 
-@app.get(constants.INFO_ENDPOINT)
-def get_info():
+@app.get(constants.INFO_ENDPOINT, tags=[MAIN_TAG])
+def get_info() -> InfoResponse:
     """Return basic info about deployment"""
     git_branch = "unknown"
     git_commit = "unknown"
@@ -116,9 +118,9 @@ def get_info():
     )
 
 
-@app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
+@app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def get_cpu_metric(
+def get_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     vm_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
@@ -143,9 +145,9 @@ def get_cpu_metric(
     ]
 
 
-@app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT)
+@app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def get_latest_cpu_measurements(
+def get_latest_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     vm_ids: Annotated[list[str], Query()],
 ) -> list[CpuMeasurement]:
@@ -159,7 +161,7 @@ def get_latest_cpu_measurements(
     ]
 
 
-@app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT)
+@app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def put_cpu_metric(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
@@ -174,7 +176,7 @@ def put_cpu_metric(
     return OkResponse()
 
 
-@app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT)
+@app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def report_heartbeat(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
@@ -185,9 +187,9 @@ def report_heartbeat(
     return OkResponse()
 
 
-@app.get(constants.CONTROL_PLANE_VM_LIST_ENDPOINT)
+@app.get(constants.CONTROL_PLANE_LIVE_VM_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def list_vms(
+def list_live_vms(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> list[str]:
     """Return a list of the active VMs"""
