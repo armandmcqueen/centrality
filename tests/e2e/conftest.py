@@ -1,7 +1,7 @@
 import pytest
 import subprocess
 from pathlib import Path
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from centrality_controlplane_sdk import DataApi
 from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 from common.utils.wait_for_healthy import wait_for_healthy
 from common import constants
@@ -24,23 +24,23 @@ def sdk_config():
 
 
 @pytest.fixture(scope="session")
-def sdk(sdk_config):
+def sdk(sdk_config) -> DataApi:
     """Make the SDK available to all tests, pointed at the compose stack"""
-    sdk = ControlPlaneSdk(
-        config=sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
-    )
-    return sdk
-
-
-@pytest.fixture(scope="session")
-def sdk_v2(sdk_config):
-    """Make the new SDK available to all tests, pointed at the compose stack"""
     client = get_sdk(sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN)
     return client
 
 
 @pytest.fixture(scope="session")
-def docker_compose(sdk):  # TODO: Replace with sdk v2
+def unauthed_sdk(sdk_config) -> DataApi:
+    """Make an unauthorized SDK available"""
+    client = get_sdk(
+        sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN, disable_auth=True
+    )
+    return client
+
+
+@pytest.fixture(scope="session")
+def docker_compose(sdk: DataApi, sdk_config: ControlPlaneSdkConfig):
     """
     Start the Docker Compose stack, wait for it to be healthy, and clean up after tests are done.
 
@@ -68,8 +68,11 @@ def docker_compose(sdk):  # TODO: Replace with sdk v2
         print("[bold red]Docker Compose failed to start. Retrying after a rebuild.")
         subprocess.run("docker compose build", shell=True, check=True)
         docker_compose_up()
+
+    scheme = "https" if sdk_config.https else "http"
+    healthcheck_url = f"{scheme}://{sdk_config.host}:{sdk_config.port}{constants.HEALTHCHECK_ENDPOINT}"
     wait_for_healthy(
-        healthcheck_url=sdk._build_url(constants.HEALTHCHECK_ENDPOINT),  # noqa
+        healthcheck_url=healthcheck_url,
         startup_healthcheck_timeout=120,
         startup_healthcheck_poll_interval=0.5,
         log_progress=True,
@@ -83,7 +86,7 @@ def docker_compose(sdk):  # TODO: Replace with sdk v2
             raise Exception(
                 "Timed out waiting for live vms endpoint to show 4 machines"
             )
-        resp, live_vms = sdk.get_live_vms()
+        live_vms = sdk.list_live_vms()
         if len(live_vms) == 4:
             print("Live vms endpoint shows 4 machines as expected.")
             break

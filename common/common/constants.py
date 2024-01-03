@@ -11,7 +11,8 @@ INFO_ENDPOINT = "/info"
 CONTROL_PLANE_CPU_METRIC_ENDPOINT = "/metrics/cpu"
 CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT = "/metrics/cpu/latest"
 CONTROL_PLANE_LIVE_VM_ENDPOINT = "/vm/live"
-CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/heartbeat/{vm_id}"
+CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/{vm_id}/heartbeat"
+CONTROL_PLANE_VM_DEATH_ENDPOINT = "/vm/{vm_id}/death"
 
 
 def get_control_plane_vm_heartbeat_endpoint(vm_id: str) -> str:

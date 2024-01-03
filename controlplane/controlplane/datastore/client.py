@@ -1,7 +1,7 @@
 import datetime
 from typing import List, cast, Sequence, Optional, Any
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
 from controlplane.datastore.types.base import DatastoreBaseORM
@@ -196,6 +196,16 @@ class DatastoreClient:
                 )
             )
             session.execute(upsert_stmt)
+            session.commit()
+
+    def report_vm_death(
+        self,
+        vm_id: str,
+    ) -> None:
+        """Remove the VM from the list of active VMs."""
+        with Session(bind=self.engine) as session:
+            delete_stmt = delete(VmHeartbeatORM).where(VmHeartbeatORM.vm_id == vm_id)
+            session.execute(delete_stmt)
             session.commit()
 
     def get_live_vms(

@@ -5,7 +5,7 @@ from typing import Optional
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.cpu import CpuMetricCollector
 from vmagent.actors.heartbeat import HeartbeatSender
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from centrality_controlplane_sdk import DataApi
 
 
 class VmAgentActorSystem:
@@ -18,7 +18,7 @@ class VmAgentActorSystem:
     def __init__(
         self,
         vm_agent_config: VmAgentConfig,
-        control_plane_sdk: ControlPlaneSdk,
+        control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -46,7 +46,7 @@ class MetricSubsystem:
     def __init__(
         self,
         vm_agent_config: VmAgentConfig,
-        control_plane_sdk: ControlPlaneSdk,
+        control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
