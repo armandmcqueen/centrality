@@ -108,7 +108,7 @@ validate-openapi-spec:
 	openapi-generator validate -i controlplane/openapi.json
 
 .PHONY: generate-sdk
-generate-sdk:
+generate-sdk: delete-sdk
 	make -C controlplane gen-openapi-spec
 	openapi-generator generate \
 	  --input-spec controlplane/openapi.json \
