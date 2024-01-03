@@ -55,10 +55,6 @@ def launch(
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
-    # control_plane_sdk = ControlPlaneSdk(
-    #     config=config.controlplane_sdk,
-    #     token="dev",
-    # )
     control_plane_sdk = get_sdk(
         config.controlplane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )

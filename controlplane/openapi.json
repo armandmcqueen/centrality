@@ -270,9 +270,57 @@
         "tags": [
           "data"
         ],
-        "summary": "Report Heartbeat",
+        "summary": "Report Vm Heartbeat",
         "description": "Report a heartbeat for a VM",
-        "operationId": "report_heartbeat",
+        "operationId": "report_vm_heartbeat",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Vm Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vm/death/{vm_id}": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Report Vm Death",
+        "description": "Report that a VM is dead, so that it is removed immediately rather than just timing out",
+        "operationId": "report_vm_death",
         "security": [
           {
             "HTTPBearer": []

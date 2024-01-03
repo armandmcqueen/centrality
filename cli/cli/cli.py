@@ -16,7 +16,7 @@ app = typer.Typer()
 @app.command()
 def watch_vms() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
-    sdk_v2 = get_sdk(
+    sdk = get_sdk(
         config=control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
     rich.print("[bold underline cyan]Active Machines")
@@ -29,7 +29,7 @@ def watch_vms() -> None:
             while True:
                 if tick_count % 200 == 0:
                     # Update the list of VMs we track
-                    live_vms = sdk_v2.list_live_vms()
+                    live_vms = sdk.list_live_vms()
                     text = Text("\n".join(live_vms))
                     live.update(text)
 
@@ -44,7 +44,7 @@ def watch_vms() -> None:
 @app.command()
 def watch_cpu() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
-    sdk_v2 = get_sdk(
+    sdk = get_sdk(
         config=control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
 
@@ -62,7 +62,7 @@ def watch_cpu() -> None:
             refresh_per_second=10,
         ) as progress:
             vm_bars = {}
-            live_vms = sdk_v2.list_live_vms()
+            live_vms = sdk.list_live_vms()
             # TODO: Handle errors?
             for vm_id in live_vms:
                 vm_bars[vm_id] = progress.add_task(
@@ -75,7 +75,7 @@ def watch_cpu() -> None:
             while True:
                 if tick_count % 10_000 == 0:
                     # Update the list of VMs we track
-                    live_vms = sdk_v2.list_live_vms()
+                    live_vms = sdk.list_live_vms()
                     # TODO: Handle errors?
                     new_set = set(live_vms)
                     old_set = set(vm_bars.keys())
@@ -93,7 +93,7 @@ def watch_cpu() -> None:
                     # Update the CPU metrics for all VMs current tracked
                     live_vms = list(vm_bars.keys())
                     if len(live_vms) != 0:
-                        latest_cpu_measurements = sdk_v2.get_latest_cpu_metrics(
+                        latest_cpu_measurements = sdk.get_latest_cpu_metrics(
                             vm_ids=live_vms
                         )
                         # TODO: Handle errors?

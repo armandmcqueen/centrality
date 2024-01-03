@@ -178,12 +178,23 @@ def put_cpu_metric(
 
 @app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def report_heartbeat(
+def report_vm_heartbeat(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     vm_id: str,
 ) -> OkResponse:
     """Report a heartbeat for a VM"""
     datastore_client.report_heartbeat(vm_id=vm_id)
+    return OkResponse()
+
+
+@app.post(constants.CONTROL_PLANE_VM_DEATH_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def report_vm_death(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_id: str,
+) -> OkResponse:
+    """Report that a VM is dead, so that it is removed immediately rather than just timing out"""
+    datastore_client.report_vm_death(vm_id=vm_id)
     return OkResponse()
 
 

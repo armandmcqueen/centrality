@@ -16,7 +16,7 @@ docker-compose-mount-up:
 
 .PHONY: test
 test:
-	# TODO: Incorporate CentralityCommon tests
+	# TODO: Incorporate CentralityConfig tests
 	make -C tests/e2e test
 	make -C tests/datastore test
 

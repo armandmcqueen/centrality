@@ -24,14 +24,23 @@ def sdk_config():
 
 
 @pytest.fixture(scope="session")
-def sdk_v2(sdk_config) -> DataApi:
-    """Make the new SDK available to all tests, pointed at the compose stack"""
+def sdk(sdk_config) -> DataApi:
+    """Make the SDK available to all tests, pointed at the compose stack"""
     client = get_sdk(sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN)
     return client
 
 
 @pytest.fixture(scope="session")
-def docker_compose(sdk_v2: DataApi, sdk_config: ControlPlaneSdkConfig):
+def unauthed_sdk(sdk_config) -> DataApi:
+    """Make an unauthorized SDK available"""
+    client = get_sdk(
+        sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN, disable_auth=True
+    )
+    return client
+
+
+@pytest.fixture(scope="session")
+def docker_compose(sdk: DataApi, sdk_config: ControlPlaneSdkConfig):
     """
     Start the Docker Compose stack, wait for it to be healthy, and clean up after tests are done.
 
@@ -77,7 +86,7 @@ def docker_compose(sdk_v2: DataApi, sdk_config: ControlPlaneSdkConfig):
             raise Exception(
                 "Timed out waiting for live vms endpoint to show 4 machines"
             )
-        live_vms = sdk_v2.list_live_vms()
+        live_vms = sdk.list_live_vms()
         if len(live_vms) == 4:
             print("Live vms endpoint shows 4 machines as expected.")
             break

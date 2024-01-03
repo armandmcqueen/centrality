@@ -28,7 +28,7 @@ class HeartbeatSender(conclib.PeriodicActor):
         if isinstance(message, SendHeartbeat):
             # print("💌 HeartbeatSender - sending heartbeat")  # TODO: Readd this once we have leveled logging
             try:
-                self.control_plane_sdk.report_heartbeat(
+                self.control_plane_sdk.report_vm_heartbeat(
                     vm_id=self.vm_agent_config.vm_id
                 )
             except Exception as e:

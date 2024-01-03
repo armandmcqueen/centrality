@@ -75,10 +75,17 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
-    def test_report_heartbeat(self) -> None:
-        """Test case for report_heartbeat
+    def test_report_vm_death(self) -> None:
+        """Test case for report_vm_death
 
-        Report Heartbeat
+        Report Vm Death
+        """
+        pass
+
+    def test_report_vm_heartbeat(self) -> None:
+        """Test case for report_vm_heartbeat
+
+        Report Vm Heartbeat
         """
         pass
 
