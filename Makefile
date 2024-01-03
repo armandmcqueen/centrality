@@ -113,8 +113,8 @@ generate-sdk:
 	openapi-generator generate \
 	  --input-spec controlplane/openapi.json \
 	  --generator-name python \
-	  --output common/common/sdks/controlplane/gen \
-	  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk,generateSourceCodeOnly=true
+	  --output sdk_controlplane \
+	  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk
 	#  --additional-properties=packageName=controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk,generateSourceCodeOnly=true
 #	openapi-generator generate \
 #	  --input-spec controlplane/openapi.json \
@@ -125,4 +125,5 @@ generate-sdk:
 
 .PHONY: delete-sdk
 delete-sdk:
-	rm -rf common/common/sdks/controlplane/gen
+	#rm -rf common/common/sdks/controlplane/gen
+	rm -rf sdk_controlplane

@@ -14,14 +14,14 @@
 
 import unittest
 
-from controlplane_sdk.api.main_api import MainApi
+from controlplane_sdk.api.data_api import DataApi
 
 
-class TestMainApi(unittest.TestCase):
-    """MainApi unit test stubs"""
+class TestDataApi(unittest.TestCase):
+    """DataApi unit test stubs"""
 
     def setUp(self) -> None:
-        self.api = MainApi()
+        self.api = DataApi()
 
     def tearDown(self) -> None:
         pass
@@ -83,5 +83,5 @@ class TestMainApi(unittest.TestCase):
         pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,5 @@
 from common.config.config import CentralityConfig
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
+from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 from pydantic import Field
 
 

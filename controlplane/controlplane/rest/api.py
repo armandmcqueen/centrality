@@ -73,7 +73,7 @@ except ImportError as e:
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT, tags=[MAIN_TAG])
-def get_healthcheck():
+def get_healthcheck() -> OkResponse:
     """Basic healthcheck"""
     return OkResponse()
 
@@ -120,7 +120,7 @@ def get_info() -> InfoResponse:
 
 @app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def get_cpu_metric(
+def get_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     vm_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
@@ -147,7 +147,7 @@ def get_cpu_metric(
 
 @app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def get_latest_cpu_measurements(
+def get_latest_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     vm_ids: Annotated[list[str], Query()],
 ) -> list[CpuMeasurement]:
@@ -187,9 +187,9 @@ def report_heartbeat(
     return OkResponse()
 
 
-@app.get(constants.CONTROL_PLANE_VM_LIST_ENDPOINT, tags=[MAIN_TAG])
+@app.get(constants.CONTROL_PLANE_VM_LIST_LIVE_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def list_vms(
+def list_live_vms(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> list[str]:
     """Return a list of the active VMs"""

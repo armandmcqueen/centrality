@@ -5,11 +5,11 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_auth_healthcheck**](DataApi.md#get_auth_healthcheck) | **GET** /healthz/auth | Get Auth Healthcheck
-[**get_cpu_metric**](DataApi.md#get_cpu_metric) | **GET** /metrics/cpu | Get Cpu Metric
+[**get_cpu_metrics**](DataApi.md#get_cpu_metrics) | **GET** /metrics/cpu | Get Cpu Metrics
 [**get_healthcheck**](DataApi.md#get_healthcheck) | **GET** /healthz | Get Healthcheck
 [**get_info**](DataApi.md#get_info) | **GET** /info | Get Info
-[**get_latest_cpu_measurements**](DataApi.md#get_latest_cpu_measurements) | **GET** /metrics/cpu/latest | Get Latest Cpu Measurements
-[**list_vms**](DataApi.md#list_vms) | **GET** /vm/list | List Vms
+[**get_latest_cpu_metrics**](DataApi.md#get_latest_cpu_metrics) | **GET** /metrics/cpu/latest | Get Latest Cpu Metrics
+[**list_live_vms**](DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 [**put_cpu_metric**](DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
 [**report_heartbeat**](DataApi.md#report_heartbeat) | **POST** /vm/heartbeat/{vm_id} | Report Heartbeat
 
@@ -87,10 +87,10 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_cpu_metric**
-> List[CpuMeasurement] get_cpu_metric(vm_ids, from_ts=from_ts, to_ts=to_ts)
+# **get_cpu_metrics**
+> List[CpuMeasurement] get_cpu_metrics(vm_ids, from_ts=from_ts, to_ts=to_ts)
 
-Get Cpu Metric
+Get Cpu Metrics
 
 Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
@@ -130,12 +130,12 @@ with controlplane_sdk.ApiClient(configuration) as api_client:
     to_ts = '2013-10-20T19:20:30+01:00' # datetime |  (optional)
 
     try:
-        # Get Cpu Metric
-        api_response = api_instance.get_cpu_metric(vm_ids, from_ts=from_ts, to_ts=to_ts)
-        print("The response of DataApi->get_cpu_metric:\n")
+        # Get Cpu Metrics
+        api_response = api_instance.get_cpu_metrics(vm_ids, from_ts=from_ts, to_ts=to_ts)
+        print("The response of DataApi->get_cpu_metrics:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataApi->get_cpu_metric: %s\n" % e)
+        print("Exception when calling DataApi->get_cpu_metrics: %s\n" % e)
 ```
 
 
@@ -170,7 +170,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_healthcheck**
-> get_healthcheck()
+> OkResponse get_healthcheck()
 
 Get Healthcheck
 
@@ -182,6 +182,7 @@ Basic healthcheck
 import time
 import os
 import controlplane_sdk
+from controlplane_sdk.models.ok_response import OkResponse
 from controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -199,7 +200,9 @@ with controlplane_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Get Healthcheck
-        api_instance.get_healthcheck()
+        api_response = api_instance.get_healthcheck()
+        print("The response of DataApi->get_healthcheck:\n")
+        pprint(api_response)
     except Exception as e:
         print("Exception when calling DataApi->get_healthcheck: %s\n" % e)
 ```
@@ -211,7 +214,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-void (empty response body)
+[**OkResponse**](OkResponse.md)
 
 ### Authorization
 
@@ -292,10 +295,10 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_latest_cpu_measurements**
-> List[CpuMeasurement] get_latest_cpu_measurements(vm_ids)
+# **get_latest_cpu_metrics**
+> List[CpuMeasurement] get_latest_cpu_metrics(vm_ids)
 
-Get Latest Cpu Measurements
+Get Latest Cpu Metrics
 
 Get the most recent CPU measurements for each VM
 
@@ -333,12 +336,12 @@ with controlplane_sdk.ApiClient(configuration) as api_client:
     vm_ids = ['vm_ids_example'] # List[str] | 
 
     try:
-        # Get Latest Cpu Measurements
-        api_response = api_instance.get_latest_cpu_measurements(vm_ids)
-        print("The response of DataApi->get_latest_cpu_measurements:\n")
+        # Get Latest Cpu Metrics
+        api_response = api_instance.get_latest_cpu_metrics(vm_ids)
+        print("The response of DataApi->get_latest_cpu_metrics:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataApi->get_latest_cpu_measurements: %s\n" % e)
+        print("Exception when calling DataApi->get_latest_cpu_metrics: %s\n" % e)
 ```
 
 
@@ -370,10 +373,10 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **list_vms**
-> List[str] list_vms()
+# **list_live_vms**
+> List[str] list_live_vms()
 
-List Vms
+List Live Vms
 
 Return a list of the active VMs
 
@@ -409,12 +412,12 @@ with controlplane_sdk.ApiClient(configuration) as api_client:
     api_instance = controlplane_sdk.DataApi(api_client)
 
     try:
-        # List Vms
-        api_response = api_instance.list_vms()
-        print("The response of DataApi->list_vms:\n")
+        # List Live Vms
+        api_response = api_instance.list_live_vms()
+        print("The response of DataApi->list_live_vms:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling DataApi->list_vms: %s\n" % e)
+        print("Exception when calling DataApi->list_live_vms: %s\n" % e)
 ```
 
 

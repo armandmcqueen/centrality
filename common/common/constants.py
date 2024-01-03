@@ -10,7 +10,7 @@ INFO_ENDPOINT = "/info"
 # Control Plane specific endpoints
 CONTROL_PLANE_CPU_METRIC_ENDPOINT = "/metrics/cpu"
 CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT = "/metrics/cpu/latest"
-CONTROL_PLANE_VM_LIST_ENDPOINT = "/vm/list"
+CONTROL_PLANE_VM_LIST_LIVE_ENDPOINT = "/vm/live"
 CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/heartbeat/{vm_id}"
 
 

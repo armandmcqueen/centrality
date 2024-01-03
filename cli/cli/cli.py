@@ -1,6 +1,6 @@
 from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from common.cli_utils import CliContextManager
-from common.sdks.controlplane.handwritten.config import ControlPlaneSdkConfig
+from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn
 from rich.live import Live
 from rich.text import Text
