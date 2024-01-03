@@ -11,8 +11,8 @@ Method | HTTP request | Description
 [**get_latest_cpu_metrics**](DataApi.md#get_latest_cpu_metrics) | **GET** /metrics/cpu/latest | Get Latest Cpu Metrics
 [**list_live_vms**](DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 [**put_cpu_metric**](DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
-[**report_vm_death**](DataApi.md#report_vm_death) | **POST** /vm/death/{vm_id} | Report Vm Death
-[**report_vm_heartbeat**](DataApi.md#report_vm_heartbeat) | **POST** /vm/heartbeat/{vm_id} | Report Vm Heartbeat
+[**report_vm_death**](DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
+[**report_vm_heartbeat**](DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
 
 
 # **get_auth_healthcheck**

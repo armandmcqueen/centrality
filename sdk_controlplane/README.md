@@ -100,8 +100,8 @@ Class | Method | HTTP request | Description
 *DataApi* | [**get_latest_cpu_metrics**](docs/DataApi.md#get_latest_cpu_metrics) | **GET** /metrics/cpu/latest | Get Latest Cpu Metrics
 *DataApi* | [**list_live_vms**](docs/DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 *DataApi* | [**put_cpu_metric**](docs/DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
-*DataApi* | [**report_vm_death**](docs/DataApi.md#report_vm_death) | **POST** /vm/death/{vm_id} | Report Vm Death
-*DataApi* | [**report_vm_heartbeat**](docs/DataApi.md#report_vm_heartbeat) | **POST** /vm/heartbeat/{vm_id} | Report Vm Heartbeat
+*DataApi* | [**report_vm_death**](docs/DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
+*DataApi* | [**report_vm_heartbeat**](docs/DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
 
 
 ## Documentation For Models

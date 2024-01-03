@@ -265,7 +265,7 @@
         }
       }
     },
-    "/vm/heartbeat/{vm_id}": {
+    "/vm/{vm_id}/heartbeat": {
       "post": {
         "tags": [
           "data"
@@ -313,7 +313,7 @@
         }
       }
     },
-    "/vm/death/{vm_id}": {
+    "/vm/{vm_id}/death": {
       "post": {
         "tags": [
           "data"

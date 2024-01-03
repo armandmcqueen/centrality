@@ -30,6 +30,7 @@ def test_auth(docker_compose, unauthed_sdk: DataApi):
     assert health_resp.status == "ok", f"Healthcheck is not 'ok': {health_resp}"
 
     with pytest.raises(ApiException) as e:  # type: ApiException
+        print(e)
         _ = unauthed_sdk.get_auth_healthcheck()
         assert e.status == 403, f"Expected 403 error code, got {e.status}"
 
