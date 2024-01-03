@@ -23,7 +23,7 @@ def test_get_latest_cpu_metrics(docker_compose, sdk_v2):
     """
     print_test_function_name()
 
-    live_vms = sdk_v2.list_live_vms
+    live_vms = sdk_v2.list_live_vms()
     print(live_vms)
     cpu_measurements = sdk_v2.get_latest_cpu_metrics(vm_ids=live_vms)
     assert (
