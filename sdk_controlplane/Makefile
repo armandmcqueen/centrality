@@ -3,5 +3,5 @@ install:
 	pip install .
 
 .PHONY: install-dev
-install:
+install-dev:
 	pip install .
