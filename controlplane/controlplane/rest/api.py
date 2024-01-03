@@ -5,6 +5,7 @@ import json
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
+from controlplane.datastore.types.vmliveness import VmRegistration
 from common import constants
 from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
@@ -176,6 +177,17 @@ def put_cpu_metric(
     return OkResponse()
 
 
+@app.post(constants.CONTROL_PLANE_VM_REGISTRATION_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def register_vm(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    registration_info: VmRegistration,
+) -> OkResponse:
+    """Register a VM"""
+    datastore_client.register_vm(registration_info=registration_info)
+    return OkResponse()
+
+
 @app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def report_vm_heartbeat(
@@ -208,6 +220,7 @@ def list_live_vms(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
 ) -> list[str]:
     """Return a list of the active VMs"""
+    # TODO: Convert to return machine info
     live_vms = datastore_client.get_live_vms(
         liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS
     )

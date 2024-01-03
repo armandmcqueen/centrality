@@ -12,7 +12,11 @@ from controlplane.datastore.types.vmmetrics import (
     CpuVmMetricLatestORM,
     CpuVmMetricLatest,
 )
-from controlplane.datastore.types.vmliveness import VmHeartbeatORM
+from controlplane.datastore.types.vmliveness import (
+    VmHeartbeatORM,
+    VmHeartbeat,
+    VmRegistration,
+)
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
@@ -181,12 +185,67 @@ class DatastoreClient:
             session.query(CpuVmMetricORM).filter(*filters).delete()
             session.commit()
 
-    def report_heartbeat(
+    def register_vm(  # TODO: Rename to be more datastore oriented instead of application oriented
+        self,
+        registration_info: VmRegistration,
+    ) -> None:
+        """
+        Register a VM with information about the machine.
+
+        Will raise an exception if the VM is already registered with different machine specs. If the machine
+        spec is the same, it will update the registration timestamp and last heartbeat timestamp.
+        """
+        with Session(bind=self.engine) as session:
+            # If the VM is not already registered, add it
+            existing_vm = (
+                session.query(VmHeartbeatORM)
+                .filter(VmHeartbeatORM.vm_id == registration_info.vm_id)
+                .first()
+            )
+            if existing_vm is None:
+                registration = registration_info.to_heartbeat_orm()
+                session.add(registration)
+                session.commit()
+            else:
+                # Otherwise, confirm that the registration info matches what is already in the database
+                existing_vm = cast(VmHeartbeatORM, existing_vm)
+                previous_registration_info = VmHeartbeat.from_orm(existing_vm)
+                for field in VmRegistration.model_fields.keys():
+                    if getattr(previous_registration_info, field) != getattr(
+                        registration_info, field
+                    ):
+                        # TODO: Use custom exception class and better error message that explains intended behavior to user
+                        raise Exception(
+                            f"VM registration info does not match what is already in the database. "
+                            f"Field: {field}, existing: {getattr(existing_vm, field)}, "
+                            f"new: {getattr(registration_info, field)}"
+                        )
+
+                # Update the registration timestamp and last heartbeat timestamp in the DB
+                existing_vm.registration_ts = datetime.datetime.now(
+                    datetime.timezone.utc
+                )
+                existing_vm.last_heartbeat_ts = datetime.datetime.now(
+                    datetime.timezone.utc
+                )
+                session.commit()
+
+    def report_heartbeat(  # TODO: Rename to be more datastore oriented instead of application oriented
         self,
         vm_id: str,
     ) -> None:
         """Set the last heartbeat for a VM to be the current time"""
         with Session(bind=self.engine) as session:
+            existing_vm = (
+                session.query(VmHeartbeatORM)
+                .filter(VmHeartbeatORM.vm_id == vm_id)
+                .first()
+            )
+            if existing_vm is None:
+                # TODO: Improve this exception with custom class
+                raise Exception(
+                    f"VM {vm_id} is reporting heartbeat, but has not registered yet"
+                )
             upsert_stmt = (
                 insert(VmHeartbeatORM)
                 .values(vm_id=vm_id, last_heartbeat_ts=datetime.datetime.utcnow())
@@ -205,6 +264,7 @@ class DatastoreClient:
         """Remove the VM from the list of active VMs."""
         with Session(bind=self.engine) as session:
             delete_stmt = delete(VmHeartbeatORM).where(VmHeartbeatORM.vm_id == vm_id)
+            # TODO: Delete the row or just set the last heartbeat to be a long time ago as a gravestone?
             session.execute(delete_stmt)
             session.commit()
 
@@ -215,6 +275,7 @@ class DatastoreClient:
         """
         Get a list of VMs that have sent a heartbeat in the last liveness_threshold_secs seconds
         """
+        # TODO: Convert to return machine info
         min_ts = datetime.datetime.utcnow() - datetime.timedelta(
             seconds=liveness_threshold_secs
         )
