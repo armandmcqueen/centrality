@@ -1,8 +1,6 @@
 name: Deploy Preview
 on:
-  push:
-    branches-ignore:
-      - main
+  pull_request:
 
 # Only allow one deploy-preview job per branch. The launch logic is idempotent, so we can just cancel
 # any existing jobs and launch a new one.
