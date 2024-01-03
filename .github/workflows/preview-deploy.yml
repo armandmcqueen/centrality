@@ -1,5 +1,9 @@
 name: Deploy Preview
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - main
+
 # Only allow one deploy-preview job per branch. The launch logic is idempotent, so we can just cancel
 # any existing jobs and launch a new one.
 concurrency:
@@ -34,19 +38,11 @@ jobs:
       - name: Deploy Preview
         id: deploy-preview
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-              echo "Skipping preview deployment for main branch"
-              exit 0
-          fi
           python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
 
       - name: Save Preview URL
         id: preview-url
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-              echo "Skipping preview deployment for main branch"
-              exit 0
-          fi
           URL=$(cat /tmp/preview-url)
           echo ${URL}
           ENVSET=PREVIEW_URL=${URL}
@@ -62,10 +58,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-              echo "Skipping preview deployment for main branch"
-              exit 0
-          fi
           export PR_NUMBER=$(gh pr view --json number -q .number || echo "" )
           
           
