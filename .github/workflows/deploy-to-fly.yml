@@ -1,0 +1,33 @@
+name: Deploy to Fly
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Fly
+    runs-on: ubuntu-latest
+    steps:
+      # Avoid concurrent deployment runs
+      - name: Check for concurrent runs
+        uses: softprops/turnstyle@v1
+        with:
+          poll-interval-seconds: 5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v4
+
+      # Setup flyctl
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: 0.1.136
+
+      # Deploy to Fly
+      - name: Deploy to Fly
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
