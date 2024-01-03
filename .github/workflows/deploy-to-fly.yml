@@ -2,8 +2,8 @@ name: Deploy to Fly
 
 on:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
 
 jobs:
   deploy:
