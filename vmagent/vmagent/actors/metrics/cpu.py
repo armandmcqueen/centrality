@@ -2,10 +2,9 @@ import psutil
 import datetime
 import conclib
 from common import constants
-from common.types.vmmetrics import CpuMeasurement
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
+from centrality_controlplane_sdk import DataApi, CpuMeasurement
 
 
 class SendCpuMetrics(conclib.ActorMessage):
@@ -21,7 +20,7 @@ class CpuMetricCollector(conclib.PeriodicActor):
     def __init__(
         self,
         vm_agent_config: VmAgentConfig,
-        control_plane_sdk: ControlPlaneSdk,
+        control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -42,10 +41,10 @@ class CpuMetricCollector(conclib.PeriodicActor):
 
         measurement = CpuMeasurement(
             vm_id=self.vm_agent_config.vm_id,
-            ts=datetime.datetime.utcnow(),
+            ts=datetime.datetime.now(datetime.timezone.utc),
             cpu_percents=cpu_percents,
         )
-        self.control_plane_sdk.write_cpu_metric(measurement=measurement)
+        self.control_plane_sdk.put_cpu_metric(cpu_measurement=measurement)
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendCpuMetrics):

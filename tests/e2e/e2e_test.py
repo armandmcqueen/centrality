@@ -1,30 +1,31 @@
 import datetime
+from centrality_controlplane_sdk import DataApi
 from rich import print
 from ..utils.utils import print_test_function_name
 
 
-def test_live_vms(docker_compose, sdk):
+# TODO: This is duplicative with sdk_v2_test
+def test_live_vms(docker_compose, sdk_v2: DataApi):
     """
     Check if the live vms endpoint is working correctly. Implicitly checks if the
     agents are sending heartbeats correctly.
     """
     print_test_function_name()
 
-    resp, live_vms = sdk.get_live_vms()
-    assert resp.status_code == 200, "Failed to get live vms from control plane"
+    live_vms = sdk_v2.list_live_vms()
     assert len(live_vms) == 4, f"Expected 4 live vms, got {len(live_vms)}"
 
 
-def test_get_latest_cpu_metrics(docker_compose, sdk):
+# TODO: This is duplicative with sdk_v2_test
+def test_get_latest_cpu_metrics(docker_compose, sdk_v2):
     """
     Check if the get latest cpu measurements endpoint is working correctly.
     """
     print_test_function_name()
 
-    resp, live_vms = sdk.get_live_vms()
+    live_vms = sdk_v2.list_live_vms
     print(live_vms)
-    resp, cpu_measurements = sdk.get_latest_cpu_measurements(vm_ids=live_vms)
-    assert resp.status_code == 200, "Failed to get cpu measurements from control plane"
+    cpu_measurements = sdk_v2.get_latest_cpu_metrics(vm_ids=live_vms)
     assert (
         len(cpu_measurements) == 4
     ), f"Expected 4 cpu measurements, got {len(cpu_measurements)}"

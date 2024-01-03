@@ -4,17 +4,18 @@ import streamlit as st
 from rapidui.library.flexbox import UniformFlexbox
 from rapidui.header import header
 from rapidui.library.utils import load_config, calculate_epoch
-from rapidui.library.constants import TOKEN
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from common.sdks.controlplane.sdk import get_sdk
+from common import constants
+from centrality_controlplane_sdk import DataApi
 from rapidui.library.cpu_view import CpuCardContents, CpuCard
 
 
 @st.cache_data
 def get_cpu_metrics_for_vm(
-    _sdk: ControlPlaneSdk, vm_id: str, epoch: int
+    _sdk: DataApi, vm_id: str, epoch: int
 ) -> list[CpuCardContents]:
     """Use epoch as a cache key to force a refresh at some interval"""
-    resp, measurements = _sdk.get_latest_cpu_measurements(vm_ids=[vm_id])
+    measurements = _sdk.get_latest_cpu_metrics(vm_ids=[vm_id])
     # TODO: Handle errors?
     assert (
         len(measurements) == 1
@@ -26,15 +27,17 @@ def get_cpu_metrics_for_vm(
 
 
 @st.cache_data
-def get_live_vms(_sdk: ControlPlaneSdk, epoch: int) -> list[str]:
-    resp, live_vms = _sdk.get_live_vms()
+def get_live_vms(_sdk: DataApi, epoch: int) -> list[str]:
+    live_vms = _sdk.list_live_vms()
     # TODO: Handle errors?
     return sorted(live_vms)
 
 
 def main():
     config = load_config()
-    control_plane_sdk = ControlPlaneSdk(config=config.control_plane_sdk, token=TOKEN)
+    control_plane_sdk = get_sdk(
+        config=config.control_plane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
+    )
     header("Machine CPUs", disable_card_fill=True)
 
     live_vms = get_live_vms(

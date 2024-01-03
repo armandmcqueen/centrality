@@ -10,6 +10,10 @@ docker-run:
 docker-push:
 	docker push armandmcqueen/centrality-dev:latest
 
+.PHONY: docker-compose-mount-up
+docker-compose-mount-up:
+	docker compose -f compose.yaml -f compose-override-mountcode.yaml up
+
 .PHONY: test
 test:
 	# TODO: Incorporate CentralityCommon tests

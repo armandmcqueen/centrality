@@ -1,7 +1,7 @@
 import conclib
 
 from common import constants
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from centrality_controlplane_sdk import DataApi
 from vmagent.config import VmAgentConfig
 
 
@@ -18,7 +18,7 @@ class HeartbeatSender(conclib.PeriodicActor):
     def __init__(
         self,
         vm_agent_config: VmAgentConfig,
-        control_plane_sdk: ControlPlaneSdk,
+        control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
@@ -28,7 +28,9 @@ class HeartbeatSender(conclib.PeriodicActor):
         if isinstance(message, SendHeartbeat):
             # print("💌 HeartbeatSender - sending heartbeat")  # TODO: Readd this once we have leveled logging
             try:
-                self.control_plane_sdk.send_heartbeat(vm_id=self.vm_agent_config.vm_id)
+                self.control_plane_sdk.report_heartbeat(
+                    vm_id=self.vm_agent_config.vm_id
+                )
             except Exception as e:
                 print(f"🚨 HeartbeatSender - failed to send heartbeat: {e}")
         else:

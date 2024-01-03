@@ -1,5 +1,6 @@
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from common.sdks.controlplane.sdk import get_sdk
 from common.cli_utils import CliContextManager
+from common import constants
 from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn
 from rich.live import Live
@@ -11,15 +12,12 @@ import time
 
 app = typer.Typer()
 
-TOKEN = "dev"
-
 
 @app.command()
 def watch_vms() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
-    control_plane_sdk = ControlPlaneSdk(
-        config=control_plane_sdk_config,
-        token=TOKEN,
+    sdk_v2 = get_sdk(
+        config=control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
     rich.print("[bold underline cyan]Active Machines")
     text = Text()
@@ -31,7 +29,7 @@ def watch_vms() -> None:
             while True:
                 if tick_count % 200 == 0:
                     # Update the list of VMs we track
-                    resp, live_vms = control_plane_sdk.get_live_vms()
+                    live_vms = sdk_v2.list_live_vms()
                     text = Text("\n".join(live_vms))
                     live.update(text)
 
@@ -46,9 +44,8 @@ def watch_vms() -> None:
 @app.command()
 def watch_cpu() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
-    control_plane_sdk = ControlPlaneSdk(
-        config=control_plane_sdk_config,
-        token=TOKEN,
+    sdk_v2 = get_sdk(
+        config=control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
 
     console = rich.console.Console()
@@ -65,7 +62,7 @@ def watch_cpu() -> None:
             refresh_per_second=10,
         ) as progress:
             vm_bars = {}
-            resp, live_vms = control_plane_sdk.get_live_vms()
+            live_vms = sdk_v2.list_live_vms()
             # TODO: Handle errors?
             for vm_id in live_vms:
                 vm_bars[vm_id] = progress.add_task(
@@ -78,7 +75,7 @@ def watch_cpu() -> None:
             while True:
                 if tick_count % 10_000 == 0:
                     # Update the list of VMs we track
-                    resp, live_vms = control_plane_sdk.get_live_vms()
+                    live_vms = sdk_v2.list_live_vms()
                     # TODO: Handle errors?
                     new_set = set(live_vms)
                     old_set = set(vm_bars.keys())
@@ -96,10 +93,9 @@ def watch_cpu() -> None:
                     # Update the CPU metrics for all VMs current tracked
                     live_vms = list(vm_bars.keys())
                     if len(live_vms) != 0:
-                        (
-                            resp,
-                            latest_cpu_measurements,
-                        ) = control_plane_sdk.get_latest_cpu_measurements(live_vms)
+                        latest_cpu_measurements = sdk_v2.get_latest_cpu_metrics(
+                            vm_ids=live_vms
+                        )
                         # TODO: Handle errors?
 
                         for measurement in latest_cpu_measurements:

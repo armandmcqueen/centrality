@@ -11,7 +11,7 @@ from common import constants
 
 from vmagent.config import VmAgentConfig
 from vmagent.actorsystem import VmAgentActorSystem
-from common.sdks.controlplane.handwritten.sdk import ControlPlaneSdk
+from common.sdks.controlplane.sdk import get_sdk
 from typing import Optional
 
 
@@ -55,9 +55,12 @@ def launch(
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
-    control_plane_sdk = ControlPlaneSdk(
-        config=config.controlplane_sdk,
-        token="dev",
+    # control_plane_sdk = ControlPlaneSdk(
+    #     config=config.controlplane_sdk,
+    #     token="dev",
+    # )
+    control_plane_sdk = get_sdk(
+        config.controlplane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
     _ = VmAgentActorSystem(
         vm_agent_config=config,
