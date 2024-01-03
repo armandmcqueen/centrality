@@ -73,7 +73,7 @@ check:
 
 .PHONY: install
 install:
-	pip install -e sdk_controlplane
+	make -C sdk_controlplane install
 	make -C common install
 	make -C controlplane install
 	make -C cli install
@@ -85,7 +85,7 @@ install:
 
 .PHONY: install-dev
 install-dev:
-	pip install -e sdk_controlplane
+	make -C sdk_controlplane install-dev
 	make -C common install-dev
 	make -C controlplane install-dev
 	make -C cli install-dev
@@ -117,6 +117,7 @@ generate-sdk: delete-sdk
 	  --generator-name python \
 	  --output sdk_controlplane \
 	  --additional-properties=packageName=centrality_controlplane_sdk,packageVersion=0.0.1,projectName=centrality-controlplane-sdk
+	  cp Makefile_sdk_controlplane sdk_controlplane/Makefile
 
 .PHONY: delete-sdk
 delete-sdk:
