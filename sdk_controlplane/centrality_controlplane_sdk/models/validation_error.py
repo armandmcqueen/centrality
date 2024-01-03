@@ -20,7 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List
 from pydantic import BaseModel, StrictStr
-from controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner
+from centrality_controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner
 try:
     from typing import Self
 except ImportError:

@@ -71,7 +71,7 @@ class ControlPlaneSdk:
 
     def get_live_vms(self) -> tuple[requests.Response, list[str]]:
         """Get a list of VMs that are currently alive based on heartbeats"""
-        url = self._build_url(constants.CONTROL_PLANE_VM_LIST_LIVE_ENDPOINT)
+        url = self._build_url(constants.CONTROL_PLANE_LIVE_VM_ENDPOINT)
         response = requests.get(url, headers=self.headers)
         vm_ids = [vm_id for vm_id in response.json()]
         return response, vm_ids

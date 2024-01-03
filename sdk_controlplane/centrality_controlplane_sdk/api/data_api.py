@@ -29,13 +29,13 @@ from pydantic import StrictStr
 
 from typing import List, Optional
 
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
-from controlplane_sdk.models.info_response import InfoResponse
-from controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.models.info_response import InfoResponse
+from centrality_controlplane_sdk.models.ok_response import OkResponse
 
-from controlplane_sdk.api_client import ApiClient
-from controlplane_sdk.api_response import ApiResponse
-from controlplane_sdk.rest import RESTResponseType
+from centrality_controlplane_sdk.api_client import ApiClient
+from centrality_controlplane_sdk.api_response import ApiResponse
+from centrality_controlplane_sdk.rest import RESTResponseType
 
 
 class DataApi:

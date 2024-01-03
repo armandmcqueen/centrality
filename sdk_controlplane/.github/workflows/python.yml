@@ -3,7 +3,7 @@
 #
 # ref: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: controlplane_sdk Python package
+name: centrality_controlplane_sdk Python package
 
 on: [push, pull_request]
 

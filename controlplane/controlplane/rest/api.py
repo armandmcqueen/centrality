@@ -187,7 +187,7 @@ def report_heartbeat(
     return OkResponse()
 
 
-@app.get(constants.CONTROL_PLANE_VM_LIST_LIVE_ENDPOINT, tags=[MAIN_TAG])
+@app.get(constants.CONTROL_PLANE_LIVE_VM_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def list_live_vms(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa

@@ -12,17 +12,14 @@ description = "Centrality common lib"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "centrality-controlplane-sdk == 0.0.1",
     "pydantic ~= 2.5.2",
     "PyYAML ~= 6.0",
     "requests ~= 2.31.0",
     "urllib3 >= 1.25.3",
     "python-dateutil >=2.8.2",
     "typing-extensions >=4.7.1",
-    # TODO: Add sdk_controlplane
 ]
-
-[tool.ruff]
-exclude = ["common/sdks/controlplane/gen"]
 
 [project.optional-dependencies]
 dev = [

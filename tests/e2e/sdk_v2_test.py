@@ -1,4 +1,4 @@
-import controlplane_sdk
+import centrality_controlplane_sdk as controlplane_sdk
 import datetime
 from rich import print
 

@@ -20,7 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel
-from controlplane_sdk.models.validation_error import ValidationError
+from centrality_controlplane_sdk.models.validation_error import ValidationError
 try:
     from typing import Self
 except ImportError:

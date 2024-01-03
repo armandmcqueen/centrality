@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.validation_error import ValidationError
+from centrality_controlplane_sdk.models.validation_error import ValidationError
 
 class TestValidationError(unittest.TestCase):
     """ValidationError unit test stubs"""

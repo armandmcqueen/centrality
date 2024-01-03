@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
 
 class TestCpuMeasurement(unittest.TestCase):
     """CpuMeasurement unit test stubs"""

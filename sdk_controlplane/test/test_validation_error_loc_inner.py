@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner
+from centrality_controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner
 
 class TestValidationErrorLocInner(unittest.TestCase):
     """ValidationErrorLocInner unit test stubs"""

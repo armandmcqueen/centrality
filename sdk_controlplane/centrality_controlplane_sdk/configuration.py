@@ -107,7 +107,7 @@ class Configuration:
         self.logger = {}
         """Logging Settings
         """
-        self.logger["package_logger"] = logging.getLogger("controlplane_sdk")
+        self.logger["package_logger"] = logging.getLogger("centrality_controlplane_sdk")
         self.logger["urllib3_logger"] = logging.getLogger("urllib3")
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         """Log format

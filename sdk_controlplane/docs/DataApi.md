@@ -1,4 +1,4 @@
-# controlplane_sdk.DataApi
+# centrality_controlplane_sdk.DataApi
 
 All URIs are relative to *http://localhost*
 
@@ -27,14 +27,14 @@ Basic healthcheck that requires authentication
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.ok_response import OkResponse
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -44,14 +44,14 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
 
     try:
         # Get Auth Healthcheck
@@ -100,14 +100,14 @@ Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_i
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -117,14 +117,14 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
     vm_ids = ['vm_ids_example'] # List[str] | 
     from_ts = '2013-10-20T19:20:30+01:00' # datetime |  (optional)
     to_ts = '2013-10-20T19:20:30+01:00' # datetime |  (optional)
@@ -181,22 +181,22 @@ Basic healthcheck
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.ok_response import OkResponse
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
 
     try:
         # Get Healthcheck
@@ -244,22 +244,22 @@ Return basic info about deployment
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.info_response import InfoResponse
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.info_response import InfoResponse
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
 
     try:
         # Get Info
@@ -308,14 +308,14 @@ Get the most recent CPU measurements for each VM
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -325,14 +325,14 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
     vm_ids = ['vm_ids_example'] # List[str] | 
 
     try:
@@ -386,13 +386,13 @@ Return a list of the active VMs
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -402,14 +402,14 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
 
     try:
         # List Live Vms
@@ -458,15 +458,15 @@ Put a cpu metric measurement into the datastore
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
-from controlplane_sdk.models.ok_response import OkResponse
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -476,15 +476,15 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
-    cpu_measurement = controlplane_sdk.CpuMeasurement() # CpuMeasurement | 
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    cpu_measurement = centrality_controlplane_sdk.CpuMeasurement() # CpuMeasurement | 
 
     try:
         # Put Cpu Metric
@@ -537,14 +537,14 @@ Report a heartbeat for a VM
 ```python
 import time
 import os
-import controlplane_sdk
-from controlplane_sdk.models.ok_response import OkResponse
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -554,14 +554,14 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
     vm_id = 'vm_id_example' # str | 
 
     try:

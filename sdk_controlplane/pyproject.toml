@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "controlplane_sdk"
+name = "centrality_controlplane_sdk"
 version = "0.0.1"
 description = "centrality-controlplane"
 authors = ["OpenAPI Generator Community <team@openapitools.org>"]
@@ -7,7 +7,7 @@ license = "NoLicense"
 readme = "README.md"
 repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
 keywords = ["OpenAPI", "OpenAPI-Generator", "centrality-controlplane"]
-include = ["controlplane_sdk/py.typed"]
+include = ["centrality_controlplane_sdk/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

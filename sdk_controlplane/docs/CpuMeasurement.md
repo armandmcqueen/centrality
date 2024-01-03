@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
 
 # TODO update the JSON string below
 json = "{}"

@@ -14,7 +14,7 @@
 
 import unittest
 
-from controlplane_sdk.api.data_api import DataApi
+from centrality_controlplane_sdk.api.data_api import DataApi
 
 
 class TestDataApi(unittest.TestCase):
@@ -33,10 +33,10 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
-    def test_get_cpu_metric(self) -> None:
-        """Test case for get_cpu_metric
+    def test_get_cpu_metrics(self) -> None:
+        """Test case for get_cpu_metrics
 
-        Get Cpu Metric
+        Get Cpu Metrics
         """
         pass
 
@@ -54,17 +54,17 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
-    def test_get_latest_cpu_measurements(self) -> None:
-        """Test case for get_latest_cpu_measurements
+    def test_get_latest_cpu_metrics(self) -> None:
+        """Test case for get_latest_cpu_metrics
 
-        Get Latest Cpu Measurements
+        Get Latest Cpu Metrics
         """
         pass
 
-    def test_list_vms(self) -> None:
-        """Test case for list_vms
+    def test_list_live_vms(self) -> None:
+        """Test case for list_live_vms
 
-        List Vms
+        List Live Vms
         """
         pass
 

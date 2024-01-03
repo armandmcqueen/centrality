@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.models.ok_response import OkResponse
 
 class TestOkResponse(unittest.TestCase):
     """OkResponse unit test stubs"""

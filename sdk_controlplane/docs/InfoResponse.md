@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from controlplane_sdk.models.info_response import InfoResponse
+from centrality_controlplane_sdk.models.info_response import InfoResponse
 
 # TODO update the JSON string below
 json = "{}"

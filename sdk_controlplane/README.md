@@ -23,7 +23,7 @@ pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git
 
 Then import the package:
 ```python
-import controlplane_sdk
+import centrality_controlplane_sdk
 ```
 
 ### Setuptools
@@ -37,7 +37,7 @@ python setup.py install --user
 
 Then import the package:
 ```python
-import controlplane_sdk
+import centrality_controlplane_sdk
 ```
 
 ### Tests
@@ -51,13 +51,13 @@ Please follow the [installation procedure](#installation--usage) and then run th
 ```python
 
 import time
-import controlplane_sdk
-from controlplane_sdk.rest import ApiException
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     host = "http://localhost"
 )
 
@@ -67,15 +67,15 @@ configuration = controlplane_sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: HTTPBearer
-configuration = controlplane_sdk.Configuration(
+configuration = centrality_controlplane_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 
 # Enter a context with an instance of the API client
-with controlplane_sdk.ApiClient(configuration) as api_client:
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = controlplane_sdk.DataApi(api_client)
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
 
     try:
         # Get Auth Healthcheck

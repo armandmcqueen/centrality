@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.http_validation_error import HTTPValidationError
+from centrality_controlplane_sdk.models.http_validation_error import HTTPValidationError
 
 class TestHTTPValidationError(unittest.TestCase):
     """HTTPValidationError unit test stubs"""
@@ -37,7 +37,7 @@ class TestHTTPValidationError(unittest.TestCase):
         if include_optional:
             return HTTPValidationError(
                 detail = [
-                    controlplane_sdk.models.validation_error.ValidationError(
+                    centrality_controlplane_sdk.models.validation_error.ValidationError(
                         loc = [
                             null
                             ], 

@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from controlplane_sdk.models.validation_error import ValidationError
+from centrality_controlplane_sdk.models.validation_error import ValidationError
 
 # TODO update the JSON string below
 json = "{}"

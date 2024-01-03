@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.models.ok_response import OkResponse
 
 # TODO update the JSON string below
 json = "{}"

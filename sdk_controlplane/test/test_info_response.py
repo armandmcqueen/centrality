@@ -15,7 +15,7 @@
 import unittest
 import datetime
 
-from controlplane_sdk.models.info_response import InfoResponse
+from centrality_controlplane_sdk.models.info_response import InfoResponse
 
 class TestInfoResponse(unittest.TestCase):
     """InfoResponse unit test stubs"""

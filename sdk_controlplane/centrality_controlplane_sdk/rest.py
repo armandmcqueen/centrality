@@ -19,7 +19,7 @@ import ssl
 
 import urllib3
 
-from controlplane_sdk.exceptions import ApiException, ApiValueError
+from centrality_controlplane_sdk.exceptions import ApiException, ApiValueError
 
 RESTResponseType = urllib3.HTTPResponse
 

@@ -1,5 +1,5 @@
 from common.config.config import CentralityConfig
-import controlplane_sdk
+import centrality_controlplane_sdk as controlplane_sdk
 
 
 class ControlPlaneSdkConfig(CentralityConfig):
@@ -14,6 +14,9 @@ class ControlPlaneSdkConfig(CentralityConfig):
 
 
 def get_sdk(config: ControlPlaneSdkConfig, token: str) -> controlplane_sdk.DataApi:
+    """
+    Get the OpenAPI generated SDK (the DataApi object), correctly configured.
+    """
     configuration = controlplane_sdk.Configuration(
         host=config.host_str,
         access_token=token,

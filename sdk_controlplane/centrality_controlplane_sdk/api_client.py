@@ -24,11 +24,11 @@ import tempfile
 from urllib.parse import quote
 from typing import Tuple, Optional, List
 
-from controlplane_sdk.configuration import Configuration
-from controlplane_sdk.api_response import ApiResponse
-import controlplane_sdk.models
-from controlplane_sdk import rest
-from controlplane_sdk.exceptions import (
+from centrality_controlplane_sdk.configuration import Configuration
+from centrality_controlplane_sdk.api_response import ApiResponse
+import centrality_controlplane_sdk.models
+from centrality_controlplane_sdk import rest
+from centrality_controlplane_sdk.exceptions import (
     ApiValueError,
     ApiException,
     BadRequestException,
@@ -425,7 +425,7 @@ class ApiClient:
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
             else:
-                klass = getattr(controlplane_sdk.models, klass)
+                klass = getattr(centrality_controlplane_sdk.models, klass)
 
         if klass in self.PRIMITIVE_TYPES:
             return self.__deserialize_primitive(data, klass)
