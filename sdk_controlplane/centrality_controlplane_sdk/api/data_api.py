@@ -1922,7 +1922,7 @@ class DataApi:
     ) -> OkResponse:
         """Report Vm Death
 
-        Report that a VM is dead, so that it is removed immediately rather than just timing out
+        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param vm_id: (required)
         :type vm_id: str
@@ -1991,7 +1991,7 @@ class DataApi:
     ) -> ApiResponse[OkResponse]:
         """Report Vm Death
 
-        Report that a VM is dead, so that it is removed immediately rather than just timing out
+        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param vm_id: (required)
         :type vm_id: str
@@ -2060,7 +2060,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Report Vm Death
 
-        Report that a VM is dead, so that it is removed immediately rather than just timing out
+        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param vm_id: (required)
         :type vm_id: str

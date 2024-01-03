@@ -204,7 +204,6 @@ class DatastoreClient:
     ) -> None:
         """Remove the VM from the list of active VMs."""
         with Session(bind=self.engine) as session:
-            # Create a delete statement for the VmHeartbeatORM table
             delete_stmt = delete(VmHeartbeatORM).where(VmHeartbeatORM.vm_id == vm_id)
             session.execute(delete_stmt)
             session.commit()

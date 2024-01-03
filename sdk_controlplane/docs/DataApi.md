@@ -530,7 +530,7 @@ Name | Type | Description  | Notes
 
 Report Vm Death
 
-Report that a VM is dead, so that it is removed immediately rather than just timing out
+Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
 ### Example
 
