@@ -126,3 +126,13 @@ generate-sdk: delete-sdk
 .PHONY: delete-sdk
 delete-sdk:
 	rm -rf sdk_controlplane
+
+
+.PHONY: clean
+clean:
+	make pre-commit-install
+	make generate-sdk
+	make install-dev
+	docker compose build
+
+
