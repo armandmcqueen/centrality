@@ -15,7 +15,7 @@ from controlplane.datastore.types.vmmetrics import (
 from controlplane.datastore.types.vmliveness import (
     VmHeartbeatORM,
     VmHeartbeat,
-    VmRegistration,
+    VmRegistrationInfo,
 )
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
@@ -187,7 +187,8 @@ class DatastoreClient:
 
     def register_vm(  # TODO: Rename to be more datastore oriented instead of application oriented
         self,
-        registration_info: VmRegistration,
+        vm_id: str,
+        registration_info: VmRegistrationInfo,
     ) -> None:
         """
         Register a VM with information about the machine.
@@ -199,18 +200,18 @@ class DatastoreClient:
             # If the VM is not already registered, add it
             existing_vm = (
                 session.query(VmHeartbeatORM)
-                .filter(VmHeartbeatORM.vm_id == registration_info.vm_id)
+                .filter(VmHeartbeatORM.vm_id == vm_id)
                 .first()
             )
             if existing_vm is None:
-                registration = registration_info.to_heartbeat_orm()
+                registration = registration_info.to_heartbeat_orm(vm_id=vm_id)
                 session.add(registration)
                 session.commit()
             else:
                 # Otherwise, confirm that the registration info matches what is already in the database
                 existing_vm = cast(VmHeartbeatORM, existing_vm)
                 previous_registration_info = VmHeartbeat.from_orm(existing_vm)
-                for field in VmRegistration.model_fields.keys():
+                for field in VmRegistrationInfo.model_fields.keys():
                     if getattr(previous_registration_info, field) != getattr(
                         registration_info, field
                     ):
@@ -246,15 +247,8 @@ class DatastoreClient:
                 raise Exception(
                     f"VM {vm_id} is reporting heartbeat, but has not registered yet"
                 )
-            upsert_stmt = (
-                insert(VmHeartbeatORM)
-                .values(vm_id=vm_id, last_heartbeat_ts=datetime.datetime.utcnow())
-                .on_conflict_do_update(
-                    index_elements=["vm_id"],
-                    set_=dict(last_heartbeat_ts=datetime.datetime.utcnow()),
-                )
-            )
-            session.execute(upsert_stmt)
+            existing_vm = cast(VmHeartbeatORM, existing_vm)
+            existing_vm.last_heartbeat_ts = datetime.datetime.utcnow()
             session.commit()
 
     def report_vm_death(

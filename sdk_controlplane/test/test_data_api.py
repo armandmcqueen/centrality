@@ -75,6 +75,13 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
+    def test_register_vm(self) -> None:
+        """Test case for register_vm
+
+        Register Vm
+        """
+        pass
+
     def test_report_vm_death(self) -> None:
         """Test case for report_vm_death
 

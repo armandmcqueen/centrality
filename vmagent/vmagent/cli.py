@@ -7,6 +7,8 @@ from typing import Annotated
 from pathlib import Path
 
 import conclib
+import urllib3.exceptions
+
 from common import constants
 
 from vmagent.config import VmAgentConfig
@@ -51,17 +53,41 @@ def launch(
     print("⚙️ Config:")
     config.pretty_print_yaml()
 
-    print("🚀 Launching VM Agent actor system")
+    print("🚀 Launching conclib proxy")
     # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
+    print("✓ conclib proxy launched")
+
+    print("💤 Waiting for control plane to be ready")
     control_plane_sdk = get_sdk(
         config.controlplane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
+
+    MAX_TIMEOUT = 60
+    max_time = time.time() + MAX_TIMEOUT
+    while time.time() < max_time:
+        try:
+            control_plane_sdk.get_healthcheck()
+            print("✓ Control plane is ready")
+            break
+        except urllib3.exceptions.MaxRetryError as e:
+            # TODO: Ensure that this is the correct exception type
+            print(type(e))
+            print("❗ Control plane health check not passing")
+            time.sleep(1)
+    else:
+        # TODO: Custom exception type
+        raise Exception(
+            f"❌️Failed to get control plane info after {MAX_TIMEOUT} seconds"
+        )
+
+    print("🚀 Launching VM Agent actor system")
     _ = VmAgentActorSystem(
         vm_agent_config=config,
         control_plane_sdk=control_plane_sdk,
     ).start()
+    print("✓ VM Agent actor system launched")
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
@@ -72,6 +98,7 @@ def launch(
         startup_healthcheck_timeout=config.rest.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=config.rest.startup_healthcheck_poll_interval,
     )
+    print("✓ VM Agent REST API launched")
 
     try:
         # Wait until something fails or the user kills the process

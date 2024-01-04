@@ -5,7 +5,7 @@ import json
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
-from controlplane.datastore.types.vmliveness import VmRegistration
+from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 from common import constants
 from controlplane.datastore.client import DatastoreClient
 from controlplane.datastore.config import DatastoreConfig
@@ -181,10 +181,11 @@ def put_cpu_metric(
 @auth(datastore_client)
 def register_vm(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    registration_info: VmRegistration,
+    vm_id: str,
+    registration_info: VmRegistrationInfo,
 ) -> OkResponse:
     """Register a VM"""
-    datastore_client.register_vm(registration_info=registration_info)
+    datastore_client.register_vm(vm_id=vm_id, registration_info=registration_info)
     return OkResponse()
 
 

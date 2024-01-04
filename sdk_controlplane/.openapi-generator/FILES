@@ -18,6 +18,7 @@ centrality_controlplane_sdk/models/info_response.py
 centrality_controlplane_sdk/models/ok_response.py
 centrality_controlplane_sdk/models/validation_error.py
 centrality_controlplane_sdk/models/validation_error_loc_inner.py
+centrality_controlplane_sdk/models/vm_registration_info.py
 centrality_controlplane_sdk/py.typed
 centrality_controlplane_sdk/rest.py
 docs/CpuMeasurement.md
@@ -27,6 +28,7 @@ docs/InfoResponse.md
 docs/OkResponse.md
 docs/ValidationError.md
 docs/ValidationErrorLocInner.md
+docs/VmRegistrationInfo.md
 git_push.sh
 pyproject.toml
 requirements.txt
@@ -41,4 +43,5 @@ test/test_info_response.py
 test/test_ok_response.py
 test/test_validation_error.py
 test/test_validation_error_loc_inner.py
+test/test_vm_registration_info.py
 tox.ini

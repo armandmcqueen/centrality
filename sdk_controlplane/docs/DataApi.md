@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**get_latest_cpu_metrics**](DataApi.md#get_latest_cpu_metrics) | **GET** /metrics/cpu/latest | Get Latest Cpu Metrics
 [**list_live_vms**](DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 [**put_cpu_metric**](DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
+[**register_vm**](DataApi.md#register_vm) | **POST** /vm/{vm_id}/register | Register Vm
 [**report_vm_death**](DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
 [**report_vm_heartbeat**](DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
 
@@ -503,6 +504,87 @@ with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **cpu_measurement** | [**CpuMeasurement**](CpuMeasurement.md)|  | 
+
+### Return type
+
+[**OkResponse**](OkResponse.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **register_vm**
+> OkResponse register_vm(vm_id, vm_registration_info)
+
+Register Vm
+
+Register a VM
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.models.vm_registration_info import VmRegistrationInfo
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    vm_id = 'vm_id_example' # str | 
+    vm_registration_info = centrality_controlplane_sdk.VmRegistrationInfo() # VmRegistrationInfo | 
+
+    try:
+        # Register Vm
+        api_response = api_instance.register_vm(vm_id, vm_registration_info)
+        print("The response of DataApi->register_vm:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->register_vm: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **vm_id** | **str**|  | 
+ **vm_registration_info** | [**VmRegistrationInfo**](VmRegistrationInfo.md)|  | 
 
 ### Return type
 
