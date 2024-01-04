@@ -141,6 +141,8 @@ delete-dump-db:
 .PHONY: clean
 clean:
 	make delete-dump-db
+	docker compose down
+	docker compose rm -f
 	make pre-commit-install
 	make generate-sdk
 	make install-dev

@@ -6,8 +6,34 @@ from typing import Any, TypeVar, Type
 import pydantic
 import yaml
 from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
+from typing import get_origin, get_args, Union
 
 Dict = dict[str, Any]
+
+
+def is_optional_type(annotation) -> bool:
+    """Check if the annotation is an Optional type."""
+    if get_origin(annotation) is Union:
+        args = get_args(annotation)
+        assert (
+            len(args) == 2
+        ), f"Only Union[Type, None] is supported - this type is Union of {args}"
+        return type(None) in get_args(annotation)
+    return False
+
+
+def is_optional_of_centrality_config(annotation) -> bool:
+    """Check if the annotation is an Optional type of CentralityConfig."""
+    if get_origin(annotation) is Union:
+        args = get_args(annotation)
+        if type(None) in args:
+            # Check if any of the other types in the Union is CentralityConfig or its subclass
+            return any(
+                issubclass(arg, CentralityConfig)
+                for arg in args
+                if arg is not type(None)
+            )
+    return False
 
 
 class CentralityConfigEnvvarUnsetError(Exception):
@@ -100,8 +126,20 @@ class CentralityConfig(pydantic.BaseModel):
                     f"Field {field_name} in {cls.__name__} has no annotation"
                 )
             annotation_type: type = field_info.annotation
+            # print(annotation_type)
 
-            if issubclass(annotation_type, CentralityConfig):
+            # Handle more complex types - currently we only handle Optional types where the inner type
+            # is not CentralityConfig.
+            if is_optional_type(annotation_type):
+                # print(f"Optional field found: {field_name}")
+                if is_optional_of_centrality_config(annotation_type):
+                    raise RuntimeError(
+                        f"Optional CentralityConfig fields are not supported - "
+                        f"found in {cls.__name__}.{field_name}"
+                    )
+                # print(f"Adding optional field {field_name} to tree")
+                tree.append(field_name)
+            elif issubclass(annotation_type, CentralityConfig):
                 sub_tree = annotation_type._build_field_tree()
                 for sub_field_name in sub_tree:
                     tree.append(f"{field_name}.{sub_field_name}")

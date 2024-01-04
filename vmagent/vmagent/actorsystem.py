@@ -5,7 +5,8 @@ from typing import Optional
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.cpu import CpuMetricCollector
 from vmagent.actors.heartbeat import HeartbeatSender
-from centrality_controlplane_sdk import DataApi, VmRegistrationInfo
+from vmagent.machineinfo.machineinfo import get_machine_info
+from centrality_controlplane_sdk import DataApi
 
 
 class VmAgentActorSystem:
@@ -30,17 +31,7 @@ class VmAgentActorSystem:
         self.heartbeat_sender_ref: Optional[pykka.ActorRef] = None
 
     def start(self) -> "VmAgentActorSystem":
-        # TODO: Add ability to fake registration info
-        # TODO: Add ability top get real registration info
-        registration_info = VmRegistrationInfo(
-            num_cpus=1,
-            cpu_description="Fake CPU",
-            host_memory_mb=10_000,
-            num_gpus=0,
-            gpu_type=None,
-            gpu_memory_mb=None,
-            hostname="fake-hostname",
-        )
+        registration_info = get_machine_info(self.vm_agent_config.machine_info)
         # TODO: Run machine registration and error out if it fails with custom exception
         self.control_plane_sdk.register_vm(
             vm_registration_info=registration_info, vm_id=self.vm_agent_config.vm_id

@@ -195,6 +195,9 @@ class DatastoreClient:
 
         Will raise an exception if the VM is already registered with different machine specs. If the machine
         spec is the same, it will update the registration timestamp and last heartbeat timestamp.
+
+        nvidia-driver-version is not checked for equality because it can be upgraded without changing
+        VMs.
         """
         with Session(bind=self.engine) as session:
             # If the VM is not already registered, add it
@@ -208,10 +211,14 @@ class DatastoreClient:
                 session.add(registration)
                 session.commit()
             else:
-                # Otherwise, confirm that the registration info matches what is already in the database
+                # Otherwise, confirm that the registration info matches what is already in the database,
+                # except for nvidia-driver-version
+                skipped_fields = ["nvidia_driver_version"]
                 existing_vm = cast(VmHeartbeatORM, existing_vm)
                 previous_registration_info = VmHeartbeat.from_orm(existing_vm)
                 for field in VmRegistrationInfo.model_fields.keys():
+                    if field in skipped_fields:
+                        continue
                     if getattr(previous_registration_info, field) != getattr(
                         registration_info, field
                     ):

@@ -23,6 +23,7 @@ class VmHeartbeatORM(DatastoreBaseORM):
     num_gpus: Mapped[int] = mapped_column(nullable=False)
     gpu_type: Mapped[str] = mapped_column(nullable=True)
     gpu_memory_mb: Mapped[int] = mapped_column(BigInteger, nullable=True)
+    nvidia_driver_version: Mapped[str] = mapped_column(nullable=True)
     hostname: Mapped[str] = mapped_column(nullable=False)
 
 
@@ -41,6 +42,7 @@ class VmHeartbeat(BaseModel):
     num_gpus: int
     gpu_type: Optional[str]
     gpu_memory_mb: Optional[int]
+    nvidia_driver_version: Optional[str]
     hostname: str
 
     @classmethod
@@ -55,6 +57,7 @@ class VmHeartbeat(BaseModel):
             num_gpus=orm.num_gpus,
             gpu_type=orm.gpu_type,
             gpu_memory_mb=orm.gpu_memory_mb,
+            nvidia_driver_version=orm.nvidia_driver_version,
             hostname=orm.hostname,
         )
 
@@ -69,6 +72,7 @@ class VmHeartbeat(BaseModel):
             num_gpus=self.num_gpus,
             gpu_type=self.gpu_type,
             gpu_memory_mb=self.gpu_memory,
+            nvidia_driver_version=self.nvidia_driver_version,
             hostname=self.hostname,
         )
 
@@ -86,6 +90,7 @@ class VmRegistrationInfo(BaseModel):
     num_gpus: int
     gpu_type: Optional[str]
     gpu_memory_mb: Optional[int]
+    nvidia_driver_version: Optional[str]
     hostname: str
 
     def to_heartbeat_orm(self, vm_id: str) -> VmHeartbeatORM:
@@ -99,5 +104,6 @@ class VmRegistrationInfo(BaseModel):
             num_gpus=self.num_gpus,
             gpu_type=self.gpu_type,
             gpu_memory_mb=self.gpu_memory_mb,
+            nvidia_driver_version=self.nvidia_driver_version,
             hostname=self.hostname,
         )

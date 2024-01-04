@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **num_gpus** | **int** |  | 
 **gpu_type** | **str** |  | 
 **gpu_memory_mb** | **int** |  | 
+**nvidia_driver_version** | **str** |  | 
 **hostname** | **str** |  | 
 
 ## Example

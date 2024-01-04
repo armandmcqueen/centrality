@@ -42,6 +42,7 @@ class TestVmRegistrationInfo(unittest.TestCase):
                 num_gpus = 56,
                 gpu_type = '',
                 gpu_memory_mb = 56,
+                nvidia_driver_version = '',
                 hostname = ''
             )
         else:
@@ -52,6 +53,7 @@ class TestVmRegistrationInfo(unittest.TestCase):
                 num_gpus = 56,
                 gpu_type = '',
                 gpu_memory_mb = 56,
+                nvidia_driver_version = '',
                 hostname = '',
         )
         """

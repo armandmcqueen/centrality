@@ -7,6 +7,7 @@ from centrality_controlplane_sdk import DataApi, ApiException
 from rich import print
 from ..utils.utils import print_test_function_name
 from common import constants
+from . import constants as test_constants
 import pytest
 
 
@@ -43,7 +44,9 @@ def test_live_vms(docker_compose, sdk: DataApi):
     print_test_function_name()
 
     live_vms = sdk.list_live_vms()
-    assert len(live_vms) == 4, f"Expected 4 live vms, got {len(live_vms)}"
+    assert (
+        len(live_vms) == test_constants.EXPECTED_NUM_AGENTS
+    ), f"Expected {test_constants.EXPECTED_NUM_AGENTS} live vms, got {len(live_vms)}"
 
 
 def test_get_latest_cpu_metrics(docker_compose, sdk):

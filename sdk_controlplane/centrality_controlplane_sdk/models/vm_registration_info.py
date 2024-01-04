@@ -25,6 +25,7 @@ try:
 except ImportError:
     from typing_extensions import Self
 
+
 class VmRegistrationInfo(BaseModel):
     """
     Information about a VM to register with the control plane.  Same as VM heartbeat, but without the timestamps because those are automatically set server-side.
@@ -35,8 +36,9 @@ class VmRegistrationInfo(BaseModel):
     num_gpus: StrictInt
     gpu_type: Optional[StrictStr]
     gpu_memory_mb: Optional[StrictInt]
+    nvidia_driver_version: Optional[StrictStr]
     hostname: StrictStr
-    __properties: ClassVar[List[str]] = ["num_cpus", "cpu_description", "host_memory_mb", "num_gpus", "gpu_type", "gpu_memory_mb", "hostname"]
+    __properties: ClassVar[List[str]] = ["num_cpus", "cpu_description", "host_memory_mb", "num_gpus", "gpu_type", "gpu_memory_mb", "nvidia_driver_version", "hostname"]
 
     model_config = {
         "populate_by_name": True,
@@ -84,6 +86,11 @@ class VmRegistrationInfo(BaseModel):
         if self.gpu_memory_mb is None and "gpu_memory_mb" in self.model_fields_set:
             _dict['gpu_memory_mb'] = None
 
+        # set to None if nvidia_driver_version (nullable) is None
+        # and model_fields_set contains the field
+        if self.nvidia_driver_version is None and "nvidia_driver_version" in self.model_fields_set:
+            _dict['nvidia_driver_version'] = None
+
         return _dict
 
     @classmethod
@@ -102,6 +109,7 @@ class VmRegistrationInfo(BaseModel):
             "num_gpus": obj.get("num_gpus"),
             "gpu_type": obj.get("gpu_type"),
             "gpu_memory_mb": obj.get("gpu_memory_mb"),
+            "nvidia_driver_version": obj.get("nvidia_driver_version"),
             "hostname": obj.get("hostname")
         })
         return _obj

@@ -2,6 +2,7 @@ from centrality_controlplane_sdk import DataApi, CpuMeasurement
 import datetime
 from rich import print
 from ..utils.utils import print_test_function_name
+from . import constants as test_constants
 
 
 VM_ID = "vm-sdk"
@@ -22,25 +23,26 @@ def test_vm_liveness(docker_compose, sdk: DataApi):
     """Test listing vms, adding live vms via heartbeats, and removing VMs via reporting death"""
     print_test_function_name()
 
-    # Confirm that we start with 4
+    # Confirm that we start with test_constants.EXPECTED_NUM_AGENTS
     live_vms = sdk.list_live_vms()
     assert (
-        len(live_vms) == 4
-    ), f"Expected there to be 4 live VMs, got {len(live_vms)} VMs ({live_vms})"
+        len(live_vms) == test_constants.EXPECTED_NUM_AGENTS
+    ), f"Expected there to be {test_constants.EXPECTED_NUM_AGENTS} live VMs, got {len(live_vms)} VMs ({live_vms})"
 
     # Add one via heartbeat and confirm there are now 5
     sdk.report_vm_heartbeat(vm_id=VM_ID)
     live_vms = sdk.list_live_vms()
+    new_expected_num_agents = test_constants.EXPECTED_NUM_AGENTS + 1
     assert (
-        len(live_vms) == 5
-    ), f"Expected there to be 5 live VMs, got {len(live_vms)} VMs ({live_vms})"
+        len(live_vms) == new_expected_num_agents
+    ), f"Expected there to be {new_expected_num_agents} live VMs, got {len(live_vms)} VMs ({live_vms})"
 
-    # Remove one via death and confirm we go back to 4
+    # Remove one via death and confirm we go back to test_constants.EXPECTED_NUM_AGENTS
     sdk.report_vm_death(vm_id=VM_ID)
     live_vms = sdk.list_live_vms()
     assert (
-        len(live_vms) == 4
-    ), f"Expected there to be 4 live VMs, got {len(live_vms)} VMs ({live_vms})"
+        len(live_vms) == test_constants.EXPECTED_NUM_AGENTS
+    ), f"Expected there to be {test_constants.EXPECTED_NUM_AGENTS} live VMs, got {len(live_vms)} VMs ({live_vms})"
 
 
 def test_cpu_measurements(docker_compose, sdk: DataApi):

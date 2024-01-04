@@ -10,3 +10,11 @@ metrics:
       jitter_factor: 0.4
       num_vals: 64
       period: 10
+machine_info:
+  use_fake: true
+  fake:
+    hostname: null
+    num_cpus: 64
+    cpu_description: null
+    host_memory_mb: null
+    num_gpus: null

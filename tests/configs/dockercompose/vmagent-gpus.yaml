@@ -1,23 +1,23 @@
-vm_id: test-machine
+vm_id: many-cpus
+controlplane_sdk:
+  host: controlplane
 metrics:
   cpu:
-    use_fake: false
+    use_fake: true
     fake:
       algorithm: linear_synced  # linear_synced | random
       jitter: true
-      num_vals: 2
+      jitter_factor: 0.4
+      num_vals: 64
       period: 10
 machine_info:
-  use_fake: false
+  use_fake: true
   fake:
     hostname: null
-    num_cpus: 8
+    num_cpus: 128
     cpu_description: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
     host_memory_mb: 16000
     num_gpus: 8
     nvidia_driver_version: 535.129.03
     gpu_memory_mb: 60000
     gpu_type: NVIDIA A100
-
-
-

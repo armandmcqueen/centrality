@@ -607,6 +607,17 @@
             ],
             "title": "Gpu Memory Mb"
           },
+          "nvidia_driver_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nvidia Driver Version"
+          },
           "hostname": {
             "type": "string",
             "title": "Hostname"
@@ -620,6 +631,7 @@
           "num_gpus",
           "gpu_type",
           "gpu_memory_mb",
+          "nvidia_driver_version",
           "hostname"
         ],
         "title": "VmRegistrationInfo",
