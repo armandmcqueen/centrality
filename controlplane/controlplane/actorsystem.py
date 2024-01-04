@@ -14,6 +14,8 @@ class ControlPlaneActorSystem:
     Technically there is a conclib actor that is part of the pykka actor system, but isn't here
     """
 
+    # TODO: Implement machine registration reaping
+
     def __init__(
         self,
         datastore_config: DatastoreConfig,
