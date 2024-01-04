@@ -1,4 +1,4 @@
-vm_id: many-cpus
+vm_id: gpus
 controlplane_sdk:
   host: controlplane
 metrics:

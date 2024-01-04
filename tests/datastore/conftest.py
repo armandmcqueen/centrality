@@ -36,7 +36,7 @@ def datastore():
 
 
 @pytest.fixture(autouse=True)
-def setup_code(datastore: tuple[DatastoreConfig, DatastoreClient]):
+def reset_db(datastore: tuple[DatastoreConfig, DatastoreClient]):
     """Make sure that every test starts with a clean DB"""
     config, client = datastore
     client.reset_db()

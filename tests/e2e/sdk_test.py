@@ -3,6 +3,8 @@ import datetime
 from rich import print
 from ..utils.utils import print_test_function_name
 from . import constants as test_constants
+from vmagent.machineinfo.config import MachineInfoConfig
+from vmagent.machineinfo.machineinfo import get_machine_info
 
 
 VM_ID = "vm-sdk"
@@ -30,7 +32,11 @@ def test_vm_liveness(docker_compose, sdk: DataApi):
     ), f"Expected there to be {test_constants.EXPECTED_NUM_AGENTS} live VMs, got {len(live_vms)} VMs ({live_vms})"
 
     # Add one via heartbeat and confirm there are now 5
-    sdk.report_vm_heartbeat(vm_id=VM_ID)
+    machine_info_config = MachineInfoConfig(use_fake=True)
+    sdk.register_vm(
+        vm_id=VM_ID, vm_registration_info=get_machine_info(machine_info_config)
+    )
+    # sdk.report_vm_heartbeat(vm_id=VM_ID)
     live_vms = sdk.list_live_vms()
     new_expected_num_agents = test_constants.EXPECTED_NUM_AGENTS + 1
     assert (

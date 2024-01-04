@@ -298,3 +298,13 @@ class DatastoreClient:
                 .all()
             )
             return [row.vm_id for row in rows]
+
+    def get_all_vms(
+        self,
+    ) -> list[str]:
+        """
+        Return the list of all VMs that are live or in limbo
+        """
+        with Session(bind=self.engine) as session:
+            rows = session.query(VmHeartbeatORM).all()
+            return [row.vm_id for row in rows]
