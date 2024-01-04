@@ -71,15 +71,18 @@ def launch(
             control_plane_sdk.get_healthcheck()
             print("✓ Control plane is ready")
             break
+        # except Exception as e:
         except urllib3.exceptions.MaxRetryError as e:
-            # TODO: Ensure that this is the correct exception type
-            print(type(e))
-            print("❗ Control plane health check not passing")
+            # TODO: Ensure that this is the correct exception type. Or do we want to catch all?
+            print(e)
+            print(
+                f"❗ Control plane health check not passing. Time until timeout: {time.time() - max_time}"
+            )
             time.sleep(1)
     else:
         # TODO: Custom exception type
         raise Exception(
-            f"❌️Failed to get control plane info after {MAX_TIMEOUT} seconds"
+            f"❌️ Control Plane failed to have passing healthcheck after {MAX_TIMEOUT} seconds"
         )
 
     print("🚀 Launching VM Agent actor system")
