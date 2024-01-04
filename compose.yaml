@@ -1,25 +1,25 @@
 # Dynamically add an agent container that talks to the control plane:
 # docker run -it --rm --network centrality_default --name centrality-vmagent3 centrality-vmagent1 python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-auto.yaml --vm-id auto
 services:
-#  vmagent-auto:
-#    build: .
-#    deploy:
-#      replicas: 2
-#    environment:
-#      - PYTHONUNBUFFERED=1
-#    working_dir: /centrality
-#    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-auto.yaml --vm-id auto"
-#    depends_on:
-#      - controlplane
-#
-#  vmagent-real-data:
-#    build: .
-#    environment:
-#      - PYTHONUNBUFFERED=1
-#    working_dir: /centrality
-#    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-real-data.yaml"
-#    depends_on:
-#      - controlplane
+  vmagent-auto:
+    build: .
+    deploy:
+      replicas: 2
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /centrality
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-auto.yaml --vm-id auto"
+    depends_on:
+      - controlplane
+
+  vmagent-real-data:
+    build: .
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /centrality
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-real-data.yaml"
+    depends_on:
+      - controlplane
 
   vmagent-many-cpus:
     build: .

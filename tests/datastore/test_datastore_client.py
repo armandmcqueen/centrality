@@ -1,5 +1,7 @@
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
+from vmagent.machineinfo.machineinfo import get_machine_info
+from vmagent.machineinfo.config import MachineInfoConfig
 from ..utils.utils import print_test_function_name
 
 from common import constants
@@ -51,6 +53,10 @@ def test_vm_liveness(datastore: tuple[DatastoreConfig, DatastoreClient]):
     assert len(live_vms) == 0, f"Expected there to be no live VMs, but got {live_vms}"
 
     # Test addition and forced removal
+    machine_info_config = MachineInfoConfig(use_fake=True)
+    client.register_vm(
+        vm_id=VM_ID, registration_info=get_machine_info(machine_info_config)
+    )
     client.report_heartbeat(VM_ID)
     live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert live_vms == [VM_ID], f"Expected live vms to be {[VM_ID]}, but got {live_vms}"
@@ -59,12 +65,17 @@ def test_vm_liveness(datastore: tuple[DatastoreConfig, DatastoreClient]):
     assert len(live_vms) == 0, f"Expected there to be no live VMs, but got {live_vms}"
 
     # Test addition and timeout-based removal
+    client.register_vm(
+        vm_id=VM_ID, registration_info=get_machine_info(machine_info_config)
+    )
     client.report_heartbeat(VM_ID)
     live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert live_vms == [VM_ID], f"Expected live vms to be {[VM_ID]}, but got {live_vms}"
     time.sleep(3)
     live_vms = client.get_live_vms(liveness_threshold_secs=1)
     assert len(live_vms) == 0, f"Expected there to be no live VMs, but got {live_vms}"
+
+    # TODO: This doesn't actually test the heartbeat
 
 
 def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):

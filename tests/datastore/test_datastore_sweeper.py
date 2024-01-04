@@ -51,6 +51,8 @@ def test_sweeper(datastore: tuple[DatastoreConfig, DatastoreClient]):
         datastore_sweeper_config=datastore_sweeper_config,
         datastore_config=datastore_config,
     )
+
+    # TODO: Test reaping
     try:
         time.sleep(2)
 

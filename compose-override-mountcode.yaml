@@ -2,12 +2,12 @@
 # docker compose -f compose.yaml -f compose-override-mountcode.yaml up
 version: '3'
 services:
-#  vmagent-auto:
-#    volumes:
-#      - .:/centrality
-#  vmagent-real-data:
-#    volumes:
-#      - .:/centrality
+  vmagent-auto:
+    volumes:
+      - .:/centrality
+  vmagent-real-data:
+    volumes:
+      - .:/centrality
   vmagent-many-cpus:
     volumes:
       - .:/centrality
