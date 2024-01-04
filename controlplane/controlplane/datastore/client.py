@@ -265,7 +265,18 @@ class DatastoreClient:
         """Remove the VM from the list of active VMs."""
         with Session(bind=self.engine) as session:
             delete_stmt = delete(VmHeartbeatORM).where(VmHeartbeatORM.vm_id == vm_id)
-            # TODO: Delete the row or just set the last heartbeat to be a long time ago as a gravestone?
+            session.execute(delete_stmt)
+            session.commit()
+
+    def remove_vms_without_recent_healthcheck(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+    ) -> None:
+        """Delete all VMs that have not reported a heartbeat since oldest_ts_to_keep"""
+        with Session(bind=self.engine) as session:
+            delete_stmt = delete(VmHeartbeatORM).where(
+                VmHeartbeatORM.last_heartbeat_ts < oldest_ts_to_keep
+            )
             session.execute(delete_stmt)
             session.commit()
 

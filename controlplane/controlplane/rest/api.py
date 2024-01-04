@@ -223,7 +223,7 @@ def list_live_vms(
     """Return a list of the active VMs"""
     # TODO: Convert to return machine info
     live_vms = datastore_client.get_live_vms(
-        liveness_threshold_secs=constants.VM_HEARTBEAT_TIMEOUT_SECS
+        liveness_threshold_secs=constants.VM_NO_HEARTBEAT_LIMBO_SECS
     )
     return live_vms
 

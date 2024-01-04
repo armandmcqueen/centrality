@@ -47,20 +47,20 @@ def test_vm_liveness(datastore: tuple[DatastoreConfig, DatastoreClient]):
     config, client = datastore
 
     # Test that initial state is correct
-    live_vms = client.get_live_vms(constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert len(live_vms) == 0, f"Expected there to be no live VMs, but got {live_vms}"
 
     # Test addition and forced removal
     client.report_heartbeat(VM_ID)
-    live_vms = client.get_live_vms(constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert live_vms == [VM_ID], f"Expected live vms to be {[VM_ID]}, but got {live_vms}"
     client.report_vm_death(VM_ID)
-    live_vms = client.get_live_vms(constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert len(live_vms) == 0, f"Expected there to be no live VMs, but got {live_vms}"
 
     # Test addition and timeout-based removal
     client.report_heartbeat(VM_ID)
-    live_vms = client.get_live_vms(constants.VM_HEARTBEAT_TIMEOUT_SECS)
+    live_vms = client.get_live_vms(constants.VM_NO_HEARTBEAT_LIMBO_SECS)
     assert live_vms == [VM_ID], f"Expected live vms to be {[VM_ID]}, but got {live_vms}"
     time.sleep(3)
     live_vms = client.get_live_vms(liveness_threshold_secs=1)

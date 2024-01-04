@@ -67,11 +67,11 @@ def test_get_latest_cpu_metrics(docker_compose, sdk):
         now = datetime.datetime.now(datetime.timezone.utc)
         assert (
             now - cpu_measurement.ts
-        ).total_seconds() < constants.VM_HEARTBEAT_TIMEOUT_SECS, (
+        ).total_seconds() < constants.VM_NO_HEARTBEAT_LIMBO_SECS, (
             f"CPU measurement timestamp was not within the last "
-            f"{constants.VM_HEARTBEAT_TIMEOUT_SECS} seconds: "
+            f"{constants.VM_NO_HEARTBEAT_LIMBO_SECS} seconds: "
             f"{cpu_measurement.ts}"
         )
 
 
-# TODO: test e2e datastore sweeper
+# TODO: test e2e datastore sweeper (metric deletion and vm reaping)

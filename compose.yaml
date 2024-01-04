@@ -34,7 +34,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
-    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-gpu.yaml"
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-gpus.yaml"
     depends_on:
       - controlplane
 

@@ -36,7 +36,10 @@ VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
 # Other Constants                                                   #
 #####################################################################
 VM_HEARTBEAT_INTERVAL_SECS = 5  # How often VMs should report heartbeats
-VM_HEARTBEAT_TIMEOUT_SECS = 10  # If not heartbeat for this long, consider it dead
+VM_NO_HEARTBEAT_LIMBO_SECS = (
+    10  # If no heartbeat for this long, consider it disconnected (limbo, not dead)
+)
+VM_NO_HEARTBEAT_DEATH_SECS = 60 * 20  # If no heartbeat for this long, consider it dead
 
 
 # Control Plane specific constants

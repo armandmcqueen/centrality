@@ -25,7 +25,6 @@ try:
 except ImportError:
     from typing_extensions import Self
 
-
 class VmRegistrationInfo(BaseModel):
     """
     Information about a VM to register with the control plane.  Same as VM heartbeat, but without the timestamps because those are automatically set server-side.
