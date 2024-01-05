@@ -7,15 +7,45 @@ from typing import Annotated
 from pathlib import Path
 
 import conclib
+import urllib3.exceptions
+
 from common import constants
 
 from vmagent.config import VmAgentConfig
 from vmagent.actorsystem import VmAgentActorSystem
 from common.sdks.controlplane.sdk import get_sdk
 from typing import Optional
+from centrality_controlplane_sdk import DataApi
 
+MAX_CONTROL_PLANE_WAIT_TIMEOUT = 60
 
 app = typer.Typer()
+
+
+class ControlPlaneUnavailableError(Exception):
+    pass
+
+
+def wait_for_control_plane_healthy(control_plane_sdk: DataApi, timeout_secs: int):
+    max_time = time.time() + MAX_CONTROL_PLANE_WAIT_TIMEOUT
+    while time.time() < max_time:
+        try:
+            control_plane_sdk.get_healthcheck()
+            break
+
+        except Exception as e:
+            if not isinstance(e, urllib3.exceptions.MaxRetryError):
+                print(
+                    f"Unexpected error while waiting for control plane to be ready: {e}"
+                )
+            print(
+                f"❗ Control plane health check not passing. Time until timeout: {time.time() - max_time}"
+            )
+            time.sleep(1)
+    else:
+        raise ControlPlaneUnavailableError(
+            f"❌️ Control Plane failed to have passing healthcheck after {MAX_CONTROL_PLANE_WAIT_TIMEOUT} seconds"
+        )
 
 
 @app.command()
@@ -48,20 +78,28 @@ def launch(
     else:
         print("🌱 Using default configs")
         config = VmAgentConfig(config_overrides=config_overrides)
+
     print("⚙️ Config:")
     config.pretty_print_yaml()
 
-    print("🚀 Launching VM Agent actor system")
-    # Start conclib bridge
+    print("🚀 Launching conclib proxy")
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
+    print("✓ conclib proxy launched")
+
+    print("💤 Waiting for control plane to be ready")
     control_plane_sdk = get_sdk(
         config.controlplane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
+    wait_for_control_plane_healthy(control_plane_sdk, MAX_CONTROL_PLANE_WAIT_TIMEOUT)
+    print("✓ Control plane is ready")
+
+    print("🚀 Launching VM Agent actor system")
     _ = VmAgentActorSystem(
         vm_agent_config=config,
         control_plane_sdk=control_plane_sdk,
     ).start()
+    print("✓ VM Agent actor system launched")
 
     print("🚀 Launching VM Agent REST API")
     # Start FastAPI
@@ -72,6 +110,7 @@ def launch(
         startup_healthcheck_timeout=config.rest.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=config.rest.startup_healthcheck_poll_interval,
     )
+    print("✓ VM Agent REST API launched")
 
     try:
         # Wait until something fails or the user kills the process

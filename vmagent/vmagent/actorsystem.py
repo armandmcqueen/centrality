@@ -5,6 +5,7 @@ from typing import Optional
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.cpu import CpuMetricCollector
 from vmagent.actors.heartbeat import HeartbeatSender
+from vmagent.machineinfo.machineinfo import get_machine_info
 from centrality_controlplane_sdk import DataApi
 
 
@@ -30,6 +31,12 @@ class VmAgentActorSystem:
         self.heartbeat_sender_ref: Optional[pykka.ActorRef] = None
 
     def start(self) -> "VmAgentActorSystem":
+        registration_info = get_machine_info(self.vm_agent_config.machine_info)
+        print(f"📋 Registering VM with info: {registration_info}")
+        self.control_plane_sdk.register_vm(
+            vm_registration_info=registration_info, vm_id=self.vm_agent_config.vm_id
+        )
+
         self.metric_subsystem.start()
         self.heartbeat_sender_ref = HeartbeatSender.start(
             vm_agent_config=self.vm_agent_config,

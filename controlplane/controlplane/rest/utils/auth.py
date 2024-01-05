@@ -25,7 +25,7 @@ def auth(datastore_client: DatastoreClient):
                     }, 401
                 # Validate the token
                 token = auth_header_parts[1]
-                if not datastore_client.validate_token(token):
+                if not datastore_client.token_exists(token):
                     return {"error": "Invalid token"}, 401
 
             # Call the actual endpoint function

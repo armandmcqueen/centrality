@@ -11,6 +11,7 @@ INFO_ENDPOINT = "/info"
 CONTROL_PLANE_CPU_METRIC_ENDPOINT = "/metrics/cpu"
 CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT = "/metrics/cpu/latest"
 CONTROL_PLANE_LIVE_VM_ENDPOINT = "/vm/live"
+CONTROL_PLANE_VM_REGISTRATION_ENDPOINT = "/vm/{vm_id}/register"
 CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/{vm_id}/heartbeat"
 CONTROL_PLANE_VM_DEATH_ENDPOINT = "/vm/{vm_id}/death"
 
@@ -35,7 +36,13 @@ VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
 # Other Constants                                                   #
 #####################################################################
 VM_HEARTBEAT_INTERVAL_SECS = 5  # How often VMs should report heartbeats
-VM_HEARTBEAT_TIMEOUT_SECS = 10  # If not heartbeat for this long, consider it dead
+
+# If no heartbeat for this long, consider it disconnected (limbo, not dead)
+VM_NO_HEARTBEAT_LIMBO_SECS = 10
+
+# If no heartbeat for this long, consider it dead. The final value is set through a
+# config, this is just the default value
+DEFAULT_VM_NO_HEARTBEAT_DEATH_SECS = 60 * 20
 
 
 # Control Plane specific constants

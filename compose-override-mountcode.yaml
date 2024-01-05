@@ -11,6 +11,9 @@ services:
   vmagent-many-cpus:
     volumes:
       - .:/centrality
+  vmagent-gpu:
+    volumes:
+      - .:/centrality
   controlplane:
     volumes:
       - .:/centrality

@@ -3,11 +3,13 @@ from common.config.config import (
     CentralityConfigNameConflictError,
     CentralityConfigInvalidEnvvarOverrideError,
     CentralityConfigEnvvarUnsetError,
+    CentralityConfigHasOptionalCentralityConfigFieldError,
 )
 import os
 import pytest
 import pydantic
 from pathlib import Path
+from typing import Optional
 
 """
 Tests to run:
@@ -34,6 +36,16 @@ STRING_VAL_2 = "string_val_2"
 
 class BasicConfigWithDefaults(CentralityConfig):
     int_field_with_default: int = INT_VAL_1
+
+
+class BasicConfigWithOptionalField(CentralityConfig):
+    optional_int_field: Optional[int] = INT_VAL_1
+
+
+class BasicConfigWithOptionalCentralityConfigField(CentralityConfig):
+    subconfig: Optional[BasicConfigWithOptionalField] = pydantic.Field(
+        default_factory=BasicConfigWithOptionalField
+    )
 
 
 class BasicConfigWithoutDefaults(CentralityConfig):
@@ -75,6 +87,16 @@ class NameConflictParentConfig(CentralityConfig):
 def test_basic_config_with_defaults() -> None:
     config = BasicConfigWithDefaults()
     assert config.int_field_with_default == INT_VAL_1
+
+
+def test_basic_config_with_optional() -> None:
+    config = BasicConfigWithOptionalField()
+    assert config.optional_int_field == INT_VAL_1
+
+
+def test_config_with_optional_centrality_config_field_errors() -> None:
+    with pytest.raises(CentralityConfigHasOptionalCentralityConfigFieldError):
+        _ = BasicConfigWithOptionalCentralityConfigField()
 
 
 def test_basic_config_without_default_errors() -> None:

@@ -20,3 +20,4 @@ from centrality_controlplane_sdk.models.info_response import InfoResponse
 from centrality_controlplane_sdk.models.ok_response import OkResponse
 from centrality_controlplane_sdk.models.validation_error import ValidationError
 from centrality_controlplane_sdk.models.validation_error_loc_inner import ValidationErrorLocInner
+from centrality_controlplane_sdk.models.vm_registration_info import VmRegistrationInfo

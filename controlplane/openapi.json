@@ -265,6 +265,64 @@
         }
       }
     },
+    "/vm/{vm_id}/register": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Register Vm",
+        "description": "Register a VM",
+        "operationId": "register_vm",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Vm Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VmRegistrationInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vm/{vm_id}/heartbeat": {
       "post": {
         "tags": [
@@ -508,6 +566,76 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VmRegistrationInfo": {
+        "properties": {
+          "num_cpus": {
+            "type": "integer",
+            "title": "Num Cpus"
+          },
+          "cpu_description": {
+            "type": "string",
+            "title": "Cpu Description"
+          },
+          "host_memory_mb": {
+            "type": "integer",
+            "title": "Host Memory Mb"
+          },
+          "num_gpus": {
+            "type": "integer",
+            "title": "Num Gpus"
+          },
+          "gpu_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Type"
+          },
+          "gpu_memory_mb": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Memory Mb"
+          },
+          "nvidia_driver_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nvidia Driver Version"
+          },
+          "hostname": {
+            "type": "string",
+            "title": "Hostname"
+          }
+        },
+        "type": "object",
+        "required": [
+          "num_cpus",
+          "cpu_description",
+          "host_memory_mb",
+          "num_gpus",
+          "gpu_type",
+          "gpu_memory_mb",
+          "nvidia_driver_version",
+          "hostname"
+        ],
+        "title": "VmRegistrationInfo",
+        "description": "Information about a VM to register with the control plane.\n\nSame as VM heartbeat, but without the timestamps because those are automatically set server-side."
       }
     },
     "securitySchemes": {

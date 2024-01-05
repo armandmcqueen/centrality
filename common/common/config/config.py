@@ -6,12 +6,44 @@ from typing import Any, TypeVar, Type
 import pydantic
 import yaml
 from common.config.dict_utils import flatten_dict, merge_flattened_into_nested
+from typing import get_origin, get_args, Union
 
 Dict = dict[str, Any]
 
 
+def is_optional_type(annotation) -> bool:
+    """Check if the annotation is an Optional type."""
+    if get_origin(annotation) is Union:
+        args = get_args(annotation)
+        assert (
+            len(args) == 2
+        ), f"Only Union[Type, None] is supported - this type is Union of {args}"
+        return type(None) in get_args(annotation)
+    return False
+
+
+def is_optional_of_centrality_config(annotation) -> bool:
+    """Check if the annotation is an Optional type of CentralityConfig."""
+    if get_origin(annotation) is Union:
+        args = get_args(annotation)
+        if type(None) in args:
+            # Check if any of the other types in the Union is CentralityConfig or its subclass
+            return any(
+                issubclass(arg, CentralityConfig)
+                for arg in args
+                if arg is not type(None)
+            )
+    return False
+
+
 class CentralityConfigEnvvarUnsetError(Exception):
     """When CentralityConfig.from_envvar() is run, but the envvar is not set"""
+
+    pass
+
+
+class CentralityConfigHasOptionalCentralityConfigFieldError(Exception):
+    """When a config has an optional field of the type CentralityConfig. This is not supported."""
 
     pass
 
@@ -101,7 +133,16 @@ class CentralityConfig(pydantic.BaseModel):
                 )
             annotation_type: type = field_info.annotation
 
-            if issubclass(annotation_type, CentralityConfig):
+            # Handle complex types - currently we only handle Optional types where the inner type
+            # is not CentralityConfig.
+            if is_optional_type(annotation_type):
+                if is_optional_of_centrality_config(annotation_type):
+                    raise CentralityConfigHasOptionalCentralityConfigFieldError(
+                        f"Optional CentralityConfig fields are not supported - "
+                        f"found in {cls.__name__}.{field_name}"
+                    )
+                tree.append(field_name)
+            elif issubclass(annotation_type, CentralityConfig):
                 sub_tree = annotation_type._build_field_tree()
                 for sub_field_name in sub_tree:
                     tree.append(f"{field_name}.{sub_field_name}")

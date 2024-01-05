@@ -12,7 +12,12 @@ docker-push:
 
 .PHONY: docker-compose-mount-up
 docker-compose-mount-up:
-	docker compose -f compose.yaml -f compose-override-mountcode.yaml up
+	docker compose -f compose.yaml -f compose-override-mountcode.yaml up $(ARGS)
+
+.PHONY: docker-compose-mount-up-controlplane
+docker-compose-mount-up-controlplane:
+	make docker-compose-mount-up ARGS="postgres controlplane"
+
 
 .PHONY: test
 test:
@@ -128,8 +133,16 @@ delete-sdk:
 	rm -rf sdk_controlplane
 
 
+.PHONY: delete-dump-db
+delete-dump-db:
+	find . -name 'dump.db' -type f -delete
+
+
 .PHONY: clean
 clean:
+	make delete-dump-db
+	docker compose down
+	docker compose rm -f
 	make pre-commit-install
 	make generate-sdk
 	make install-dev
