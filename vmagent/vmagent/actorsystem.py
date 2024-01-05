@@ -32,6 +32,7 @@ class VmAgentActorSystem:
 
     def start(self) -> "VmAgentActorSystem":
         registration_info = get_machine_info(self.vm_agent_config.machine_info)
+        print(f"📋 Registering VM with info: {registration_info}")
         self.control_plane_sdk.register_vm(
             vm_registration_info=registration_info, vm_id=self.vm_agent_config.vm_id
         )
