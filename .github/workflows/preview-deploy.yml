@@ -22,6 +22,8 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install dependencies including dev
         run: make install-dev
@@ -37,7 +39,7 @@ jobs:
       - name: Deploy Preview
         id: deploy-preview
         run: |
-          python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.sha }} --idempotency-token ${{ github.ref_name }}
+          python deploy/deploy/aws/instances.py launch m7g.medium --checkout ${{ github.event.pull_request.head.sha }} --idempotency-token ${{ github.head_ref }}
 
       - name: Save Preview URL
         id: preview-url
