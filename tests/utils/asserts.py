@@ -1,3 +1,6 @@
+# Utility functions for asserts with helpful error messages
+
+
 def list_size(lst: list, expected_size: int):
     assert (
         len(lst) == expected_size

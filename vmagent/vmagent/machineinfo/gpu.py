@@ -34,7 +34,7 @@ def get_nvidia_gpu_info() -> tuple[NumGpus, GpuType, GpuMemoryMiB, NvidiaDriverV
                 ]
                 memory_mb, unit = gpu_memory.split()
                 if unit != "MiB":
-                    raise Exception(f"Unexpected unit: {unit}")  # TODO: handle
+                    raise Exception(f"[MachineInfo.gpu] Unexpected unit: {unit}")
                 memory_mb = int(memory_mb.strip())
                 gpu_info.append(
                     {
@@ -57,14 +57,14 @@ def get_nvidia_gpu_info() -> tuple[NumGpus, GpuType, GpuMemoryMiB, NvidiaDriverV
 
     except subprocess.CalledProcessError as e:
         # Handle errors if nvidia-smi is not found or another error occurs
-        print("An error occurred:", e)
+        print("[MachineInfo.gpu] An error occurred:", e)
         return 0, None, None, None
     except FileNotFoundError:
         # nvidia-smi doesn't exist. This is expected in many cases
         return 0, None, None, None
     except Exception as e:
         # Handle any other exceptions
-        print("An error occurred:", e)
+        print("[MachineInfo.gpu] An error occurred:", e)
         return 0, None, None, None
 
 

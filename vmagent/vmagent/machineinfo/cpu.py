@@ -29,10 +29,12 @@ def get_linux_cpu_info() -> str:
             # Don't log anything as this is expected
             pass
         else:
-            print(f"Unexpected subprocess.CalledProcessError in lscpu + grep: {e}")
+            print(
+                f"[MachineInfo] Unexpected subprocess.CalledProcessError in lscpu + grep: {e}"
+            )
             model_name = None
     except Exception as e:
-        print(f"Unexpected Exception after lscpu: {e}")
+        print(f"[MachineInfo] Unexpected Exception after lscpu: {e}")
         model_name = None
 
     # If we didn't get a good model_name, try dmidecode
@@ -40,13 +42,14 @@ def get_linux_cpu_info() -> str:
         tmp = sh("sudo dmidecode -t processor | grep Version")
         model_name = tmp.replace("Version:", "").strip()
     except Exception as e:
-        print(f"Unexpected Exception after dmidecode: {e}")
+        print(f"[MachineInfo] Unexpected Exception after dmidecode: {e}")
         model_name = ""
 
     if model_name in ["", "Not Specified"]:
         # TODO: Add other special cases as we encounter them
         print(
-            "Unknown CPU - please report this at https://github.com/armandmcqueen/centrality/issues "
+            "[MachineInfo] Unknown CPU - please report this at "
+            "https://github.com/armandmcqueen/centrality/issues "
             "so we can add support for your case"
         )
         model_name = UNKNOWN_CPU_DESCRIPTION
@@ -59,7 +62,7 @@ def get_mac_cpu_info() -> str:
         line = sh('sysctl -a | grep "brand_string"')
         model_name = line.replace("machdep.cpu.brand_string:", "").strip()
     except Exception as e:
-        print(f"Unexpected Exception after sysctl + grep: {e}")
+        print(f"[MachineInfo] Unexpected Exception after sysctl + grep: {e}")
         model_name = UNKNOWN_CPU_DESCRIPTION
     return model_name
 
@@ -72,13 +75,13 @@ def get_cpu_description() -> str:
         try:
             cpu_info = get_linux_cpu_info()
         except Exception as e:
-            print(e)
+            print(f"[MachineInfo] {e}")
             cpu_info = "Failed to retrieve CPU info"
     elif os_name == "Darwin":
         try:
             cpu_info = get_mac_cpu_info()
         except Exception as e:
-            print(e)
+            print(f"[MachineInfo] {e}")
             cpu_info = "Failed to retrieve CPU info"
     else:
         raise NotImplementedError(f"Unsupported operating system: {os_name}")

@@ -30,8 +30,6 @@ it is considered a new machine and this case doesn't apply.
 
 The machine can use the same name as before during registration as long as the machine specs match (which includes hostname). If the machine specs don't match, the control plane will reject the machine during registration and return an error. This should cause a complete shutdown of the agent.
 
-TODO: This should cause an immediate error in the launch CLI
-
 ### The machine tries to use the same name as an existing machine
 
 If they don't have matching machine specs (including hostname), the control plane will reject at registration. 

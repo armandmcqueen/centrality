@@ -24,7 +24,7 @@ def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
     new_token_val = user_token.token
     assert client.token_exists(TOKEN), "Dev token not found"
     assert client.token_exists(new_token_val), f"New token {new_token_val} not found"
-    asserts.set_equality(client.get_tokens(), [TOKEN, new_token_val])
+    asserts.set_equality([t.token for t in client.get_tokens()], [TOKEN, new_token_val])
 
     # Validate that resetting the DB removes the token
     client.reset_db()
