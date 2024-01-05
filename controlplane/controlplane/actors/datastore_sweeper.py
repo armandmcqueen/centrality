@@ -20,7 +20,7 @@ class DatastoreSweeperConfig(CentralityConfig):
         15  # How often to check for dead vms that need to be reaped
     )
     vm_no_heartbeat_reap_secs: int = (
-        constants.VM_NO_HEARTBEAT_DEATH_SECS
+        constants.DEFAULT_VM_NO_HEARTBEAT_DEATH_SECS
     )  # Allow this value to be overridden for testing
 
 

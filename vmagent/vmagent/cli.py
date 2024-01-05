@@ -15,9 +15,37 @@ from vmagent.config import VmAgentConfig
 from vmagent.actorsystem import VmAgentActorSystem
 from common.sdks.controlplane.sdk import get_sdk
 from typing import Optional
+from centrality_controlplane_sdk import DataApi
 
+MAX_CONTROL_PLANE_WAIT_TIMEOUT = 60
 
 app = typer.Typer()
+
+
+class ControlPlaneUnavailableError(Exception):
+    pass
+
+
+def wait_for_control_plane_healthy(control_plane_sdk: DataApi, timeout_secs: int):
+    max_time = time.time() + MAX_CONTROL_PLANE_WAIT_TIMEOUT
+    while time.time() < max_time:
+        try:
+            control_plane_sdk.get_healthcheck()
+            break
+
+        except Exception as e:
+            if not isinstance(e, urllib3.exceptions.MaxRetryError):
+                print(
+                    f"Unexpected error while waiting for control plane to be ready: {e}"
+                )
+            print(
+                f"❗ Control plane health check not passing. Time until timeout: {time.time() - max_time}"
+            )
+            time.sleep(1)
+    else:
+        raise ControlPlaneUnavailableError(
+            f"❌️ Control Plane failed to have passing healthcheck after {MAX_CONTROL_PLANE_WAIT_TIMEOUT} seconds"
+        )
 
 
 @app.command()
@@ -50,11 +78,11 @@ def launch(
     else:
         print("🌱 Using default configs")
         config = VmAgentConfig(config_overrides=config_overrides)
+
     print("⚙️ Config:")
     config.pretty_print_yaml()
 
     print("🚀 Launching conclib proxy")
-    # Start conclib bridge
     redis_daemon = conclib.start_redis(config=conclib_config)
     conclib.start_proxy(config=conclib_config)
     print("✓ conclib proxy launched")
@@ -63,27 +91,8 @@ def launch(
     control_plane_sdk = get_sdk(
         config.controlplane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
-
-    MAX_TIMEOUT = 60
-    max_time = time.time() + MAX_TIMEOUT
-    while time.time() < max_time:
-        try:
-            control_plane_sdk.get_healthcheck()
-            print("✓ Control plane is ready")
-            break
-        # except Exception as e:
-        except urllib3.exceptions.MaxRetryError as e:
-            # TODO: Ensure that this is the correct exception type. Or do we want to catch all?
-            print(e)
-            print(
-                f"❗ Control plane health check not passing. Time until timeout: {time.time() - max_time}"
-            )
-            time.sleep(1)
-    else:
-        # TODO: Custom exception type
-        raise Exception(
-            f"❌️ Control Plane failed to have passing healthcheck after {MAX_TIMEOUT} seconds"
-        )
+    wait_for_control_plane_healthy(control_plane_sdk, MAX_CONTROL_PLANE_WAIT_TIMEOUT)
+    print("✓ Control plane is ready")
 
     print("🚀 Launching VM Agent actor system")
     _ = VmAgentActorSystem(

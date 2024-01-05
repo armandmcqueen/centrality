@@ -32,7 +32,6 @@ class VmAgentActorSystem:
 
     def start(self) -> "VmAgentActorSystem":
         registration_info = get_machine_info(self.vm_agent_config.machine_info)
-        # TODO: Run machine registration and error out if it fails with custom exception
         self.control_plane_sdk.register_vm(
             vm_registration_info=registration_info, vm_id=self.vm_agent_config.vm_id
         )

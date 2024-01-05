@@ -13,13 +13,30 @@ from controlplane.datastore.types.vmmetrics import (
     CpuVmMetricLatest,
 )
 from controlplane.datastore.types.vmliveness import (
-    VmHeartbeatORM,
-    VmHeartbeat,
+    VmInfoOrm,
+    VmInfo,
     VmRegistrationInfo,
 )
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
+
+
+class VmRegistrationConflictError(Exception):
+    """
+    Raised when a VM tries to register with a different machine spec than what is
+    already in the database
+    """
+
+    pass
+
+
+class VmHeartbeatBeforeRegistrationError(Exception):
+    """
+    Raised when a VM tries to heartbeat before registering
+    """
+
+    pass
 
 
 class DatastoreClient:
@@ -73,10 +90,7 @@ class DatastoreClient:
                 results.append(result_token)
         return results
 
-    def validate_token(self, token: str) -> bool:
-        # TODO: Rename this so it is clear that it returns a bool.
-        #       Also rename this to be datastore oriented, not
-        #       applicateion oriented
+    def token_exists(self, token: str) -> bool:
         """Check if a token is valid"""
         with Session(bind=self.engine) as session:
             row = (
@@ -185,7 +199,7 @@ class DatastoreClient:
             session.query(CpuVmMetricORM).filter(*filters).delete()
             session.commit()
 
-    def register_vm(  # TODO: Rename to be more datastore oriented instead of application oriented
+    def add_or_update_vm_info(
         self,
         vm_id: str,
         registration_info: VmRegistrationInfo,
@@ -200,33 +214,31 @@ class DatastoreClient:
         VMs.
         """
         with Session(bind=self.engine) as session:
-            # If the VM is not already registered, add it
             existing_vm = (
-                session.query(VmHeartbeatORM)
-                .filter(VmHeartbeatORM.vm_id == vm_id)
-                .first()
+                session.query(VmInfoOrm).filter(VmInfoOrm.vm_id == vm_id).first()
             )
+            # If the VM is not already registered, add it
             if existing_vm is None:
-                registration = registration_info.to_heartbeat_orm(vm_id=vm_id)
+                registration = registration_info.to_vm_info_orm(vm_id=vm_id)
                 session.add(registration)
                 session.commit()
+
+            # Otherwise, confirm that the registration info matches what is already in the database,
+            # except for nvidia-driver-version, which is a software version that can change.
             else:
-                # Otherwise, confirm that the registration info matches what is already in the database,
-                # except for nvidia-driver-version
                 skipped_fields = ["nvidia_driver_version"]
-                existing_vm = cast(VmHeartbeatORM, existing_vm)
-                previous_registration_info = VmHeartbeat.from_orm(existing_vm)
+                existing_vm = cast(VmInfoOrm, existing_vm)
+                previous_registration_info = VmInfo.from_orm(existing_vm)
                 for field in VmRegistrationInfo.model_fields.keys():
                     if field in skipped_fields:
                         continue
                     if getattr(previous_registration_info, field) != getattr(
                         registration_info, field
                     ):
-                        # TODO: Use custom exception class and better error message that explains intended behavior to user
-                        raise Exception(
+                        raise VmRegistrationConflictError(
                             f"VM registration info does not match what is already in the database. "
                             f"Field: {field}, existing: {getattr(existing_vm, field)}, "
-                            f"new: {getattr(registration_info, field)}"
+                            f"new: {getattr(registration_info, field)}."
                         )
 
                 # Update the registration timestamp and last heartbeat timestamp in the DB
@@ -238,33 +250,30 @@ class DatastoreClient:
                 )
                 session.commit()
 
-    def report_heartbeat(  # TODO: Rename to be more datastore oriented instead of application oriented
+    def update_vm_info_heartbeat_ts(
         self,
         vm_id: str,
     ) -> None:
         """Set the last heartbeat for a VM to be the current time"""
         with Session(bind=self.engine) as session:
             existing_vm = (
-                session.query(VmHeartbeatORM)
-                .filter(VmHeartbeatORM.vm_id == vm_id)
-                .first()
+                session.query(VmInfoOrm).filter(VmInfoOrm.vm_id == vm_id).first()
             )
             if existing_vm is None:
-                # TODO: Improve this exception with custom class
-                raise Exception(
+                raise VmHeartbeatBeforeRegistrationError(
                     f"VM {vm_id} is reporting heartbeat, but has not registered yet"
                 )
-            existing_vm = cast(VmHeartbeatORM, existing_vm)
+            existing_vm = cast(VmInfoOrm, existing_vm)
             existing_vm.last_heartbeat_ts = datetime.datetime.utcnow()
             session.commit()
 
-    def report_vm_death(
+    def delete_vm_info(
         self,
         vm_id: str,
     ) -> None:
         """Remove the VM from the list of active VMs."""
         with Session(bind=self.engine) as session:
-            delete_stmt = delete(VmHeartbeatORM).where(VmHeartbeatORM.vm_id == vm_id)
+            delete_stmt = delete(VmInfoOrm).where(VmInfoOrm.vm_id == vm_id)
             session.execute(delete_stmt)
             session.commit()
 
@@ -274,8 +283,8 @@ class DatastoreClient:
     ) -> None:
         """Delete all VMs that have not reported a heartbeat since oldest_ts_to_keep"""
         with Session(bind=self.engine) as session:
-            delete_stmt = delete(VmHeartbeatORM).where(
-                VmHeartbeatORM.last_heartbeat_ts < oldest_ts_to_keep
+            delete_stmt = delete(VmInfoOrm).where(
+                VmInfoOrm.last_heartbeat_ts < oldest_ts_to_keep
             )
             session.execute(delete_stmt)
             session.commit()
@@ -293,8 +302,8 @@ class DatastoreClient:
         )
         with Session(bind=self.engine) as session:
             rows = (
-                session.query(VmHeartbeatORM)
-                .filter(VmHeartbeatORM.last_heartbeat_ts >= min_ts)
+                session.query(VmInfoOrm)
+                .filter(VmInfoOrm.last_heartbeat_ts >= min_ts)
                 .all()
             )
             return [row.vm_id for row in rows]
@@ -306,5 +315,5 @@ class DatastoreClient:
         Return the list of all VMs that are live or in limbo
         """
         with Session(bind=self.engine) as session:
-            rows = session.query(VmHeartbeatORM).all()
+            rows = session.query(VmInfoOrm).all()
             return [row.vm_id for row in rows]

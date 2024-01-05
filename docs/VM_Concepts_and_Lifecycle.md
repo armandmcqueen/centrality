@@ -6,14 +6,18 @@ This is the lifecycle:
 
 1. A machine is added to the cluster. It registers itself with the control plane. It chooses a name for itself. 
 2. The machine sends regular heartbeats to the control plane. Machines that do this are now `live`
-3. The machine stops sending a heartbeat and is considered disconnected, but may come back. At this time, the machine is not considered `live` or `dead`. It is in `limbo`.
+3. The machine stops sending a heartbeat and, after some time, is considered disconnected, but may come back. At this time, the machine is not considered `live` or `dead`. It is in `limbo`.
 4. After some time without a heartbeat (or with an active death trigger), the machine is considered `dead` and not coming back
+
+## Goal
+
+Prevent accidentally running two machines with the same name at the same time as this will lead to confusing data.
 
 ## Invariants
 
 - There should never be two machines with the same name at the same time. (this isn't perfectly enforced by the control plane)
 - It is okay for a machine to have the same name as a previous machine as long as the previous one is `dead`
-- A machine can register with the same name as a machine in limbo as long as they have identical machine specs (including hostname)
+- A machine can register with the same name as a machine in limbo as long as they have identical machine specs (including hostname). This cleanly handles an agent restart.
 
 
 ## Cases

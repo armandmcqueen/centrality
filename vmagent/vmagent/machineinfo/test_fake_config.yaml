@@ -1,8 +1,0 @@
-cpu_description: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
-gpu_memory_mb: 60000
-gpu_type: NVIDIA A100
-host_memory_mb: 16000
-hostname: hostname
-num_cpus: 8
-num_gpus: 8
-nvidia_driver_version: 535.129.03

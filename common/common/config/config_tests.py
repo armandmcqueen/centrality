@@ -3,6 +3,7 @@ from common.config.config import (
     CentralityConfigNameConflictError,
     CentralityConfigInvalidEnvvarOverrideError,
     CentralityConfigEnvvarUnsetError,
+    CentralityConfigHasOptionalCentralityConfigFieldError,
 )
 import os
 import pytest
@@ -39,6 +40,12 @@ class BasicConfigWithDefaults(CentralityConfig):
 
 class BasicConfigWithOptionalField(CentralityConfig):
     optional_int_field: Optional[int] = INT_VAL_1
+
+
+class BasicConfigWithOptionalCentralityConfigField(CentralityConfig):
+    subconfig: Optional[BasicConfigWithOptionalField] = pydantic.Field(
+        default_factory=BasicConfigWithOptionalField
+    )
 
 
 class BasicConfigWithoutDefaults(CentralityConfig):
@@ -85,6 +92,11 @@ def test_basic_config_with_defaults() -> None:
 def test_basic_config_with_optional() -> None:
     config = BasicConfigWithOptionalField()
     assert config.optional_int_field == INT_VAL_1
+
+
+def test_config_with_optional_centrality_config_field_errors() -> None:
+    with pytest.raises(CentralityConfigHasOptionalCentralityConfigFieldError):
+        _ = BasicConfigWithOptionalCentralityConfigField()
 
 
 def test_basic_config_without_default_errors() -> None:

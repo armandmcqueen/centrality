@@ -4,6 +4,11 @@ from vmagent.machineinfo.config import FakeMachineInfoConfig
 
 
 def get_fake_machine_info(config: FakeMachineInfoConfig) -> VmRegistrationInfo:
+    """
+    Get fake machine info by getting the real machine info and overriding the fields.
+
+    If the config field is None, then the real machine info value is used.
+    """
     machine_info = get_real_machine_info()
     for field in VmRegistrationInfo.model_fields:
         if getattr(config, field) is not None:
@@ -12,8 +17,5 @@ def get_fake_machine_info(config: FakeMachineInfoConfig) -> VmRegistrationInfo:
         machine_info.gpu_type = None
         machine_info.gpu_memory_mb = None
         machine_info.nvidia_driver_version = None
-
-    # TODO: Do we want to allow the number of GPUs to be > 0, while the type, memory,
-    #  and driver version are None? That would have to be explicitly done by the user...
 
     return machine_info

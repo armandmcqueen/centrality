@@ -8,7 +8,7 @@ metrics:
       algorithm: linear_synced  # linear_synced | random
       jitter: true
       jitter_factor: 0.4
-      num_vals: 64
+      num_vals: 128
       period: 10
 machine_info:
   use_fake: true

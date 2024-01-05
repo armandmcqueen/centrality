@@ -7,7 +7,7 @@ from fastapi import FastAPI, Query, Depends
 from common.types.vmmetrics import CpuMeasurement
 from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 from common import constants
-from controlplane.datastore.client import DatastoreClient
+from controlplane.datastore.client import DatastoreClient, VmRegistrationConflictError
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.rest.utils.auth import auth, security
@@ -185,7 +185,19 @@ def register_vm(
     registration_info: VmRegistrationInfo,
 ) -> OkResponse:
     """Register a VM"""
-    datastore_client.register_vm(vm_id=vm_id, registration_info=registration_info)
+    try:
+        datastore_client.add_or_update_vm_info(
+            vm_id=vm_id, registration_info=registration_info
+        )
+    except VmRegistrationConflictError as err:
+        err_msg = (
+            f"{err}\nThis may be caused by trying to run a new VM with the same VM ID ({vm_id}) "
+            f"as an existing VM. If you can see that another VM with this name is active, "
+            "pick a different name. If this is intentional (e.g. you shut down one machine,"
+            "booted up a new one and want it to have the same name), you can immediately "
+            "remove the old VM from the DB (see API docs until the CLI supports it). "
+        )
+        raise VmRegistrationConflictError(err_msg)
     return OkResponse()
 
 
@@ -196,7 +208,7 @@ def report_vm_heartbeat(
     vm_id: str,
 ) -> OkResponse:
     """Report a heartbeat for a VM"""
-    datastore_client.report_heartbeat(vm_id=vm_id)
+    datastore_client.update_vm_info_heartbeat_ts(vm_id=vm_id)
     return OkResponse()
 
 
@@ -211,7 +223,7 @@ def report_vm_death(
 
     This can be useful when you need the live list to update faster than the timeout.
     """
-    datastore_client.report_vm_death(vm_id=vm_id)
+    datastore_client.delete_vm_info(vm_id=vm_id)
     return OkResponse()
 
 

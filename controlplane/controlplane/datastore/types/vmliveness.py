@@ -8,8 +8,8 @@ from sqlalchemy.dialects.postgresql import TIMESTAMP
 from controlplane.datastore.types.base import DatastoreBaseORM
 
 
-class VmHeartbeatORM(DatastoreBaseORM):
-    __tablename__ = "vm_heartbeat"  # TODO: Change the name of this table now that we have registration info
+class VmInfoOrm(DatastoreBaseORM):
+    __tablename__ = "vm_info"
     vm_id: Mapped[str] = mapped_column(primary_key=True, nullable=False)
     last_heartbeat_ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
@@ -27,7 +27,7 @@ class VmHeartbeatORM(DatastoreBaseORM):
     hostname: Mapped[str] = mapped_column(nullable=False)
 
 
-class VmHeartbeat(BaseModel):
+class VmInfo(BaseModel):
     """
     Information about a VM's current state
     """
@@ -46,7 +46,7 @@ class VmHeartbeat(BaseModel):
     hostname: str
 
     @classmethod
-    def from_orm(cls, orm: VmHeartbeatORM) -> "VmHeartbeat":
+    def from_orm(cls, orm: VmInfoOrm) -> "VmInfo":
         return cls(
             vm_id=orm.vm_id,
             last_heartbeat_ts=orm.last_heartbeat_ts,
@@ -61,8 +61,8 @@ class VmHeartbeat(BaseModel):
             hostname=orm.hostname,
         )
 
-    def to_orm(self) -> VmHeartbeatORM:
-        return VmHeartbeatORM(
+    def to_orm(self) -> VmInfoOrm:
+        return VmInfoOrm(
             vm_id=self.vm_id,
             last_heartbeat_ts=self.last_heartbeat_ts,
             registration_ts=self.registration_ts,
@@ -81,7 +81,8 @@ class VmRegistrationInfo(BaseModel):
     """
     Information about a VM to register with the control plane.
 
-    Same as VM heartbeat, but without the timestamps because those are automatically set server-side.
+    Same as VM heartbeat, but without a few fields that are either set via URL params or
+    automatically set server-side.
     """
 
     num_cpus: int
@@ -93,8 +94,8 @@ class VmRegistrationInfo(BaseModel):
     nvidia_driver_version: Optional[str]
     hostname: str
 
-    def to_heartbeat_orm(self, vm_id: str) -> VmHeartbeatORM:
-        return VmHeartbeatORM(
+    def to_vm_info_orm(self, vm_id: str) -> VmInfoOrm:
+        return VmInfoOrm(
             vm_id=vm_id,
             last_heartbeat_ts=datetime.datetime.now(datetime.timezone.utc),
             registration_ts=datetime.datetime.now(datetime.timezone.utc),
