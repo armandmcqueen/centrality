@@ -1,7 +1,8 @@
 import psutil
-from actors.metrics.samplers.sampler import MetricSampler
-from actors.metrics.samplers.throughput import Throughput
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
+from vmagent.actors.metrics.samplers.throughput import Throughput
 from rich.live import Live
+from rich.table import Table
 
 ReadThroughputMiB = float
 WriteThroughputMiB = float
@@ -42,12 +43,22 @@ class DiskIoSampler(MetricSampler):
         return disk_throughput_infos, disk_iops_infos
 
     def sample_and_render(self, live: Live):
-        # TODO: Rewrite collect_and_render
-        pass
-        # read, write, iops = self.collect()
-        # read_mib = round(read, 2)
-        # write_mib = round(write, 2)
-        # iops = round(iops, 2)
-        # live.update(
-        #     f"Read MiB/sec: {read_mib}\nWrite MiB/sec: {write_mib}\nIOPS: {iops}"
-        # )
+        # Write each disk's throughput and IOPS as a row
+        throughput, iops = self.sample()
+        disk_ids = throughput.keys()
+
+        table = Table()
+        header = ["Disk", "Read MiB/sec", "Write MiB/sec", "IOPS"]
+        table.add_column(header[0])
+        table.add_column(header[1])
+        table.add_column(header[2])
+        table.add_column(header[3])
+
+        for disk_id in disk_ids:
+            read, write = throughput[disk_id]
+            disk_iops = iops[disk_id]
+            read_mib = int(read)
+            write_mib = int(write)
+            disk_iops = int(disk_iops)
+            table.add_row(disk_id, str(read_mib), str(write_mib), str(disk_iops))
+        live.update(table)

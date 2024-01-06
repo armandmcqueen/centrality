@@ -1,5 +1,5 @@
 import psutil
-from actors.metrics.samplers.sampler import MetricSampler
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from rich.live import Live
 
 
@@ -9,7 +9,7 @@ class CpuSampler(MetricSampler):
         return cpu_utils
 
     def sample_and_render(self, live: Live):
-        cpu_utils = self.collect()
+        cpu_utils = self.sample()
         cpu_util_str = [f"{round(cpu_util, 2)}%" for cpu_util in cpu_utils]
         # Make sure all strings are the same length
         max_len = 6

@@ -1,7 +1,8 @@
 import pynvml
 from rich import print
 from rich.live import Live
-from actors.metrics.samplers.sampler import MetricSampler
+from rich.table import Table
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
 
 
 GpuUtil = float
@@ -63,15 +64,33 @@ class GpuSampler(MetricSampler):
 
     def sample_and_render(self, live: Live):
         if self.pynvml_active:
-            gpu_util_list, gpu_memory_list = self.collect()
-            # TODO: Fix this render
-            gpu_util_str = ", ".join([f"{util}%" for util in gpu_util_list])
-            gpu_memory_str = ", ".join(
-                [f"{used:.2f}/{total:.2f} MiB" for used, total in gpu_memory_list]
-            )
-            live.update(
-                f"GPU Utilization: {gpu_util_str}\nGPU Memory: {gpu_memory_str}"
-            )
+            table = Table()
+            gpu_util_list, gpu_memory_list = self.sample()
+            header = [
+                "GPU",
+                "Utilization %",
+                "Memory Used MiB",
+                "Memory Total MiB",
+                "Memory Used %",
+            ]
+            table.add_column(header[0])
+            table.add_column(header[1])
+            table.add_column(header[2])
+            table.add_column(header[3])
+            table.add_column(header[4])
+            for i in range(self.device_count):
+                gpu_util = gpu_util_list[i]
+                memory_used_mib, memory_total_mib = gpu_memory_list[i]
+                memory_used_percent = round(memory_used_mib / memory_total_mib * 100, 2)
+                table.add_row(
+                    str(i),
+                    str(gpu_util),
+                    str(memory_used_mib),
+                    str(memory_total_mib),
+                    str(memory_used_percent) + "%",
+                )
+            live.update(table)
+
         else:
             live.update("[red bold]GPU metrics not available")
 

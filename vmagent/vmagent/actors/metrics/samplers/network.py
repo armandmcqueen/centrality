@@ -1,7 +1,8 @@
 import psutil
-from actors.metrics.samplers.sampler import MetricSampler
-from actors.metrics.samplers.throughput import Throughput
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
+from vmagent.actors.metrics.samplers.throughput import Throughput
 from rich.live import Live
+from rich.table import Table
 from dataclasses import dataclass
 
 RecvBandwidthMiB = float
@@ -61,11 +62,20 @@ class NetworkSampler(MetricSampler):
         return interface_infos
 
     def sample_and_render(self, live: Live):
-        # TODO: rewrite this to show per-interface info
-        recv, sent = self.collect()
-        sent_mib = round(sent, 2)
-        recv_mib = round(recv, 2)
-        live.update(f"Sent MiB/sec: {sent_mib}\nRecv MiB/sec: {recv_mib}")
+        interface_info = self.sample()
+        table = Table()
+        header = ["Interface", "Sent MiB/sec", "Recv MiB/sec"]
+        table.add_column(header[0])
+        table.add_column(header[1])
+        table.add_column(header[2])
+        for interface in interface_info.keys():
+            sent, recv = interface_info[interface].as_tuple()
+            sent = round(sent, 2)
+            recv = round(recv, 2)
+
+            table.add_row(interface, str(sent), str(recv))
+
+        live.update(table)
 
 
 def main():

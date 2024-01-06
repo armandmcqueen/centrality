@@ -1,5 +1,5 @@
 import psutil
-from actors.metrics.samplers.sampler import MetricSampler
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from rich.live import Live
 
 FreeMemoryMiB = float
@@ -13,7 +13,7 @@ class MemorySampler(MetricSampler):
         return free_memory_mib, total_memory_mib
 
     def sample_and_render(self, live: Live):
-        free_memory_mib, total_memory_mib = self.collect()
+        free_memory_mib, total_memory_mib = self.sample()
         free_memory_mib = int(free_memory_mib)
         live.update(
             f"Free Memory: {free_memory_mib} MiB\nTotal Memory: {total_memory_mib} MiB"

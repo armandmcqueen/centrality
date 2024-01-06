@@ -2,11 +2,12 @@ from rich import print
 from rich.console import Console
 from rich.live import Live
 import time
-from actors.metrics.samplers.gpu import GpuSampler
-from actors.metrics.samplers.diskio import DiskIoCollector
-from actors.metrics.samplers.net import NetworkSampler
-from actors.metrics.samplers.cpu import CpuSampler
-from actors.metrics.samplers.memory import MemorySampler
+from vmagent.actors.metrics.samplers.cpu import CpuSampler
+from vmagent.actors.metrics.samplers.diskio import DiskIoSampler
+from vmagent.actors.metrics.samplers.diskmb import DiskMbSampler
+from vmagent.actors.metrics.samplers.gpu import GpuSampler
+from vmagent.actors.metrics.samplers.memory import MemorySampler
+from vmagent.actors.metrics.samplers.network import NetworkSampler
 
 import typer
 
@@ -33,21 +34,23 @@ def loop_and_render(metric_sampler, refresh_rate=10):
     help="Collect and render real-time metrics from a given metric collector",
 )
 def main(
-    collector: str = typer.Argument(
+    sampler: str = typer.Argument(
         ...,
-        help="The metric collector to use. Valid options are: gpu, disk, network (aka: net), cpu, memory (aka: mem)",
+        help="The metric sampler to use. Valid options are: gpu, diskio, diskmb, network (aka: net), cpu, memory (aka: mem)",
     ),
     refresh_rate: int = typer.Option(10, help="The refresh rate in Hz"),
 ):
-    if collector == "gpu":
+    if sampler == "gpu":
         metric_collector = GpuSampler()
-    elif collector == "disk":
-        metric_collector = DiskIoCollector()
-    elif collector == "network" or collector == "net":
+    elif sampler == "diskio":
+        metric_collector = DiskIoSampler()
+    elif sampler == "diskmb":
+        metric_collector = DiskMbSampler()
+    elif sampler == "network" or sampler == "net":
         metric_collector = NetworkSampler()
-    elif collector == "cpu":
+    elif sampler == "cpu":
         metric_collector = CpuSampler()
-    elif collector == "memory" or collector == "mem":
+    elif sampler == "memory" or sampler == "mem":
         metric_collector = MemorySampler()
     else:
         raise typer.BadParameter("Invalid collector")

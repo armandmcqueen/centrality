@@ -9,6 +9,10 @@ from actors.metrics.faketrics import FakeMetricGenerator
 from centrality_controlplane_sdk import DataApi
 
 
+class PynvmlNotAvailableError(Exception):
+    pass
+
+
 class SendGpuMetrics(conclib.ActorMessage):
     pass
 
@@ -21,29 +25,41 @@ class GpuMetricCollector(conclib.PeriodicActor):
 
     def __init__(
         self,
-        vm_agent_config: VmAgentConfig,
+        vm_id: VmAgentConfig,
+        gpu_util_config: VmAgentConfig,
         control_plane_sdk: DataApi,
     ):
-        self.vm_agent_config = vm_agent_config
-        self.config = self.vm_agent_config.metrics.gpu
+        self.config_util = self.vm_agent_config.metrics.gpu_util
+        self.config_mem = self.vm_agent_config.metrics.gpu_mem
         self.control_plane_sdk = control_plane_sdk
+
+        if self.config_util.use_fake and self.config_mem.use_fake:
+            if self.config_util.fake.num_vals != self.config_mem.fake.num_vals:
+                raise ValueError(
+                    "GpuMetricConfig.fake.num_vals must be the same for both gpu_util and gpu_mem!"
+                )
+
         self.sampler = GpuSampler()
-        self.fake_metric_generator = FakeMetricGenerator(self.config.fake)
+        self.fake_metric_generator_util = FakeMetricGenerator(self.config_util.fake)
+        self.fake_metric_generator_mem = FakeMetricGenerator(self.config_mem.fake)
         super().__init__()
 
     def send_gpu_metric(self) -> None:
-        utils, mem_tuples = self.sampler.sample()
+        # If we aren't faking all the data, check if pynvml is available and exception if not
+        utils = None
+        mem = None
+        if not (self.config_util.use_fake and self.config_mem.use_fake):
+            if not self.sampler.pynvml_active:
+                raise PynvmlNotAvailableError("pynvml is not available on this system")
+            utils, mem = self.sampler.sample()
 
-        # TODO: add support for fake metrics
-        # if self.config.use_fake:
-        #     used_mibs = self.fake_metric_generator.sample()
-        #     disk_infos = {}
-        #     for i, used_mib in enumerate(used_mibs):
-        #         disk_infos[f"/dev/fake{i}"] = (used_mib, self.config.fake.max_val)
-        # else:
-        #     disk_infos = self.collector.collect()
-        #
-        # print(f"📡 {self.__class__.__name__} - sending metrics: {disk_infos}")
+        if self.config_util.use_fake:
+            utils = self.fake_metric_generator_util.sample()
+        if self.config_mem.use_fake:
+            used_mems = self.fake_metric_generator_mem.sample()
+            mem = [(used_mem, self.config_mem.fake.max_val) for used_mem in used_mems]
+
+        print(f"📡 {self.__class__.__name__} - sending metrics: {utils, mem}")
 
         pass
         # measurement = CpuMeasurement(
@@ -63,7 +79,7 @@ class GpuMetricCollector(conclib.PeriodicActor):
             raise conclib.errors.UnexpectedMessageError(message)
 
     def on_stop(self) -> None:
-        self.collector.shutdown()
+        self.sampler.shutdown()
         super().on_stop()
 
     def on_failure(
@@ -72,5 +88,5 @@ class GpuMetricCollector(conclib.PeriodicActor):
         exception_value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None:
-        self.collector.shutdown()
+        self.sampler.shutdown()
         super().on_failure(exception_type, exception_value, traceback)

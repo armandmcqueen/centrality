@@ -6,6 +6,7 @@ from watchdog.events import FileSystemEventHandler
 from pathlib import Path
 from rich import print
 from datetime import datetime
+from rich.console import Console
 
 
 app = typer.Typer()
@@ -17,51 +18,62 @@ def t():
 
 
 class ChangeHandler(FileSystemEventHandler):
-    def __init__(self, local_file, remote_dest):
-        self.local_file = local_file
+    def __init__(self, local_directory, remote_dest):
+        self.local_directory = local_directory
         self.remote_dest = remote_dest
 
-    def on_modified(self, event):
-        if Path(event.src_path) == Path(self.local_file):
-            print()
-            print(f"{t()}: {event}")
-            self.sync_file()
+    def on_any_event(self, event):
+        # Trigger the sync if the change is within the local_directory or its subdirectories
+        if Path(self.local_directory) in Path(event.src_path).parents:
+            console = Console()
+            console.log()
+            console.log(f"{event}")
+            self.sync_directory()
 
-    def sync_file(self):
-        command = ["rsync", "-avz", self.local_file, self.remote_dest]
-        subprocess.check_output(command, stderr=subprocess.STDOUT)
-        print(f"{t()}: Synced {self.local_file} to {self.remote_dest}")
+    def sync_directory(self):
+        command = [
+            "rsync",
+            "-avz",
+            "--delete",
+            "--exclude",
+            "./.ignore/venv/",
+            f"{self.local_directory}/",
+            self.remote_dest,
+        ]
+        # Show a rich loading indicator while the next line runs
+        console = Console()
+        with console.status(
+            f"[bold green]Syncing {self.local_directory} to {self.remote_dest}...[/]",
+            spinner="dots",
+        ):
+            subprocess.check_output(command, stderr=subprocess.STDOUT)
+
+        console.log(f"Synced {self.local_directory} to {self.remote_dest}")
 
 
 @app.command()
-def watch_and_sync(local_file: str, host: str):
+def watch_and_sync(local_directory: str, host: str):
     """
-    Watch a local file and sync it to the home directory of a remote destination whenever it changes.
+    Watch a local directory and sync it to the remote destination whenever it changes.
 
     Args:
-    local_file (str): Path to the local file to be monitored.
-    host (str): SSH destination of the remote machine to sync to e.g. ubuntu@129.1.1.1 or an SSH shortcut
-                such as ubuntulambda
+    local_directory (str): Path to the local directory to be monitored.
+    host (str): SSH destination of the remote machine to sync to, e.g. ubuntu@129.1.1.1 or an SSH shortcut.
     """
-    local_path = Path(local_file)
-    file_name = local_path.name
+    local_path = Path(local_directory)
+    directory_name = local_path.name
 
-    remote_path = f"/home/ubuntu/{file_name}"
+    remote_path = f"/home/ubuntu/synced/{directory_name}"
 
     remote_dest = f"{host}:{remote_path}"
 
-    event_handler = ChangeHandler(local_file, remote_dest)
-    # event_handler = LoggingEventHandler()
+    event_handler = ChangeHandler(local_directory, remote_dest)
     observer = PollingObserver()
-    watch = local_path.absolute()
-    # watch = local_path.parent.absolute()
-    watch = "."
-    observer.schedule(event_handler, path=str(watch), recursive=True)
+    observer.schedule(event_handler, path=str(local_path), recursive=True)
 
     print(f"Watching {local_path.absolute()} and syncing to {remote_dest}")
     print()
     observer.start()
-    observer.is_alive()
     try:
         while True:
             time.sleep(1)

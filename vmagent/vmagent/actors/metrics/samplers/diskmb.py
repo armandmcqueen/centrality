@@ -1,6 +1,7 @@
 import psutil
-from actors.metrics.samplers.sampler import MetricSampler
+from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from rich.live import Live
+from rich.table import Table
 
 UsedMiB = float
 TotalMiB = float
@@ -24,5 +25,17 @@ class DiskMbSampler(MetricSampler):
         return info
 
     def sample_and_render(self, live: Live):
-        # TODO: Implement
-        pass
+        info = self.sample()
+        table = Table()
+        header = ["Disk", "Used MiB", "Total MiB", "Percent Used"]
+        table.add_column(header[0])
+        table.add_column(header[1])
+        table.add_column(header[2])
+        for disk_id in info.keys():
+            used, total = info[disk_id]
+            used = int(used)
+            total = int(total)
+            percent = round(used / total * 100, 2)
+            table.add_row(disk_id, str(used), str(total), str(percent) + "%")
+
+        live.update(table)
