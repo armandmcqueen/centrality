@@ -23,3 +23,7 @@ rsync
 ```
 
 Watches a file and syncs it to a VM when it changes.
+
+## `gpu_work.py`
+
+PyTorch matmuls to cause GPU to be used.
