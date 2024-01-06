@@ -1,7 +1,7 @@
 import pynvml
 from rich import print
-from rich.console import Console
 from rich.live import Live
+from vmagent.metrics.collector import MetricCollector
 
 GpuUtil = float
 GpuUtilList = list[GpuUtil]
@@ -16,18 +16,16 @@ class PynvmlNotAvailableError(Exception):
     pass
 
 
-class GpuMonitor:
-    def __init__(self, fake=False, fake_gpu_count=1):
-        self.fake = fake
-        self.fake_gpu_count = fake_gpu_count
-
+class GpuCollector(MetricCollector):
+    def __init__(self):
         self.pynvml_active = False
 
         try:
             pynvml.nvmlInit()
             self.pynvml_active = True
         except pynvml.NVMLError_LibraryNotFound:
-            print("NVML Shared Library Not Found")
+            # print("NVML Shared Library Not Found")  # This is the error I get locally. Do the others matter?
+            pass
         except pynvml.NVMLError_DriverNotLoaded:
             print("NVIDIA Driver Not Loaded")
         except pynvml.NVMLError:
@@ -41,59 +39,41 @@ class GpuMonitor:
                 pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(self.device_count)
             ]
 
-    def get_real_metrics(self) -> tuple[GpuUtilList, GpuMemoryMiBList]:
+    def collect(self) -> tuple[GpuUtilList, GpuMemoryMiBList]:
         if not self.pynvml_active:
             raise PynvmlNotAvailableError(
                 "Failed to get metrics because pynvml was not found. After init, "
                 "you must check pynvml_active before trying to call get_metrics"
             )
-        gpu_util_list = []
+        gpu_util_list = [
+            pynvml.nvmlDeviceGetUtilizationRates(handle).gpu for handle in self.handles
+        ]
         gpu_memory_list = []
 
         for handle in self.handles:
-            util = pynvml.nvmlDeviceGetUtilizationRates(handle)
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-
-            gpu_util_list.append(util.gpu)
-            gpu_memory_list.append(
-                (memory.used / 1024 / 1024, memory.total / 1024 / 1024)
-            )
+            # TODO: Confirm this is bytes
+            memory_used_mib = memory.used / 1024 / 1024
+            memory_total_mib = memory.total / 1024 / 1024
+            memory_datapoint = (memory_used_mib, memory_total_mib)
+            gpu_memory_list.append(memory_datapoint)
 
         return gpu_util_list, gpu_memory_list
 
-    # Pycharm is complaining that this can be a static method, but it's wrong. How do I tell it that?
+    def collect_and_render(self, live: Live):
+        if self.pynvml_active:
+            gpu_util_list, gpu_memory_list = self.collect()
+            # TODO: Fix this render
+            gpu_util_str = ", ".join([f"{util}%" for util in gpu_util_list])
+            gpu_memory_str = ", ".join(
+                [f"{used:.2f}/{total:.2f} MiB" for used, total in gpu_memory_list]
+            )
+            live.update(
+                f"GPU Utilization: {gpu_util_str}\nGPU Memory: {gpu_memory_str}"
+            )
+        else:
+            live.update("[red bold]GPU metrics not available")
+
     def shutdown(self):
-        pynvml.nvmlShutdown()
-
-
-def main():
-    import pytest
-
-    mon = GpuMonitor()
-    console = Console()
-    try:
-        with Live(console=console, refresh_per_second=10, transient=True) as live:
-            if mon.pynvml_active:
-                while True:
-                    util, mem = mon.get_real_metrics()
-
-                    used = [m[0] for m in mem]
-                    totals = [m[1] for m in mem]
-
-                    # Create formatted output
-                    output = f"util %: {util}\nused MiB: {used}\ntotal MiB: {totals}"
-
-                    # Update the Live display
-                    live.update(output)
-
-            else:
-                with pytest.raises(PynvmlNotAvailableError):
-                    mon.get_real_metrics()
-    except KeyboardInterrupt:
-        print("[red]Aborted")
-    finally:
-        mon.shutdown()
-
-
-if __name__ == "__main__":
-    main()
+        if self.pynvml_active:
+            pynvml.nvmlShutdown()
