@@ -69,10 +69,16 @@ def get_nvidia_gpu_info() -> tuple[NumGpus, GpuType, GpuMemoryMiB, NvidiaDriverV
         return 0, None, None, None
 
 
-if __name__ == "__main__":
+def main():
     # Get the NVIDIA GPU details
     num_gpus, gpu_type, gpu_memory_mb, nvidia_driver_version = get_nvidia_gpu_info()
     print(f"num_gpus: {num_gpus}")
     print(f"gpu_type: {gpu_type}")
     print(f"gpu_memory_mib: {gpu_memory_mb}")
     print(f"nvidia_driver_version: {nvidia_driver_version}")
+
+    return
+
+
+if __name__ == "__main__":
+    main()

@@ -1,14 +1,15 @@
 import pynvml
 from rich import print
 from rich.live import Live
-from vmagent.metrics.collector import MetricCollector
+from actors.metrics.samplers.sampler import MetricSampler
+
 
 GpuUtil = float
 GpuUtilList = list[GpuUtil]
 GpuUsedMemoryMiB = int
 GpuTotalMemoryMiB = int
-GpuMemoryMiB = tuple[GpuUsedMemoryMiB, GpuTotalMemoryMiB]
-GpuMemoryMiBList = list[GpuMemoryMiB]
+GpuMemoryUsedMiBTotalMiB = tuple[GpuUsedMemoryMiB, GpuTotalMemoryMiB]
+GpuMemoryUsedMiBTotalMibList = list[GpuMemoryUsedMiBTotalMiB]
 
 
 # except if init doesn't set pynvml and then something tries to call get_metrics
@@ -16,7 +17,7 @@ class PynvmlNotAvailableError(Exception):
     pass
 
 
-class GpuCollector(MetricCollector):
+class GpuSampler(MetricSampler):
     def __init__(self):
         self.pynvml_active = False
 
@@ -39,7 +40,7 @@ class GpuCollector(MetricCollector):
                 pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(self.device_count)
             ]
 
-    def collect(self) -> tuple[GpuUtilList, GpuMemoryMiBList]:
+    def sample(self) -> tuple[GpuUtilList, GpuMemoryUsedMiBTotalMibList]:
         if not self.pynvml_active:
             raise PynvmlNotAvailableError(
                 "Failed to get metrics because pynvml was not found. After init, "
@@ -60,7 +61,7 @@ class GpuCollector(MetricCollector):
 
         return gpu_util_list, gpu_memory_list
 
-    def collect_and_render(self, live: Live):
+    def sample_and_render(self, live: Live):
         if self.pynvml_active:
             gpu_util_list, gpu_memory_list = self.collect()
             # TODO: Fix this render

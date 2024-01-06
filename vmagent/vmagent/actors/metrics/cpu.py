@@ -1,9 +1,9 @@
-import psutil
 import datetime
 import conclib
 from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
+from vmagent.actors.metrics.samplers.cpu import CpuSampler
 from centrality_controlplane_sdk import DataApi, CpuMeasurement
 
 
@@ -19,25 +19,24 @@ class CpuMetricCollector(conclib.PeriodicActor):
 
     def __init__(
         self,
-        vm_agent_config: VmAgentConfig,
+        vm_agent_config: VmAgentConfig,  # TODO: Only need vm_id
         control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
+        self.config = self.vm_agent_config.metrics.cpu
 
-        self.fake_metrics = self.vm_agent_config.metrics.cpu.use_fake
-        self.fake_metric_generator: FakeMetricGenerator | None = None
-        if self.fake_metrics:
-            self.fake_metric_generator = FakeMetricGenerator(
-                self.vm_agent_config.metrics.cpu.fake
-            )
+        self.sampler = CpuSampler()
+        self.fake_metric_generator = FakeMetricGenerator(self.config.fake)
         super().__init__()
 
     def send_cpu_metric(self) -> None:
-        if self.fake_metrics:
+        if self.config.use_fake:
             cpu_percents = self.fake_metric_generator.sample()
         else:
-            cpu_percents = psutil.cpu_percent(percpu=True)
+            cpu_percents = self.sampler.sample()
+
+        print(f"📡 {self.__class__.__name__} - sending metrics: {cpu_percents}")
 
         measurement = CpuMeasurement(
             vm_id=self.vm_agent_config.vm_id,
@@ -49,10 +48,8 @@ class CpuMetricCollector(conclib.PeriodicActor):
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendCpuMetrics):
             try:
-                # TODO: Readd this once we have leveled logging?
-                # print("⬆ CpuMetricCollector - sending cpu metric")
                 self.send_cpu_metric()
             except Exception as e:
-                print(f"🚨 CpuMetricCollector - failed to send cpu metric: {e}")
+                print(f"🚨 {self.__class__.__name__} - failed to send metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
