@@ -11,6 +11,7 @@ def get_nvidia_gpu_info() -> tuple[NumGpus, GpuType, GpuMemoryMiB, NvidiaDriverV
     try:
         # Run the nvidia-smi command to get GPU details
         gpu_details = (
+            # TODO: Move to pynvml
             subprocess.check_output(
                 [
                     "nvidia-smi",
