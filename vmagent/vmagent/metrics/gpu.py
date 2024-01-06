@@ -1,12 +1,14 @@
 import pynvml
 from rich import print
+from rich.console import Console
+from rich.live import Live
 
 GpuUtil = float
 GpuUtilList = list[GpuUtil]
-GpuUsedMemory = int
-GpuTotalMemory = int
-GpuMemory = tuple[GpuUsedMemory, GpuTotalMemory]
-GpuMemoryList = list[GpuMemory]
+GpuUsedMemoryMiB = int
+GpuTotalMemoryMiB = int
+GpuMemoryMiB = tuple[GpuUsedMemoryMiB, GpuTotalMemoryMiB]
+GpuMemoryMiBList = list[GpuMemoryMiB]
 
 
 # except if init doesn't set pynvml and then something tries to call get_metrics
@@ -15,11 +17,15 @@ class PynvmlNotAvailableError(Exception):
 
 
 class GpuMonitor:
-    def __init__(self):
+    def __init__(self, fake=False, fake_gpu_count=1):
+        self.fake = fake
+        self.fake_gpu_count = fake_gpu_count
+
         self.pynvml_active = False
+
         try:
             pynvml.nvmlInit()
-            self.pynvml_found = True
+            self.pynvml_active = True
         except pynvml.NVMLError_LibraryNotFound:
             print("NVML Shared Library Not Found")
         except pynvml.NVMLError_DriverNotLoaded:
@@ -29,14 +35,14 @@ class GpuMonitor:
         except Exception as e:
             print(f"Unexpected error: {e}")
 
-        if self.pynvml_found:
+        if self.pynvml_active:
             self.device_count = pynvml.nvmlDeviceGetCount()
             self.handles = [
                 pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(self.device_count)
             ]
 
-    def get_metrics(self) -> tuple[GpuUtilList, GpuMemoryList]:
-        if not self.pynvml_found:
+    def get_real_metrics(self) -> tuple[GpuUtilList, GpuMemoryMiBList]:
+        if not self.pynvml_active:
             raise PynvmlNotAvailableError(
                 "Failed to get metrics because pynvml was not found. After init, "
                 "you must check pynvml_active before trying to call get_metrics"
@@ -49,7 +55,9 @@ class GpuMonitor:
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
 
             gpu_util_list.append(util.gpu)
-            gpu_memory_list.append((memory.used, memory.total))
+            gpu_memory_list.append(
+                (memory.used / 1024 / 1024, memory.total / 1024 / 1024)
+            )
 
         return gpu_util_list, gpu_memory_list
 
@@ -59,26 +67,32 @@ class GpuMonitor:
 
 
 def main():
-    GpuMonitor()
+    import pytest
 
+    mon = GpuMonitor()
+    console = Console()
+    try:
+        with Live(console=console, refresh_per_second=10, transient=True) as live:
+            if mon.pynvml_active:
+                while True:
+                    util, mem = mon.get_real_metrics()
 
-"""
-import pynvml
+                    used = [m[0] for m in mem]
+                    totals = [m[1] for m in mem]
 
-# Initialize NVML
-pynvml.nvmlInit()
+                    # Create formatted output
+                    output = f"util %: {util}\nused MiB: {used}\ntotal MiB: {totals}"
 
-# Function to retrieve GPU utilization, GPU memory usage, and processes
-def get_gpu_info():
-    
+                    # Update the Live display
+                    live.update(output)
 
-# Retrieve GPU information
-gpu_info = get_gpu_info()
-
-# Cleanup
-pynvml.nvmlShutdown()
-
-"""
+            else:
+                with pytest.raises(PynvmlNotAvailableError):
+                    mon.get_real_metrics()
+    except KeyboardInterrupt:
+        print("[red]Aborted")
+    finally:
+        mon.shutdown()
 
 
 if __name__ == "__main__":
