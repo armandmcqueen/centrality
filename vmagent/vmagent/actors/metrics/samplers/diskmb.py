@@ -10,10 +10,9 @@ DiskMbInfo = tuple[UsedMiB, TotalMiB]
 
 class DiskMbSampler(MetricSampler):
     def sample(self) -> dict[str, DiskMbInfo]:
-        info = {}
+        usages = {}
         for partition in psutil.disk_partitions():
             try:
-                # Get partition usage
                 usage = psutil.disk_usage(partition.mountpoint)
             except PermissionError:
                 # This can happen if the disk isn't ready
@@ -21,8 +20,8 @@ class DiskMbSampler(MetricSampler):
 
             total_mb = usage.total / (1024 * 1024)
             used_mb = usage.used / (1024 * 1024)
-            info[partition.mountpoint] = (used_mb, total_mb)
-        return info
+            usages[partition.mountpoint] = (used_mb, total_mb)
+        return usages
 
     def sample_and_render(self, live: Live):
         info = self.sample()

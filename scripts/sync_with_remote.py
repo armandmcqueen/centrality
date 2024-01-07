@@ -5,16 +5,10 @@ from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from pathlib import Path
 from rich import print
-from datetime import datetime
 from rich.console import Console
 
 
 app = typer.Typer()
-
-
-def t():
-    current_time = datetime.now().strftime("%I:%M %p")
-    return current_time
 
 
 class ChangeHandler(FileSystemEventHandler):
@@ -37,6 +31,8 @@ class ChangeHandler(FileSystemEventHandler):
             "--delete",
             "--exclude",
             "./.ignore/venv/",
+            "--exclude",
+            "./.idea",
             f"{self.local_directory}/",
             self.remote_dest,
         ]
@@ -46,7 +42,14 @@ class ChangeHandler(FileSystemEventHandler):
             f"[bold green]Syncing {self.local_directory} to {self.remote_dest}...[/]",
             spinner="dots",
         ):
-            subprocess.check_output(command, stderr=subprocess.STDOUT)
+            try:
+                subprocess.check_output(command, stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                console.log(
+                    f"[bold red]Error syncing {self.local_directory} to {self.remote_dest}[/]"
+                )
+                console.log(f"[bold red]{e.output}[/]")
+                return
 
         console.log(f"Synced {self.local_directory} to {self.remote_dest}")
 
@@ -63,6 +66,7 @@ def watch_and_sync(local_directory: str, host: str):
     local_path = Path(local_directory)
     directory_name = local_path.name
 
+    # TODO: Add support beyond ubuntu
     remote_path = f"/home/ubuntu/synced/{directory_name}"
 
     remote_dest = f"{host}:{remote_path}"

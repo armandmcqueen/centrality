@@ -3,19 +3,10 @@ from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from vmagent.actors.metrics.samplers.throughput import Throughput
 from rich.live import Live
 from rich.table import Table
-from dataclasses import dataclass
 
 RecvBandwidthMiB = float
 SentBandwidthMiB = float
-
-
-@dataclass
-class InterfaceInfo:
-    sent_bandwidth_mib: SentBandwidthMiB
-    recv_bandwidth_mib: RecvBandwidthMiB
-
-    def as_tuple(self) -> tuple[SentBandwidthMiB, RecvBandwidthMiB]:
-        return self.sent_bandwidth_mib, self.recv_bandwidth_mib
+InterfaceInfo = tuple[SentBandwidthMiB, RecvBandwidthMiB]
 
 
 class NetworkSampler(MetricSampler):
@@ -31,9 +22,6 @@ class NetworkSampler(MetricSampler):
         interface_infos = {}
         net_per_iface = psutil.net_io_counters(pernic=True)
         for interface, net in net_per_iface.items():
-            if interface == "lo":
-                continue
-
             # nics could be added
             if interface not in self.sent or interface not in self.recv:
                 self.sent[interface] = Throughput(net.bytes_sent)
@@ -43,20 +31,11 @@ class NetworkSampler(MetricSampler):
 
             recv_mib = self.recv[interface].add(net.bytes_recv) / 1024 / 1024
             sent_mib = self.sent[interface].add(net.bytes_sent) / 1024 / 1024
-            info = InterfaceInfo(
-                sent_bandwidth_mib=sent_mib, recv_bandwidth_mib=recv_mib
-            )
-            interface_infos[interface] = info
+            interface_infos[interface] = sent_mib, recv_mib
 
-        total_sent_mib = sum(
-            [info.sent_bandwidth_mib for info in interface_infos.values()]
-        )
-        total_recv_mib = sum(
-            [info.recv_bandwidth_mib for info in interface_infos.values()]
-        )
-        total_info = InterfaceInfo(
-            sent_bandwidth_mib=total_sent_mib, recv_bandwidth_mib=total_recv_mib
-        )
+        total_sent_mib = sum([info[0] for info in interface_infos.values()])
+        total_recv_mib = sum([info[1] for info in interface_infos.values()])
+        total_info = total_sent_mib, total_recv_mib
         interface_infos["total"] = total_info
 
         return interface_infos
@@ -69,7 +48,7 @@ class NetworkSampler(MetricSampler):
         table.add_column(header[1])
         table.add_column(header[2])
         for interface in interface_info.keys():
-            sent, recv = interface_info[interface].as_tuple()
+            sent, recv = interface_info[interface]
             sent = round(sent, 2)
             recv = round(recv, 2)
 

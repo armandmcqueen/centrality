@@ -1,8 +1,8 @@
 import conclib
 from common import constants
 from vmagent.config import VmAgentConfig
-from vmagent.actors.metrics.samplers.net import NetworkSampler
-from actors.metrics.faketrics import FakeMetricGenerator
+from vmagent.actors.metrics.samplers.network import NetworkSampler
+from vmagent.actors.metrics.faketrics import FakeMetricGenerator
 from centrality_controlplane_sdk import DataApi
 
 
@@ -39,10 +39,6 @@ class NetworkMetricCollector(conclib.PeriodicActor):
             iface_infos["total"] = (sum(sent_mibs), sum(recv_mibs))
         else:
             iface_infos = self.sampler.sample()
-            # convert to dict of tuples
-            iface_infos = {
-                k: v.as_tuple() for k, v in iface_infos.items()
-            }  # TODO: Do this in the sampler?
 
         print(f"📡 {self.__class__.__name__} - sending metrics: {iface_infos}")
 
@@ -62,3 +58,29 @@ class NetworkMetricCollector(conclib.PeriodicActor):
                 print(f"🚨 {self.__class__.__name__} - failed to send metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
+
+
+def test():
+    FAKE = False
+    import time
+    from common.sdks.controlplane.sdk import get_sdk, ControlPlaneSdkConfig
+
+    config = VmAgentConfig()
+    config.metrics.network.use_fake = FAKE
+    control_plane_sdk_config = ControlPlaneSdkConfig()
+    control_plane_sdk = get_sdk(
+        control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
+    )
+    actor = NetworkMetricCollector.start(
+        vm_agent_config=config, control_plane_sdk=control_plane_sdk
+    )
+    while True:
+        try:
+            time.sleep(20)
+        finally:
+            print("Stopping actor")
+            actor.stop()
+
+
+if __name__ == "__main__":
+    test()

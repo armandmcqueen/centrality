@@ -20,11 +20,11 @@ class PynvmlNotAvailableError(Exception):
 
 class GpuSampler(MetricSampler):
     def __init__(self):
-        self.pynvml_active = False
+        self.pynvml_available = False
 
         try:
             pynvml.nvmlInit()
-            self.pynvml_active = True
+            self.pynvml_available = True
         except pynvml.NVMLError_LibraryNotFound:
             # print("NVML Shared Library Not Found")  # This is the error I get locally. Do the others matter?
             pass
@@ -35,14 +35,14 @@ class GpuSampler(MetricSampler):
         except Exception as e:
             print(f"Unexpected error: {e}")
 
-        if self.pynvml_active:
+        if self.pynvml_available:
             self.device_count = pynvml.nvmlDeviceGetCount()
             self.handles = [
                 pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(self.device_count)
             ]
 
     def sample(self) -> tuple[GpuUtilList, GpuMemoryUsedMiBTotalMibList]:
-        if not self.pynvml_active:
+        if not self.pynvml_available:
             raise PynvmlNotAvailableError(
                 "Failed to get metrics because pynvml was not found. After init, "
                 "you must check pynvml_active before trying to call get_metrics"
@@ -54,7 +54,6 @@ class GpuSampler(MetricSampler):
 
         for handle in self.handles:
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-            # TODO: Confirm this is bytes
             memory_used_mib = memory.used / 1024 / 1024
             memory_total_mib = memory.total / 1024 / 1024
             memory_datapoint = (memory_used_mib, memory_total_mib)
@@ -63,7 +62,7 @@ class GpuSampler(MetricSampler):
         return gpu_util_list, gpu_memory_list
 
     def sample_and_render(self, live: Live):
-        if self.pynvml_active:
+        if self.pynvml_available:
             table = Table()
             gpu_util_list, gpu_memory_list = self.sample()
             header = [
@@ -95,5 +94,5 @@ class GpuSampler(MetricSampler):
             live.update("[red bold]GPU metrics not available")
 
     def shutdown(self):
-        if self.pynvml_active:
+        if self.pynvml_available:
             pynvml.nvmlShutdown()

@@ -1,5 +1,5 @@
 from common.config.config import CentralityConfig
-from actors.metrics.faketrics import FakeMetricConfig
+from vmagent.actors.metrics.faketrics import FakeMetricConfig
 from pydantic import Field
 
 
@@ -22,10 +22,6 @@ class MemoryMetricConfig(CentralityConfig):
 
 
 class NetworkMetricConfig(CentralityConfig):
-    """
-    fake.num_vals must be 1 for NetworkMetricCollector - we don't support more complex simulation yet.
-    """
-
     use_fake: bool = False
     fake: FakeMetricConfig = Field(
         default_factory=lambda: FakeMetricConfig(
@@ -38,8 +34,8 @@ class DiskIoMetricConfig(CentralityConfig):
     use_fake: bool = False
     fake: FakeMetricConfig = Field(
         default_factory=lambda: FakeMetricConfig(
-            num_vals=2, max_val=500
-        )  # 2 disks, 500 IOPS and 500 MiB/s read and write
+            num_vals=2, max_val=10_000
+        )  # 2 disks, 10,000 IOPS and 10 GiB/s read and write
     )
 
 

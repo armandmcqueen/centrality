@@ -7,3 +7,5 @@ if torch.cuda.is_available():
     b = torch.rand(10000, 10000, device="cuda")
     for _ in range(100_000):
         c = torch.matmul(a, b)
+else:
+    raise RuntimeError("CUDA not available")

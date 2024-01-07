@@ -1,3 +1,4 @@
+
 import psutil
 from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from vmagent.actors.metrics.samplers.throughput import Throughput
@@ -14,33 +15,42 @@ IopsInfos = dict[str, Iops]
 class DiskIoSampler(MetricSampler):
     def __init__(self):
         disks = psutil.disk_io_counters(perdisk=True)
-        self.read = {}
-        self.write = {}
-        self.iops = {}
+        self.read_trackers = {}
+        self.write_trackers = {}
+        self.iops_trackers = {}
         for disk_name, disk in disks.items():
-            self.read[disk_name] = Throughput(disk.read_bytes)
-            self.write[disk_name] = Throughput(disk.write_bytes)
-            self.iops[disk_name] = Throughput(disk.read_count + disk.write_count)
+            self.read_trackers[disk_name] = Throughput(disk.read_bytes)
+            self.write_trackers[disk_name] = Throughput(disk.write_bytes)
+            self.iops_trackers[disk_name] = Throughput(
+                disk.read_count + disk.write_count
+            )
 
     def sample(self) -> tuple[ThroughputInfos, IopsInfos]:
-        disk_throughput_infos = {}
-        disk_iops_infos = {}
+        throughputs = {}
+        iopses = {}
         disks = psutil.disk_io_counters(perdisk=True)
         for disk_name, disk in disks.items():
-            # Disks could be added?
-            if disk_name not in self.read or disk_name not in self.write:
-                self.read[disk_name] = Throughput(disk.read_bytes)
-                self.write[disk_name] = Throughput(disk.write_bytes)
-                self.iops[disk_name] = Throughput(disk.read_count + disk.write_count)
+            # Disks could be added
+            if (
+                disk_name not in self.read_trackers
+                or disk_name not in self.write_trackers
+            ):
+                self.read_trackers[disk_name] = Throughput(disk.read_bytes)
+                self.write_trackers[disk_name] = Throughput(disk.write_bytes)
+                self.iops_trackers[disk_name] = Throughput(
+                    disk.read_count + disk.write_count
+                )
                 # Skip on this iteration because we don't have a previous value to compare to
                 continue
 
-            read = self.read[disk_name].add(disk.read_bytes) / 1024 / 1024
-            write = self.write[disk_name].add(disk.write_bytes) / 1024 / 1024
-            iops = self.iops[disk_name].add(disk.read_count + disk.write_count)
-            disk_throughput_infos[disk_name] = (read, write)
-            disk_iops_infos[disk_name] = iops
-        return disk_throughput_infos, disk_iops_infos
+            read_mb = self.read_trackers[disk_name].add(disk.read_bytes) / 1024 / 1024
+            write_mb = (
+                self.write_trackers[disk_name].add(disk.write_bytes) / 1024 / 1024
+            )
+            iops = self.iops_trackers[disk_name].add(disk.read_count + disk.write_count)
+            throughputs[disk_name] = (read_mb, write_mb)
+            iopses[disk_name] = iops
+        return throughputs, iopses
 
     def sample_and_render(self, live: Live):
         # Write each disk's throughput and IOPS as a row
