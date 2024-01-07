@@ -21,10 +21,8 @@ class DiskThroughputVmMetricORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    # disk_throughput example: {disk1: [read, write], disk2: [read, write]}
-    disk_throughput: Mapped[dict[str, list[float]]] = mapped_column(
-        JSONB, nullable=False
-    )
+    # throughputs example: {disk1: [read, write], disk2: [read, write]}
+    throughputs: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
     __table_args__ = (
         Index("idx_metrics_ts", "ts"),  # Creating the index
         Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
@@ -51,7 +49,7 @@ class DiskThroughputVmMetric(BaseModel):
     def from_orm(cls, orm: DiskThroughputVmMetricORM) -> "DiskThroughputVmMetric":
         throughputs = {
             disk: DiskThroughput(read_mbps=throughput[0], write_mbps=throughput[1])
-            for disk, throughput in orm.disk_throughput.items()
+            for disk, throughput in orm.throughputs.items()
         }
         return cls(
             metric_id=orm.metric_id, vm_id=orm.vm_id, ts=orm.ts, throughputs=throughputs
