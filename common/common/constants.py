@@ -28,8 +28,14 @@ def get_control_plane_vm_heartbeat_endpoint(vm_id: str) -> str:
 CONTROL_PLANE_DATASTORE_SWEEPER_ACTOR = "datastore_sweeper"
 
 # VM Agent actors
-VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR = "cpu_metric_collector"
 VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
+
+VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR = "cpu_metric_collector"
+VM_AGENT_DISK_IO_METRIC_COLLECTOR_ACTOR = "disk_io_metric_collector"
+VM_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR = "disk_mb_metric_collector"
+VM_AGENT_GPU_METRIC_COLLECTOR_ACTOR = "gpu_metric_collector"
+VM_AGENT_MEMORY_METRIC_COLLECTOR_ACTOR = "memory_metric_collector"
+VM_AGENT_NETWORK_METRIC_COLLECTOR_ACTOR = "network_metric_collector"
 
 
 #####################################################################
@@ -54,3 +60,7 @@ CONTROL_PLANE_SDK_DEV_TOKEN = "dev"
 # VM Agent specific constants
 VM_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_VM_AGENT_REST_CONFIG"
 VM_AGENT_METRIC_CPU_INTERVAL_SECS = 0.1  # How often to collect CPU metrics
+VM_AGENT_METRIC_DISK_INTERVAL_SECS = 0.1
+VM_AGENT_METRIC_GPU_INTERVAL_SECS = 0.1
+VM_AGENT_METRIC_MEMORY_INTERVAL_SECS = 0.1
+VM_AGENT_METRIC_NETWORK_INTERVAL_SECS = 0.1

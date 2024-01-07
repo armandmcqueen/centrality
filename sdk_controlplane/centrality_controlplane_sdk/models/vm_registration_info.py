@@ -27,7 +27,7 @@ except ImportError:
 
 class VmRegistrationInfo(BaseModel):
     """
-    Information about a VM to register with the control plane.  Same as VM heartbeat, but without the timestamps because those are automatically set server-side.
+    Information about a VM to register with the control plane.  Same as VM heartbeat, but without a few fields that are either set via URL params or automatically set server-side.
     """ # noqa: E501
     num_cpus: StrictInt
     cpu_description: StrictStr

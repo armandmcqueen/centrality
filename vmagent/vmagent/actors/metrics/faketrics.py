@@ -8,6 +8,7 @@ import random
 class FakeMetricAlgorithms(str, Enum):
     LINEAR_SYNCED = "linear_synced"
     RANDOM = "random"
+    # TODO: HOVER
 
 
 class FakeMetricConfig(CentralityConfig):
@@ -15,12 +16,13 @@ class FakeMetricConfig(CentralityConfig):
     min_val: float = 0
     max_val: float = 100
     num_vals: int = 1  # Number of values to generate
-    jitter: bool = True  # Whether to add some noise to the values
+    jitter: bool = True  # Whether to add some noise to the values  # TODO: Is this useful vs jitter_factor = 0?
     jitter_factor: float = 0.1  # How much jitter to add
     algorithm: str = FakeMetricAlgorithms.LINEAR_SYNCED.value
 
     @model_validator(mode="after")
     def _validate_config_vals(self):
+        """Validate that the config is logical"""
         valid_algorithms = [alg.value for alg in FakeMetricAlgorithms]
         if self.algorithm not in valid_algorithms:
             msg = f"FakeMetric algorithm {self.algorithm} not valid. Valid algorithms are: {valid_algorithms}"

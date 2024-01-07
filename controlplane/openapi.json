@@ -635,7 +635,7 @@
           "hostname"
         ],
         "title": "VmRegistrationInfo",
-        "description": "Information about a VM to register with the control plane.\n\nSame as VM heartbeat, but without the timestamps because those are automatically set server-side."
+        "description": "Information about a VM to register with the control plane.\n\nSame as VM heartbeat, but without a few fields that are either set via URL params or\nautomatically set server-side."
       }
     },
     "securitySchemes": {
