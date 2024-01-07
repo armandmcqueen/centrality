@@ -17,7 +17,7 @@ class GpuMemoryVmMetricORM(DatastoreBaseORM):
         TIMESTAMP(timezone=True), nullable=False
     )
     # memory example: [[used, total], [used, total]]
-    utilization: Mapped[list[float]] = mapped_column(JSONB, nullable=False)
+    memory: Mapped[list[list[float]]] = mapped_column(JSONB, nullable=False)
 
     __table_args__ = (
         Index("idx_metrics_ts", "ts"),  # Creating the index
@@ -33,7 +33,7 @@ class GpuMemoryVmMetricLatestORM(DatastoreBaseORM):
     )
 
     # memory example: [[used, total], [used, total]]
-    utilization: Mapped[list[float]] = mapped_column(JSONB, nullable=False)
+    memory: Mapped[list[list[float]]] = mapped_column(JSONB, nullable=False)
 
 
 class GpuMemory(BaseModel):
@@ -50,7 +50,7 @@ class GpuMemoryVmMetric(BaseModel):
     @classmethod
     def from_orm(cls, orm: GpuMemoryVmMetricORM) -> "GpuMemoryVmMetric":
         memory = [
-            GpuMemory(used_mb=usage[0], total_mb=usage[1]) for usage in orm.utilization
+            GpuMemory(used_mb=usage[0], total_mb=usage[1]) for usage in orm.memory
         ]
         return cls(
             metric_id=orm.metric_id,
@@ -68,7 +68,7 @@ class GpuMemoryVmMetricLatest(BaseModel):
     @classmethod
     def from_orm(cls, orm: GpuMemoryVmMetricORM) -> "GpuMemoryVmMetricLatest":
         memory = [
-            GpuMemory(used_mb=usage[0], total_mb=usage[1]) for usage in orm.utilization
+            GpuMemory(used_mb=usage[0], total_mb=usage[1]) for usage in orm.memory
         ]
         return cls(
             vm_id=orm.vm_id,
