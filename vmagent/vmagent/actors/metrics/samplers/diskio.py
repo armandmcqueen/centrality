@@ -1,4 +1,3 @@
-
 import psutil
 from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from vmagent.actors.metrics.samplers.throughput import Throughput

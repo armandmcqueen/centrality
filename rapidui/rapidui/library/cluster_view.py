@@ -12,7 +12,7 @@ class MachineOverviewCard(BaseCard):
         self.contents = contents
 
         self.title = self.parent.empty()
-        self.title.write_trackers(f"{self.contents.vm_id}")
+        self.title.write(f"{self.contents.vm_id}")
         self.progress = self.parent.progress(
             self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
         )
@@ -24,7 +24,7 @@ class MachineOverviewCard(BaseCard):
 
     def update(self, contents: MachineOverviewCardContents):
         self.contents = contents
-        self.title.write_trackers(f"{self.contents.vm_id}")
+        self.title.write(f"{self.contents.vm_id}")
         self.progress.progress(
             self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
         )
