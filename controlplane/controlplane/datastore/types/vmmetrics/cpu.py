@@ -2,41 +2,22 @@ import datetime
 from pydantic import BaseModel
 from typing import List
 
-from sqlalchemy import ARRAY, Float, Index
+from sqlalchemy import Index
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.utils import gen_random_uuid
 
 
-#######################################################
-# Example of how to add a new metric to the datastore #
-#######################################################
-
-# class ExampleVmMetricORM(DatastoreBaseORM):
-#     __tablename__ = "vm_metric_example"
-#     metric_id: Mapped[str] = mapped_column(primary_key=True, default=gen_random_uuid)
-#     vm_id: Mapped[str] = mapped_column(nullable=False)
-#     ts: Mapped[datetime.datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
-#
-#
-# @dataclass
-# class ExampleVmMetric(BaseModel):
-#     metric_id: str
-#     vm_id: str
-#     ts: datetime.datetime
-
-
 class CpuVmMetricORM(DatastoreBaseORM):
-    __tablename__ = "vm_metric_cpu"
+    __tablename__ = "machine_metric_cpu"
     metric_id: Mapped[str] = mapped_column(primary_key=True, default=gen_random_uuid)
     vm_id: Mapped[str] = mapped_column(nullable=False)
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    # cpu_percents: Mapped[List[float]] = mapped_column(nullable=False)
-    cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
-    avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)  # TODO: Remove this
+    cpu_percents: Mapped[List[float]] = mapped_column(JSONB, nullable=False)
     __table_args__ = (
         Index("idx_metrics_ts", "ts"),  # Creating the index
         Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
@@ -44,23 +25,19 @@ class CpuVmMetricORM(DatastoreBaseORM):
 
 
 class CpuVmMetricLatestORM(DatastoreBaseORM):
-    __tablename__ = "vm_metric_cpu_latest"
+    __tablename__ = "machine_metric_cpu_latest"
     vm_id: Mapped[str] = mapped_column(primary_key=True, nullable=False)
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    cpu_percents: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)
-    avg_cpu_percent: Mapped[float] = mapped_column(nullable=False)
+    cpu_percents: Mapped[list[float]] = mapped_column(JSONB, nullable=False)
 
 
 class CpuVmMetric(BaseModel):
-    # Is this useful? It has overlap with the type in common/types/vmmetrics.py, but
-    # includes some additional info that maybe shouldn't be exposed to users?
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    cpu_percents: List[float]
-    avg_cpu_percent: float
+    cpu_percents: list[float]
 
     @classmethod
     def from_orm(cls, orm: CpuVmMetricORM) -> "CpuVmMetric":
@@ -69,7 +46,6 @@ class CpuVmMetric(BaseModel):
             vm_id=orm.vm_id,
             ts=orm.ts,
             cpu_percents=orm.cpu_percents,
-            avg_cpu_percent=orm.avg_cpu_percent,
         )
 
 
@@ -77,7 +53,6 @@ class CpuVmMetricLatest(BaseModel):
     vm_id: str
     ts: datetime.datetime
     cpu_percents: List[float]
-    avg_cpu_percent: float
 
     @classmethod
     def from_orm(cls, orm: CpuVmMetricLatestORM) -> "CpuVmMetricLatest":
@@ -85,5 +60,4 @@ class CpuVmMetricLatest(BaseModel):
             vm_id=orm.vm_id,
             ts=orm.ts,
             cpu_percents=orm.cpu_percents,
-            avg_cpu_percent=orm.avg_cpu_percent,
         )
