@@ -42,7 +42,7 @@ class MemoryMetricCollector(conclib.PeriodicActor):
             free_mem_mib, total_mem_mib = self.sampler.sample()
 
         print(
-            f"⬆ MemoryMetricCollector - sending memory metric: {int(free_mem_mib)} MiB free / {int(total_mem_mib)} MiB total"
+            f"{self.__class__.__name__} - sending memory metric: {int(free_mem_mib)} MiB free / {int(total_mem_mib)} MiB total"
         )
         pass
         # measurement = CpuMeasurement(
@@ -55,11 +55,9 @@ class MemoryMetricCollector(conclib.PeriodicActor):
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendMemoryMetrics):
             try:
-                # TODO: Readd this once we have leveled logging?
-                # print("⬆ MemoryMetricCollector - sending memory metric")
                 self.send_memory_metric()
             except Exception as e:
-                print(f"🚨 MemoryMetricCollector - failed to send memory metric: {e}")
+                print(f"📡 {self.__class__.__name__} - sending metrics: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
 

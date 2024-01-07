@@ -55,13 +55,3 @@ class NetworkSampler(MetricSampler):
             table.add_row(interface, str(sent), str(recv))
 
         live.update(table)
-
-
-def main():
-    sampler = NetworkSampler()
-    val = sampler.sample()
-    print(val)
-
-
-if __name__ == "__main__":
-    main()

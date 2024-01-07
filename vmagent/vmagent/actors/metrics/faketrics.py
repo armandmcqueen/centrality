@@ -22,7 +22,7 @@ class FakeMetricConfig(CentralityConfig):
 
     @model_validator(mode="after")
     def _validate_config_vals(self):
-        """Validate the the config is logical"""
+        """Validate that the config is logical"""
         valid_algorithms = [alg.value for alg in FakeMetricAlgorithms]
         if self.algorithm not in valid_algorithms:
             msg = f"FakeMetric algorithm {self.algorithm} not valid. Valid algorithms are: {valid_algorithms}"
@@ -33,7 +33,7 @@ class FakeMetricConfig(CentralityConfig):
         return self
 
 
-# TODO: Write tests once useful. Do this
+# TODO: Write tests once useful.
 class FakeMetricGenerator:
     """Generate fake values for metrics, with support for cyclic and random patterns."""
 

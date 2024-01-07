@@ -31,7 +31,7 @@ def loop_and_render(metric_sampler, refresh_rate=10):
 
 
 @app.command(
-    help="Collect and render real-time metrics from a given metric collector",
+    help="Collect and render real-time metrics from a given metric sampler",
 )
 def main(
     sampler: str = typer.Argument(
@@ -41,21 +41,21 @@ def main(
     refresh_rate: int = typer.Option(10, help="The refresh rate in Hz"),
 ):
     if sampler == "gpu":
-        metric_collector = GpuSampler()
+        metric_sampler = GpuSampler()
     elif sampler == "diskio":
-        metric_collector = DiskIoSampler()
+        metric_sampler = DiskIoSampler()
     elif sampler == "diskmb":
-        metric_collector = DiskMbSampler()
+        metric_sampler = DiskMbSampler()
     elif sampler == "network" or sampler == "net":
-        metric_collector = NetworkSampler()
+        metric_sampler = NetworkSampler()
     elif sampler == "cpu":
-        metric_collector = CpuSampler()
+        metric_sampler = CpuSampler()
     elif sampler == "memory" or sampler == "mem":
-        metric_collector = MemorySampler()
+        metric_sampler = MemorySampler()
     else:
         raise typer.BadParameter("Invalid collector")
 
-    loop_and_render(metric_collector, refresh_rate)
+    loop_and_render(metric_sampler, refresh_rate)
 
 
 if __name__ == "__main__":
