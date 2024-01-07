@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
-from datastore.types.vmmetrics.cpu import (
+from controlplane.datastore.types.vmmetrics.cpu import (
     CpuVmMetricORM,
     CpuVmMetric,
     CpuVmMetricLatestORM,
