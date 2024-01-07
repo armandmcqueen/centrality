@@ -24,7 +24,7 @@ class NetworkThroughputVmMetricORM(DatastoreBaseORM):
     )
 
 
-class MemoryVmMetricLatestORM(DatastoreBaseORM):
+class NetworkThroughputVmMetricLatestORM(DatastoreBaseORM):
     __tablename__ = "machine_metric_network_throughput_latest"
     vm_id: Mapped[str] = mapped_column(primary_key=True, nullable=False)
     ts: Mapped[datetime.datetime] = mapped_column(
