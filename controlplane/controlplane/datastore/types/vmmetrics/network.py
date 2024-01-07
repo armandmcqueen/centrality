@@ -16,8 +16,8 @@ class NetworkThroughputVmMetricORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    # throughput example: {ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}
-    throughput: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
+    # throughputs example: {ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}
+    throughputs: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
     __table_args__ = (
         Index("idx_metrics_ts", "ts"),  # Creating the index
         Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
@@ -30,8 +30,8 @@ class MemoryVmMetricLatestORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    # throughput example: {ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}
-    throughput: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
+    # throughputs example: {ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}
+    throughputs: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
 
 
 class Throughput(BaseModel):
@@ -50,12 +50,12 @@ class NetworkThroughputVmMetric(BaseModel):
     def from_orm(cls, orm: NetworkThroughputVmMetricORM) -> "NetworkThroughputVmMetric":
         interfaces = {
             interface: Throughput(sent_mbps=throughput[0], recv_mbps=throughput[1])
-            for interface, throughput in orm.throughput.items()
+            for interface, throughput in orm.throughputs.items()
             if interface != "total"
         }
         # TODO: Test this works?
         total = Throughput(
-            sent_mbps=orm.throughput["total"][0], recv_mbps=orm.throughput["total"][1]
+            sent_mbps=orm.throughputs["total"][0], recv_mbps=orm.throughputs["total"][1]
         )
         return cls(
             metric_id=orm.metric_id,
@@ -78,12 +78,12 @@ class NetworkThroughputVmMetricLatest(BaseModel):
     ) -> "NetworkThroughputVmMetricLatest":
         interfaces = {
             interface: Throughput(sent_mbps=throughput[0], recv_mbps=throughput[1])
-            for interface, throughput in orm.throughput.items()
+            for interface, throughput in orm.throughputs.items()
             if interface != "total"
         }
         # TODO: Test this works?
         total = Throughput(
-            sent_mbps=orm.throughput["total"][0], recv_mbps=orm.throughput["total"][1]
+            sent_mbps=orm.throughputs["total"][0], recv_mbps=orm.throughputs["total"][1]
         )
         return cls(
             vm_id=orm.vm_id,
