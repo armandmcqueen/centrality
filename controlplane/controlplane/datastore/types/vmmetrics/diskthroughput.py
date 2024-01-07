@@ -37,10 +37,8 @@ class DiskThroughputVmMetricLatestORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    # disk_throughput example: {disk1: [read, write], disk2: [read, write]}
-    disk_throughput: Mapped[dict[str, list[float]]] = mapped_column(
-        JSONB, nullable=False
-    )
+    # throughputs example: {disk1: [read, write], disk2: [read, write]}
+    throughputs: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
 
 
 class DiskThroughputVmMetric(BaseModel):
@@ -71,6 +69,6 @@ class DiskThroughputVmMetricLatest(BaseModel):
     ) -> "DiskThroughputVmMetricLatest":
         throughputs = {
             disk: DiskThroughput(read_mbps=throughput[0], write_mbps=throughput[1])
-            for disk, throughput in orm.disk_throughput.items()
+            for disk, throughput in orm.throughputs.items()
         }
         return cls(vm_id=orm.vm_id, ts=orm.ts, throughputs=throughputs)
