@@ -15,8 +15,8 @@ class MemoryVmMetricORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    free_memory: Mapped[float] = mapped_column(nullable=False)
-    total_memory: Mapped[float] = mapped_column(nullable=False)
+    free_memory_mb: Mapped[float] = mapped_column(nullable=False)
+    total_memory_mb: Mapped[float] = mapped_column(nullable=False)
     __table_args__ = (
         Index("idx_metrics_ts", "ts"),  # Creating the index
         Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
@@ -29,16 +29,16 @@ class MemoryVmMetricLatestORM(DatastoreBaseORM):
     ts: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False
     )
-    free_memory: Mapped[float] = mapped_column(nullable=False)
-    total_memory: Mapped[float] = mapped_column(nullable=False)
+    free_memory_mb: Mapped[float] = mapped_column(nullable=False)
+    total_memory_mb: Mapped[float] = mapped_column(nullable=False)
 
 
 class MemoryVmMetric(BaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    free_memory: float
-    total_memory: float
+    free_memory_mb: float
+    total_memory_mb: float
 
     @classmethod
     def from_orm(cls, orm: MemoryVmMetricORM) -> "MemoryVmMetric":
@@ -46,22 +46,22 @@ class MemoryVmMetric(BaseModel):
             metric_id=orm.metric_id,
             vm_id=orm.vm_id,
             ts=orm.ts,
-            free_memory=orm.free_memory,
-            total_memory=orm.total_memory,
+            free_memory_mb=orm.free_memory_mb,
+            total_memory_mb=orm.total_memory_mb,
         )
 
 
 class MemoryVmMetricLatest(BaseModel):
     vm_id: str
     ts: datetime.datetime
-    free_memory: float
-    total_memory: float
+    free_memory_mb: float
+    total_memory_mb: float
 
     @classmethod
     def from_orm(cls, orm: MemoryVmMetricLatestORM) -> "MemoryVmMetricLatest":
         return cls(
             vm_id=orm.vm_id,
             ts=orm.ts,
-            free_memory=orm.free_memory,
-            total_memory=orm.total_memory,
+            free_memory_mb=orm.free_memory_mb,
+            total_memory_mb=orm.total_memory_mb,
         )
