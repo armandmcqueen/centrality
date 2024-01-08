@@ -11,6 +11,10 @@ from controlplane.datastore.types.utils import gen_random_uuid
 from typing import TypeVar, Type, Generic
 
 
+# TODO: This code was created when I was trying to reduce duplicated code via inheritance. I've moved
+#   to doing this via code generation instead. Some of the code in this file can probably be deleted/
+#   moved into codegen. But the code works fine for now.
+
 # Define a type variable that can be any subclass of MetricBaseModel
 T1 = TypeVar("T1", bound="MetricBaseModel")
 T2 = TypeVar("T2", bound="MetricLatestBaseModel")

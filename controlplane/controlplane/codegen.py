@@ -7,6 +7,7 @@ import inspect
 from rich.console import Console
 from enum import Enum
 
+# TODO: This whole file could use a cleanup
 
 app = typer.Typer()
 
