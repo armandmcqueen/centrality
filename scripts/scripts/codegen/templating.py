@@ -81,7 +81,7 @@ def remove_lines_before_string(lines, search_string):
 
 
 def hydrate_template(
-    template_vars: TemplateVars, template_lines: list[str], display: bool = False
+    template_vars: TemplateVars, template_lines: list[str]
 ) -> list[str]:
     ignore_before_str = "#PRETEMPLATE_END"
     template_lines = remove_lines_before_string(template_lines, ignore_before_str)

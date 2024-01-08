@@ -1,7 +1,6 @@
-import torch
-
-
 def gpu_work():
+    import torch
+
     # Check if CUDA is available
     if torch.cuda.is_available():
         # Create large tensors and perform a matrix multiplication

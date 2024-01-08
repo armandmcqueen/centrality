@@ -25,7 +25,11 @@ def codegen(
         raise ValueError(f"Unknown template: {template}")
 
     # Load in the variables from the codegenvars files
-    var_paths = [f for f in constants.CODEGENVARS_DIR.glob("*.py") if f.is_file()]
+    var_paths = [
+        f
+        for f in constants.CODEGENVARS_DIR.glob("*.py")
+        if f.is_file() and f.stem != "__init__"
+    ]
     var_paths.sort()  # Do the generation in alphabetical order
     template_vars = []
     for var_path in var_paths:
@@ -43,17 +47,12 @@ def codegen(
     # Hydrat the template with the variables
     outputs = []
     for t in template_vars:
-        # If we are outputting the generated code, the visual dividers are nice. Otherwise they are clutter
-        if display:
-            console.print("-" * console.width)
         console.log(
             f"Hydrating ./{template_path.relative_to(os.getcwd())} with [blue]{t.metric_name_lowercase}[/blue]"
         )
-        if display:
-            console.print("-" * console.width)
 
         output = templating.hydrate_template(
-            template_vars=t, template_lines=template_lines, display=display
+            template_vars=t, template_lines=template_lines
         )
 
         # There are the type files, write them to files

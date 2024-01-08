@@ -4,7 +4,7 @@ from git import Repo
 root = Path(Repo(".", search_parent_directories=True).working_tree_dir)
 
 TEMPLATES = ["types", "datastore-client", "rest"]
-CODEGENVARS_DIR = root / "scripts/codegen/codegenvars"
+CODEGENVARS_DIR = root / "scripts/scripts/codegen/codegenvars"
 TYPES_TEMPLATE = (
     root / "controlplane/controlplane/datastore/types/vmmetrics/types.template"
 )

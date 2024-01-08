@@ -3,6 +3,7 @@ from rich.console import Console
 from scripts.sync_with_remote import watch_and_sync
 from scripts.upgrade_dep import upgrade as run_upgrade
 from scripts.gpu_work import gpu_work as do_gpu_work
+from scripts.codegen.codegen import codegen as do_codegen
 
 console = Console()
 
@@ -57,6 +58,21 @@ def upgrade(
 )
 def gpu_work():
     do_gpu_work()
+
+
+@app.command(
+    help="Generate code",
+)
+def codegen(
+    template: str = typer.Argument(
+        ...,
+        help="The template to use. Valid options are: types, datastore-client, rest",
+    ),
+    display: bool = typer.Option(
+        False, help="Display the generated code (very verbose)"
+    ),
+):
+    do_codegen(template, console, display)
 
 
 if __name__ == "__main__":
