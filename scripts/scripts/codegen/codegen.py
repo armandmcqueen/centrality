@@ -1,4 +1,3 @@
-import os
 import typer
 import importlib
 from rich.console import Console
@@ -53,7 +52,7 @@ def codegen(
     outputs = []
     for t in template_vars:
         console.log(
-            f"Hydrating ./{template_path.relative_to(os.getcwd())} with [blue]{t.metric_name_lowercase}[/blue]"
+            f"Hydrating ./{template_path.relative_to(constants.root)} with [blue]{t.metric_name_lowercase}[/blue]"
         )
 
         output = templating.hydrate_template(
@@ -67,7 +66,7 @@ def codegen(
             )
 
             console.log(
-                f"Writing generated code to ./{output_path.relative_to(os.getcwd())}"
+                f"Writing generated code to ./{output_path.relative_to(constants.root)}"
             )
             console.print()
             with open(output_path, "w") as f:
@@ -86,7 +85,7 @@ def codegen(
         console.print(output_str)
     if template == "datastore-client":
         console.log(
-            f"Writing generated code to ./{constants.DATASTORE_CLIENT_IMPLEMENTATION.relative_to(os.getcwd())}"
+            f"Writing generated code to ./{constants.DATASTORE_CLIENT_IMPLEMENTATION.relative_to(constants.root)}"
         )
         templating.replace_generated_code(
             file_path=constants.DATASTORE_CLIENT_IMPLEMENTATION,
@@ -94,7 +93,7 @@ def codegen(
         )
     elif template == "rest":
         console.log(
-            f"Writing generated code to ./{constants.REST_API_IMPLEMENTATION.relative_to(os.getcwd())}"
+            f"Writing generated code to ./{constants.REST_API_IMPLEMENTATION.relative_to(constants.root)}"
         )
         templating.replace_generated_code(
             file_path=constants.REST_API_IMPLEMENTATION, new_code=outputs_flattened
