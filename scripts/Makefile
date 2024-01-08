@@ -22,8 +22,8 @@ typecheck:
 
 .PHONY: install
 install:
-	pip install -r requirements.txt
+	pip install -e .
 
 .PHONY: install-dev
 install-dev:
-	pip install -r requirements.txt
+	pip install -e .

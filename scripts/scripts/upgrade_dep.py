@@ -46,7 +46,7 @@ def upgrade(
     old_version: str,
     new_version: str,
 ):
-    for subdir, dirs, files in os.walk("."):
+    for subdir, dirs, files in os.walk(".."):
         for file in files:
             if file == "pyproject.toml":
                 file_path = os.path.join(subdir, file)
