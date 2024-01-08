@@ -2,6 +2,7 @@ import typer
 from rich.console import Console
 from scripts.sync_with_remote import watch_and_sync
 from scripts.upgrade_dep import upgrade as run_upgrade
+from scripts.gpu_work import gpu_work as do_gpu_work
 
 console = Console()
 
@@ -49,6 +50,13 @@ def upgrade(
     ),
 ):
     run_upgrade(dependency_name, old_version, new_version)
+
+
+@app.command(
+    help="Do some GPU work",
+)
+def gpu_work():
+    do_gpu_work()
 
 
 if __name__ == "__main__":
