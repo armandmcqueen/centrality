@@ -1,25 +1,91 @@
-import datetime
-from typing import List, cast, Sequence, Optional, Any
-
-from sqlalchemy import create_engine, delete
-from sqlalchemy.orm import Session
-
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
-from controlplane.datastore.types.vmmetrics.cpu import (
-    CpuVmMetricORM,
-    CpuVmMetric,
-    CpuVmMetricLatestORM,
-    CpuVmMetricLatest,
-)
 from controlplane.datastore.types.vmliveness import (
     VmInfoOrm,
     VmInfo,
     VmRegistrationInfo,
 )
+import datetime
+from typing import (
+    List,
+    Any,
+    Optional,
+    TypeVar,
+    cast,
+)
+
+
+from sqlalchemy import create_engine, delete
+from sqlalchemy.orm import Session
+
+from controlplane.datastore.types.vmmetrics.metric import (
+    MetricBaseORM,
+    MetricLatestBaseORM,
+    MetricBaseModel,
+    MetricLatestBaseModel,
+)
+from controlplane.datastore.types.vmmetrics.generated.cpu import (
+    CpuMetricORM,
+    CpuMetricLatestORM,
+    CpuMetric,
+    CpuMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.disk_iops import (
+    DiskIopsMetricORM,
+    DiskIopsMetricLatestORM,
+    DiskIopsMetric,
+    DiskIopsMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.disk_throughput import (
+    DiskThroughputMetricORM,
+    DiskThroughputMetricLatestORM,
+    DiskThroughputMetric,
+    DiskThroughputMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.disk_usage import (
+    DiskUsageMetricORM,
+    DiskUsageMetricLatestORM,
+    DiskUsageMetric,
+    DiskUsageMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.gpu_memory import (
+    GpuMemoryMetricORM,
+    GpuMemoryMetricLatestORM,
+    GpuMemoryMetric,
+    GpuMemoryMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.gpu_utilization import (
+    GpuUtilizationMetricORM,
+    GpuUtilizationMetricLatestORM,
+    GpuUtilizationMetric,
+    GpuUtilizationMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.memory import (
+    MemoryMetricORM,
+    MemoryMetricLatestORM,
+    MemoryMetric,
+    MemoryMetricLatest,
+)
+from controlplane.datastore.types.vmmetrics.generated.network_throughput import (
+    NetworkThroughputMetricORM,
+    NetworkThroughputMetricLatestORM,
+    NetworkThroughputMetric,
+    NetworkThroughputMetricLatest,
+)
+
+
 from controlplane.datastore.types.utils import gen_random_uuid
 from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
+
+
+def get_metric_id(vm_id: str, ts: datetime.datetime) -> str:
+    epoch_millis = int(ts.timestamp() * 1000)
+    return f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"
+
+
+TMetricBaseModel = TypeVar("TMetricBaseModel", bound=MetricBaseModel)
+TMetricLatestBaseModel = TypeVar("TMetricLatestBaseModel", bound=MetricLatestBaseModel)
 
 
 class VmRegistrationConflictError(Exception):
@@ -99,101 +165,6 @@ class DatastoreClient:
             if row is None:
                 return False
             return True
-
-    def add_cpu_measurement(
-        self, vm_id: str, cpu_percents: Sequence[float], ts: datetime.datetime
-    ) -> None:
-        """Add a CPU measurement for a VM. Updates both the timeseries table and the point-in-time table"""
-        epoch_millis = int(ts.timestamp() * 1000)
-        metric_id = f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"
-        metric = CpuVmMetricORM(
-            metric_id=metric_id,
-            vm_id=vm_id,
-            ts=ts,
-            cpu_percents=cpu_percents,
-        )
-        with Session(bind=self.engine) as session:
-            session.add(metric)
-
-            # Upsert latest metric
-            upsert_stmt = (
-                insert(CpuVmMetricLatestORM)
-                .values(
-                    vm_id=vm_id,
-                    ts=ts,
-                    cpu_percents=cpu_percents,
-                )
-                .on_conflict_do_update(
-                    index_elements=["vm_id"],
-                    set_=dict(
-                        ts=ts,
-                        cpu_percents=cpu_percents,
-                    ),
-                )
-            )
-            session.execute(upsert_stmt)
-            session.commit()
-
-    def get_cpu_measurements(
-        self,
-        vm_ids: List[str],
-        start_ts: Optional[datetime.datetime] = None,
-        end_ts: Optional[datetime.datetime] = None,
-    ) -> List[CpuVmMetric]:
-        results = []
-        with Session(bind=self.engine) as session:
-            if len(vm_ids) == 0:
-                return []
-            filter_args: list[Any] = [CpuVmMetricORM.vm_id.in_(vm_ids)]
-            if start_ts is not None:
-                filter_args.append(CpuVmMetricORM.ts >= start_ts)
-            if end_ts is not None:
-                filter_args.append(CpuVmMetricORM.ts <= end_ts)
-
-            rows = (
-                session.query(CpuVmMetricORM)
-                .filter(*filter_args)
-                .order_by(CpuVmMetricORM.ts)
-                .all()
-            )
-            for row in rows:
-                row = cast(CpuVmMetricORM, row)  # type: ignore
-                result_metric = CpuVmMetric.from_orm(row)
-                results.append(result_metric)
-        return results
-
-    def get_latest_cpu_measurements(
-        self,
-        vm_ids: List[str],
-    ) -> List[CpuVmMetricLatest]:
-        if len(vm_ids) == 0:
-            return []
-        results = []
-
-        with Session(bind=self.engine) as session:
-            rows = (
-                session.query(CpuVmMetricLatestORM)
-                .filter(CpuVmMetricLatestORM.vm_id.in_(vm_ids))
-                .all()
-            )
-            for row in rows:
-                row = cast(CpuVmMetricLatestORM, row)  # type: ignore
-                result_metric = CpuVmMetricLatest.from_orm(row)
-                results.append(result_metric)
-        return results
-
-    def delete_old_cpu_measurements(
-        self,
-        oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
-    ) -> None:
-        """Delete all CPU measurements older than oldest_ts_to_keep"""
-        filters = [CpuVmMetricORM.ts < oldest_ts_to_keep]
-        if vm_ids is not None:
-            filters.append(CpuVmMetricORM.vm_id.in_(vm_ids))
-        with Session(bind=self.engine) as session:
-            session.query(CpuVmMetricORM).filter(*filters).delete()
-            session.commit()
 
     def add_or_update_vm_info(
         self,
@@ -313,3 +284,481 @@ class DatastoreClient:
         with Session(bind=self.engine) as session:
             rows = session.query(VmInfoOrm).all()
             return [row.vm_id for row in rows]
+
+    ############################################################
+    # Generic methods for adding, getting, and deleting metrics
+    ############################################################
+
+    # Generic method for adding measurements
+    def _add_measurement(
+        self,
+        vm_id: str,
+        ts: datetime.datetime,
+        metrics: Any,
+        metric_orm: type[MetricBaseORM],
+        latest_metric_orm: type[MetricLatestBaseORM],
+    ) -> None:
+        metric = metric_orm(
+            metric_id=get_metric_id(vm_id, ts),
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+        )
+        with Session(bind=self.engine) as session:
+            session.add(metric)
+
+            # Upsert latest metric
+            upsert_stmt = (
+                insert(latest_metric_orm)
+                .values(
+                    vm_id=vm_id,
+                    ts=ts,
+                    metrics=metrics,
+                )
+                .on_conflict_do_update(
+                    index_elements=["vm_id"],
+                    set_=dict(
+                        ts=ts,
+                        metrics=metrics,
+                    ),
+                )
+            )
+            session.execute(upsert_stmt)
+            session.commit()
+
+    # Generic method for getting measurements
+    def _get_measurements(
+        self,
+        metric_orm: type[MetricBaseORM],
+        metric: type[TMetricBaseModel],
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[TMetricBaseModel]:
+        results: list[TMetricBaseModel] = []
+        with Session(bind=self.engine) as session:
+            if len(vm_ids) == 0:
+                return []
+            filter_args: list[Any] = [metric_orm.vm_id.in_(vm_ids)]
+            if start_ts is not None:
+                filter_args.append(metric_orm.ts >= start_ts)
+            if end_ts is not None:
+                filter_args.append(metric_orm.ts <= end_ts)
+
+            rows = (
+                session.query(metric_orm)
+                .filter(*filter_args)
+                .order_by(metric_orm.ts)
+                .all()
+            )
+            for row in rows:
+                row = cast(metric_orm, row)  # type: ignore
+                result_metric = metric.from_orm(orm=row)
+                results.append(result_metric)
+        return results
+
+    # Generic method for getting latest measurements
+    def _get_latest_measurements(
+        self,
+        vm_ids: list[str],
+        latest_metric_orm: type[MetricLatestBaseORM],
+        latest_metric: type[TMetricLatestBaseModel],
+    ) -> list[TMetricLatestBaseModel]:
+        if len(vm_ids) == 0:
+            return []
+        results: list[TMetricLatestBaseModel] = []
+
+        with Session(bind=self.engine) as session:
+            rows = (
+                session.query(latest_metric_orm)
+                .filter(latest_metric_orm.vm_id.in_(vm_ids))
+                .all()
+            )
+            for row in rows:
+                row = cast(latest_metric_orm, row)  # type: ignore
+                result_metric = latest_metric.from_orm(orm=row)
+                results.append(result_metric)
+        return results
+
+    # Generic method for deleting old measurements
+    def _delete_old_measurements(
+        self,
+        metric_orm: type[MetricBaseORM],
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        filters = [metric_orm.ts < oldest_ts_to_keep]
+        if vm_ids is not None:
+            filters.append(metric_orm.vm_id.in_(vm_ids))
+        with Session(bind=self.engine) as session:
+            session.query(metric_orm).filter(*filters).delete()
+            session.commit()
+
+    ############################################################
+    # AI-written autogenerated code
+    ############################################################
+    # Cpu
+    def add_cpu_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=CpuMetricORM,
+            latest_metric_orm=CpuMetricLatestORM,
+        )
+
+    def get_cpu_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[CpuMetric]:
+        return self._get_measurements(
+            metric_orm=CpuMetricORM,
+            metric=CpuMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_cpu_measurements(self, vm_ids: list[str]) -> list[CpuMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=CpuMetricLatestORM,
+            latest_metric=CpuMetricLatest,
+        )
+
+    def delete_old_cpu_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=CpuMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # Disk Iops
+    def add_disk_iops_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, float]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=DiskIopsMetricORM,
+            latest_metric_orm=DiskIopsMetricLatestORM,
+        )
+
+    def get_disk_iops_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[DiskIopsMetric]:
+        return self._get_measurements(
+            metric_orm=DiskIopsMetricORM,
+            metric=DiskIopsMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_disk_iops_measurements(
+        self, vm_ids: list[str]
+    ) -> list[DiskIopsMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=DiskIopsMetricLatestORM,
+            latest_metric=DiskIopsMetricLatest,
+        )
+
+    def delete_old_disk_iops_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=DiskIopsMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # Disk Usage
+    def add_disk_usage_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=DiskUsageMetricORM,
+            latest_metric_orm=DiskUsageMetricLatestORM,
+        )
+
+    def get_disk_usage_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[DiskUsageMetric]:
+        return self._get_measurements(
+            metric_orm=DiskUsageMetricORM,
+            metric=DiskUsageMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_disk_usage_measurements(
+        self, vm_ids: list[str]
+    ) -> list[DiskUsageMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=DiskUsageMetricLatestORM,
+            latest_metric=DiskUsageMetricLatest,
+        )
+
+    def delete_old_disk_usage_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=DiskUsageMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # Disk Throughput
+    def add_disk_throughput_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=DiskThroughputMetricORM,
+            latest_metric_orm=DiskThroughputMetricLatestORM,
+        )
+
+    def get_disk_throughput_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[DiskThroughputMetric]:
+        return self._get_measurements(
+            metric_orm=DiskThroughputMetricORM,
+            metric=DiskThroughputMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_disk_throughput_measurements(
+        self, vm_ids: list[str]
+    ) -> list[DiskThroughputMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=DiskThroughputMetricLatestORM,
+            latest_metric=DiskThroughputMetricLatest,
+        )
+
+    def delete_old_disk_throughput_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=DiskThroughputMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # GPU Memory
+    def add_gpu_memory_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: list[list[float]]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=GpuMemoryMetricORM,
+            latest_metric_orm=GpuMemoryMetricLatestORM,
+        )
+
+    def get_gpu_memory_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[GpuMemoryMetric]:
+        return self._get_measurements(
+            metric_orm=GpuMemoryMetricORM,
+            metric=GpuMemoryMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_gpu_memory_measurements(
+        self, vm_ids: list[str]
+    ) -> list[GpuMemoryMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=GpuMemoryMetricLatestORM,
+            latest_metric=GpuMemoryMetricLatest,
+        )
+
+    def delete_old_gpu_memory_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=GpuMemoryMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # GPU Utilization
+    def add_gpu_utilization_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=GpuUtilizationMetricORM,
+            latest_metric_orm=GpuUtilizationMetricLatestORM,
+        )
+
+    def get_gpu_utilization_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[GpuUtilizationMetric]:
+        return self._get_measurements(
+            metric_orm=GpuUtilizationMetricORM,
+            metric=GpuUtilizationMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_gpu_utilization_measurements(
+        self, vm_ids: list[str]
+    ) -> list[GpuUtilizationMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=GpuUtilizationMetricLatestORM,
+            latest_metric=GpuUtilizationMetricLatest,
+        )
+
+    def delete_old_gpu_utilization_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=GpuUtilizationMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # Memory
+    def add_memory_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=MemoryMetricORM,
+            latest_metric_orm=MemoryMetricLatestORM,
+        )
+
+    def get_memory_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[MemoryMetric]:
+        return self._get_measurements(
+            metric_orm=MemoryMetricORM,
+            metric=MemoryMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_memory_measurements(
+        self, vm_ids: list[str]
+    ) -> list[MemoryMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=MemoryMetricLatestORM,
+            latest_metric=MemoryMetricLatest,
+        )
+
+    def delete_old_memory_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=MemoryMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # Network Throughput
+    def add_network_throughput_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=NetworkThroughputMetricORM,
+            latest_metric_orm=NetworkThroughputMetricLatestORM,
+        )
+
+    def get_network_throughput_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[NetworkThroughputMetric]:
+        return self._get_measurements(
+            metric_orm=NetworkThroughputMetricORM,
+            metric=NetworkThroughputMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_network_throughput_measurements(
+        self, vm_ids: list[str]
+    ) -> list[NetworkThroughputMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=NetworkThroughputMetricLatestORM,
+            latest_metric=NetworkThroughputMetricLatest,
+        )
+
+    def delete_old_network_throughput_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=NetworkThroughputMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )

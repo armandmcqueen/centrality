@@ -7,8 +7,9 @@ from rich.table import Table
 ReadThroughputMiB = float
 WriteThroughputMiB = float
 Iops = float
-ThroughputInfos = dict[str, tuple[ReadThroughputMiB, WriteThroughputMiB]]
-IopsInfos = dict[str, Iops]
+DiskName = str
+ThroughputPerDisk = dict[DiskName, tuple[ReadThroughputMiB, WriteThroughputMiB]]
+IopsPerDisk = dict[DiskName, Iops]
 
 
 class DiskIoSampler(MetricSampler):
@@ -24,7 +25,7 @@ class DiskIoSampler(MetricSampler):
                 disk.read_count + disk.write_count
             )
 
-    def sample(self) -> tuple[ThroughputInfos, IopsInfos]:
+    def sample(self) -> tuple[ThroughputPerDisk, IopsPerDisk]:
         throughputs = {}
         iopses = {}
         disks = psutil.disk_io_counters(perdisk=True)

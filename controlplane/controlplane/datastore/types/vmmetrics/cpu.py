@@ -9,30 +9,34 @@ from controlplane.datastore.types.vmmetrics.metric import (
     MetricLatestBaseModel,
 )
 
-
-class CpuMetricORM(MetricBaseORM):
-    __tablename__ = "machine_metric_cpu"
-    metrics: Mapped[list[float]] = mapped_column(JSONB, nullable=False)
+# example: [cpuWWW, cpuXXX, cpuYYY, cpuZZZ]
+METRIC_SHAPE_DB = list[float]
+METRIC_NAME = "cpu"
 
 
 class CpuMetricLatestORM(MetricLatestBaseORM):
-    __tablename__ = "machine_metric_cpu_latest"
-    metrics: Mapped[list[float]] = mapped_column(JSONB, nullable=False)
+    __tablename__ = f"machine_metric_{METRIC_NAME}_latest"
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
 
 
-class CpuMetric(MetricBaseModel):
-    cpu_percents: list[float]
-
-    @classmethod
-    def from_orm(cls, orm: CpuMetricORM) -> "CpuMetric":  # noqa
-        instance = super().from_orm(orm, cpu_percents=orm.metrics)
-        return cast(CpuMetric, instance)
+class CpuMetricORM(MetricBaseORM):
+    __tablename__ = f"machine_metric_{METRIC_NAME}"
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
 
 
 class CpuMetricLatest(MetricLatestBaseModel):
     cpu_percents: list[float]
 
     @classmethod
-    def from_orm(cls, orm: CpuMetricLatestORM) -> "CpuMetricLatest":  # noqa
-        instance = super().from_orm(orm, cpu_percents=orm.metrics)
+    def from_orm(cls, orm: CpuMetricLatestORM, **kwargs) -> "CpuMetricLatest":
+        instance = super().from_orm(orm=orm, cpu_percents=orm.metrics)
         return cast(CpuMetricLatest, instance)
+
+
+class CpuMetric(MetricBaseModel):
+    cpu_percents: list[float]
+
+    @classmethod
+    def from_orm(cls, orm: CpuMetricORM, **kwargs) -> "CpuMetric":
+        instance = super().from_orm(orm=orm, cpu_percents=orm.metrics)
+        return cast(CpuMetric, instance)

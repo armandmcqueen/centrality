@@ -171,7 +171,7 @@ def put_cpu_metric(
     """Put a cpu metric measurement into the datastore"""
     datastore_client.add_cpu_measurement(
         vm_id=measurement.vm_id,
-        cpu_percents=measurement.cpu_percents,
+        metrics=measurement.cpu_percents,
         ts=measurement.ts,
     )
     return OkResponse()

@@ -1,12 +1,14 @@
-import datetime
-from pydantic import BaseModel
+from typing import cast
 
-from sqlalchemy import Index
+from pydantic import BaseModel
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import TIMESTAMP
-from controlplane.datastore.types.base import DatastoreBaseORM
-from controlplane.datastore.types.utils import gen_random_uuid
+from controlplane.datastore.types.vmmetrics.metric import (
+    MetricBaseORM,
+    MetricLatestBaseORM,
+    MetricBaseModel,
+    MetricLatestBaseModel,
+)
 
 
 class DiskUsage(BaseModel):
@@ -14,60 +16,44 @@ class DiskUsage(BaseModel):
     total_mb: float
 
 
-class DiskUsageVmMetricORM(DatastoreBaseORM):
-    __tablename__ = "machine_metric_disk_usage"
-    metric_id: Mapped[str] = mapped_column(primary_key=True, default=gen_random_uuid)
-    vm_id: Mapped[str] = mapped_column(nullable=False)
-    ts: Mapped[datetime.datetime] = mapped_column(
-        TIMESTAMP(timezone=True), nullable=False
-    )
-    # disk_usage example: {disk1: [used, total], disk2: [used, total]}
-    usage: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
-    __table_args__ = (
-        Index("idx_metrics_ts", "ts"),  # Creating the index
-        Index("idx_vm_id_ts", "vm_id", "ts"),  # Composite index
-    )
+# example: {disk1: [used, total], disk2: [used, total]}
+METRIC_SHAPE_DB = dict[str, list[float]]
+METRIC_SHAPE_OBJ = dict[str, DiskUsage]
+METRIC_NAME = "disk_usage"
 
 
-class DiskUsageVmMetricLatestORM(DatastoreBaseORM):
-    __tablename__ = "machine_metric_disk_usage_latest"
-    vm_id: Mapped[str] = mapped_column(primary_key=True, nullable=False)
-    ts: Mapped[datetime.datetime] = mapped_column(
-        TIMESTAMP(timezone=True), nullable=False
-    )
-    # disk_usage example: {disk1: [used, total], disk2: [used, total]}
-    usage: Mapped[dict[str, list[float]]] = mapped_column(JSONB, nullable=False)
+def convert(metric: METRIC_SHAPE_DB) -> METRIC_SHAPE_OBJ:
+    return {
+        disk: DiskUsage(used_mb=usage_vals[0], total_mb=usage_vals[1])
+        for disk, usage_vals in metric.items()
+    }
 
 
-class DiskUsageVmMetric(BaseModel):
-    metric_id: str
-    vm_id: str
-    ts: datetime.datetime
-    usage: dict[str, DiskUsage]
+class DiskUsageMetricLatestORM(MetricLatestBaseORM):
+    __tablename__ = f"machine_metric_{METRIC_NAME}_latest"
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
+
+
+class DiskUsageMetricORM(MetricBaseORM):
+    __tablename__ = f"machine_metric_{METRIC_NAME}"
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
+
+
+class DiskUsageMetricLatest(MetricLatestBaseModel):
+    usage: METRIC_SHAPE_OBJ
 
     @classmethod
-    def from_orm(cls, orm: DiskUsageVmMetricORM) -> "DiskUsageVmMetric":
-        usage = {
-            disk: DiskUsage(used_mb=usage_vals[0], total_mb=usage_vals[1])
-            for disk, usage_vals in orm.usage.items()
-        }
-        return cls(
-            metric_id=orm.metric_id,
-            vm_id=orm.vm_id,
-            ts=orm.ts,
-            usage=usage,
-        )
+    def from_orm(
+        cls, orm: DiskUsageMetricLatestORM, **kwargs
+    ) -> "DiskUsageMetricLatest":
+        instance = super().from_orm(orm=orm, usage=convert(orm.metrics))
+        return cast(DiskUsageMetricLatest, instance)
 
 
-class DiskUsageVmMetricLatest(BaseModel):
-    vm_id: str
-    ts: datetime.datetime
-    usage: dict[str, DiskUsage]
+class DiskUsageMetric(MetricBaseModel):
+    usage: METRIC_SHAPE_OBJ
 
     @classmethod
-    def from_orm(cls, orm: DiskUsageVmMetricLatestORM) -> "DiskUsageVmMetricLatest":
-        usage = {
-            disk: DiskUsage(used_mb=usage_vals[0], total_mb=usage_vals[1])
-            for disk, usage_vals in orm.usage.items()
-        }
-        return cls(vm_id=orm.vm_id, ts=orm.ts, usage=usage)
+    def from_orm(cls, orm: DiskUsageMetricORM, **kwargs) -> "DiskUsageMetric":
+        instance = super().from_orm(orm=orm, usage=convert(orm.metrics))
+        return cast(DiskUsageMetric, instance)
