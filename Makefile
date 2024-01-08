@@ -140,7 +140,7 @@ delete-dump-db:
 .PHONY: codegen
 codegen:
 	make generate-sdk
-	make -C controlplane codegen
+	make -C scripts codegen
 
 
 .PHONY: clean
@@ -150,7 +150,7 @@ clean:
 	docker compose rm -f
 	make pre-commit-install
 	make generate-sdk
-	make -C controlplane codegen
+	make -C scripts codegen
 	make install-dev
 	docker compose build
 

@@ -17,6 +17,11 @@ def codegen(
 
     if template == "types":
         template_path = constants.TYPES_TEMPLATE
+        # Remove all current generated files
+        console.log(f"Removing all existing files in {constants.TYPES_GENERATED_DIR}")
+        for f in constants.TYPES_GENERATED_DIR.glob("*.py"):
+            if f.is_file() and f.stem != "__init__":
+                f.unlink()
     elif template == "datastore-client":
         template_path = constants.DATASTORE_CLIENT_TEMPLATE
     elif template == "rest":
@@ -62,7 +67,7 @@ def codegen(
             )
 
             console.log(
-                f"Writing generated code to {output_path.relative_to(os.getcwd())}"
+                f"Writing generated code to ./{output_path.relative_to(os.getcwd())}"
             )
             console.print()
             with open(output_path, "w") as f:
