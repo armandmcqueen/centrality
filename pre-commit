@@ -2,6 +2,7 @@
 
 set -e
 
+make codegen
 make lint
 
 # Include any format changes in the commit
