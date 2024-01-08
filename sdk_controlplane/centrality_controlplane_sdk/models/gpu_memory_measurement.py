@@ -18,21 +18,22 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, StrictStr
+from centrality_controlplane_sdk.models.gpu_memory import GpuMemory
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class CpuMeasurement(BaseModel):
+class GpuMemoryMeasurement(BaseModel):
     """
-    A measurement of Cpu
+    A measurement of GpuMemory
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    cpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "cpu_percents"]
+    memory: List[GpuMemory]
+    __properties: ClassVar[List[str]] = ["vm_id", "ts", "memory"]
 
     model_config = {
         "populate_by_name": True,
@@ -51,7 +52,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of CpuMeasurement from a JSON string"""
+        """Create an instance of GpuMemoryMeasurement from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -70,11 +71,18 @@ class CpuMeasurement(BaseModel):
             },
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in memory (list)
+        _items = []
+        if self.memory:
+            for _item in self.memory:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['memory'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of CpuMeasurement from a dict"""
+        """Create an instance of GpuMemoryMeasurement from a dict"""
         if obj is None:
             return None
 
@@ -84,7 +92,7 @@ class CpuMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
-            "cpu_percents": obj.get("cpu_percents")
+            "memory": [GpuMemory.from_dict(_item) for _item in obj.get("memory")] if obj.get("memory") is not None else None
         })
         return _obj
 

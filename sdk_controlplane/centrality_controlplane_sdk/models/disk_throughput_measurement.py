@@ -18,21 +18,21 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, StrictStr
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class CpuMeasurement(BaseModel):
+class DiskThroughputMeasurement(BaseModel):
     """
-    A measurement of Cpu
+    A measurement of DiskThroughput
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    cpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "cpu_percents"]
+    throughput: Optional[Any]
+    __properties: ClassVar[List[str]] = ["vm_id", "ts", "throughput"]
 
     model_config = {
         "populate_by_name": True,
@@ -51,7 +51,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of CpuMeasurement from a JSON string"""
+        """Create an instance of DiskThroughputMeasurement from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -70,11 +70,16 @@ class CpuMeasurement(BaseModel):
             },
             exclude_none=True,
         )
+        # set to None if throughput (nullable) is None
+        # and model_fields_set contains the field
+        if self.throughput is None and "throughput" in self.model_fields_set:
+            _dict['throughput'] = None
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of CpuMeasurement from a dict"""
+        """Create an instance of DiskThroughputMeasurement from a dict"""
         if obj is None:
             return None
 
@@ -84,7 +89,6 @@ class CpuMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
-            "cpu_percents": obj.get("cpu_percents")
         })
         return _obj
 

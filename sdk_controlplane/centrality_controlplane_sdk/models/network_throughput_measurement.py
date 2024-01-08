@@ -18,21 +18,23 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, StrictStr
+from centrality_controlplane_sdk.models.throughput import Throughput
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class CpuMeasurement(BaseModel):
+class NetworkThroughputMeasurement(BaseModel):
     """
-    A measurement of Cpu
+    A measurement of NetworkThroughput
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    cpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "cpu_percents"]
+    per_interface: Optional[Any]
+    total: Throughput
+    __properties: ClassVar[List[str]] = ["vm_id", "ts", "per_interface", "total"]
 
     model_config = {
         "populate_by_name": True,
@@ -51,7 +53,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of CpuMeasurement from a JSON string"""
+        """Create an instance of NetworkThroughputMeasurement from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -70,11 +72,19 @@ class CpuMeasurement(BaseModel):
             },
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of total
+        if self.total:
+            _dict['total'] = self.total.to_dict()
+        # set to None if per_interface (nullable) is None
+        # and model_fields_set contains the field
+        if self.per_interface is None and "per_interface" in self.model_fields_set:
+            _dict['per_interface'] = None
+
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of CpuMeasurement from a dict"""
+        """Create an instance of NetworkThroughputMeasurement from a dict"""
         if obj is None:
             return None
 
@@ -84,7 +94,7 @@ class CpuMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
-            "cpu_percents": obj.get("cpu_percents")
+            "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None
         })
         return _obj
 

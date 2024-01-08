@@ -71,7 +71,29 @@ class DatastoreSweeper(conclib.PeriodicActor):
                 # print(f"🧹 DatastoreSweeper - retention window is {delta}")
                 oldest_ts = now - delta
                 print(f"🧹 DatastoreSweeper - pruning data older than {oldest_ts}")
+                # TODO: More granular logging and exception handling
                 self.datastore_client.delete_old_cpu_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_disk_iops_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_disk_usage_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_disk_throughput_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_gpu_memory_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_gpu_utilization_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_memory_measurements(
+                    oldest_ts_to_keep=oldest_ts,
+                )
+                self.datastore_client.delete_old_network_throughput_measurements(
                     oldest_ts_to_keep=oldest_ts,
                 )
             except Exception as e:

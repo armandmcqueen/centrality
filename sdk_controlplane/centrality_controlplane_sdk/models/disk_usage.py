@@ -17,22 +17,21 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
+
 from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, StrictFloat, StrictInt
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class CpuMeasurement(BaseModel):
+class DiskUsage(BaseModel):
     """
-    A measurement of Cpu
+    DiskUsage
     """ # noqa: E501
-    vm_id: StrictStr
-    ts: datetime
-    cpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "cpu_percents"]
+    used_mb: Union[StrictFloat, StrictInt]
+    total_mb: Union[StrictFloat, StrictInt]
+    __properties: ClassVar[List[str]] = ["used_mb", "total_mb"]
 
     model_config = {
         "populate_by_name": True,
@@ -51,7 +50,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of CpuMeasurement from a JSON string"""
+        """Create an instance of DiskUsage from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -74,7 +73,7 @@ class CpuMeasurement(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of CpuMeasurement from a dict"""
+        """Create an instance of DiskUsage from a dict"""
         if obj is None:
             return None
 
@@ -82,9 +81,8 @@ class CpuMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
-            "ts": obj.get("ts"),
-            "cpu_percents": obj.get("cpu_percents")
+            "used_mb": obj.get("used_mb"),
+            "total_mb": obj.get("total_mb")
         })
         return _obj
 

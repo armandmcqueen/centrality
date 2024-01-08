@@ -1,0 +1,48 @@
+
+
+@app.get(constants.CONTROL_PLANE_METRIC_METRIC_NAME_CAPITALIZED_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_METRIC_NAME_LOWERCASE_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+    from_ts: Optional[datetime.datetime] = None,
+    to_ts: Optional[datetime.datetime] = None,
+) -> list[METRIC_NAME_CAMELCASEMeasurement]:
+    """
+    Get METRIC_NAME_LOWERCASE metrics for certain VMs between from_ts to to_ts, inclusive.
+    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    :param from_ts: Start time filter, inclusive. Optional.
+    :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
+                  error, but the results will be empty.
+    :return: List of METRIC_NAME_CAMELCASEMeasurement objects
+    """
+    results = datastore_client.get_METRIC_NAME_LOWERCASE_measurements(
+        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+    )
+    return [result.to_METRIC_NAME_LOWERCASE_measurement() for result in results]
+
+
+@app.get(f"{constants.CONTROL_PLANE_METRIC_METRIC_NAME_CAPITALIZED_ENDPOINT}/latest", tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_latest_METRIC_NAME_LOWERCASE_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+) -> list[METRIC_NAME_CAMELCASEMeasurement]:
+    """Get the most recent METRIC_NAME_LOWERCASE measurements for each VM"""
+    results = datastore_client.get_latest_METRIC_NAME_LOWERCASE_measurements(vm_ids=vm_ids)
+    return [result.to_METRIC_NAME_LOWERCASE_measurement() for result in results]
+
+
+@app.post(constants.CONTROL_PLANE_METRIC_METRIC_NAME_CAPITALIZED_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def put_METRIC_NAME_LOWERCASE_metric(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    measurement: METRIC_NAME_CAMELCASEMeasurement,
+) -> OkResponse:
+    """Put a METRIC_NAME_LOWERCASE metric measurement into the datastore"""
+    datastore_client.add_METRIC_NAME_LOWERCASE_measurement(
+        vm_id=measurement.vm_id,
+        metrics=measurement.to_metrics(),
+        ts=measurement.ts,
+    )
+    return OkResponse()

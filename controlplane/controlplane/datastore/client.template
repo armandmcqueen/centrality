@@ -1,0 +1,61 @@
+# Imports and other python code to make the template valid Python. Everything before the PRETEMPLATE_END
+# is not included in the actual template
+import datetime
+from typing import Optional
+class METRIC_NAME_CAMELCASEMetricORM:
+    pass
+class METRIC_NAME_CAMELCASEMetricLatestORM:
+    pass
+class METRIC_NAME_CAMELCASEMetric:
+    pass
+class METRIC_NAME_CAMELCASEMetricLatest:
+    pass
+METRIC_SHAPE_DB = list[float]
+from controlplane.datastore.client import DatastoreClient
+class TemplateDatastoreClient(DatastoreClient):
+
+#PRETEMPLATE_END
+
+    # METRIC_NAME_CAMELCASE
+    def add_METRIC_NAME_LOWERCASE_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: METRIC_SHAPE_DB
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=METRIC_NAME_CAMELCASEMetricORM,
+            latest_metric_orm=METRIC_NAME_CAMELCASEMetricLatestORM,
+        )
+
+    def get_METRIC_NAME_LOWERCASE_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[METRIC_NAME_CAMELCASEMetric]:
+        return self._get_measurements(
+            metric_orm=METRIC_NAME_CAMELCASEMetricORM,
+            metric=METRIC_NAME_CAMELCASEMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_METRIC_NAME_LOWERCASE_measurements(self, vm_ids: list[str]) -> list[METRIC_NAME_CAMELCASEMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=METRIC_NAME_CAMELCASEMetricLatestORM,
+            latest_metric=METRIC_NAME_CAMELCASEMetricLatest,
+        )
+
+    def delete_old_METRIC_NAME_LOWERCASE_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=METRIC_NAME_CAMELCASEMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )

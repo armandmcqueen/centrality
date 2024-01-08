@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Any
 
 metric_obj_fields = """\
     per_interface: dict[str, Throughput]
@@ -6,6 +7,7 @@ metric_obj_fields = """\
 """
 metric_name_lowercase = "network_throughput"
 metric_name_camelcase = "NetworkThroughput"
+metric_name_capitalized = "NETWORK_THROUGHPUT"
 metrics_shape_db = "dict[str, list[float]]"
 example_metrics = "{ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}"
 custom_types = """\
@@ -20,7 +22,7 @@ class Throughput(BaseModel):
     recv_mbps: float
 
 
-def convert(
+def convert_from_metrics(
     metrics: dict[str, list[float]],
 ) -> dict[str, dict[str, Throughput] | Throughput]:
     interfaces: dict[str, Throughput] = {
@@ -30,3 +32,10 @@ def convert(
     }
     total = Throughput(sent_mbps=metrics["total"][0], recv_mbps=metrics["total"][1])
     return dict(per_interface=interfaces, total=total)
+
+
+def convert_to_metrics(self: Any) -> dict[str, list[float]]:
+    return {
+        interface: [throughput.sent_mbps, throughput.recv_mbps]
+        for interface, throughput in self.per_interface.items()
+    }
