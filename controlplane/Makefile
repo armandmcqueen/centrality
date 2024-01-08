@@ -44,16 +44,6 @@ gen-openapi-spec:
 launch:
 	python controlplane/cli.py launch --postgres-host localhost
 
-.PHONY: delete-codegen
-delete-codegen:
-	rm -rf controlplane/datastore/types/vmmetrics/generated/*
-
-.PHONY: codegen
-codegen: delete-codegen
-	python controlplane/codegen.py types
-	python controlplane/codegen.py datastore-client
-	python controlplane/codegen.py rest
-
 .PHONY: install
 install:
 	pip install -e .
