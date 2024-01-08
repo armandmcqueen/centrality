@@ -4,7 +4,7 @@ import json
 
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
-from common.types.vmmetrics import CpuMeasurement
+from controlplane.datastore.types.vmmetrics.generated.cpu import CpuMeasurement, CpuMetric
 from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 from common import constants
 from controlplane.datastore.client import DatastoreClient, VmRegistrationConflictError
@@ -118,65 +118,6 @@ def get_info() -> InfoResponse:
         deploy_time=deploy_time,
     )
 
-
-@app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
-@auth(datastore_client)
-def get_cpu_metrics(
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
-    from_ts: Optional[datetime.datetime] = None,
-    to_ts: Optional[datetime.datetime] = None,
-) -> list[CpuMeasurement]:
-    """
-    Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
-    :param from_ts: Start time filter, inclusive. Optional.
-    :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
-                  error, but the results will be empty.
-    :return: List of CpuMeasurement objects
-    """
-    results = datastore_client.get_cpu_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
-    )
-    return [
-        CpuMeasurement(
-            vm_id=result.vm_id, cpu_percents=result.cpu_percents, ts=result.ts
-        )
-        for result in results
-    ]
-
-
-@app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
-@auth(datastore_client)
-def get_latest_cpu_metrics(
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
-) -> list[CpuMeasurement]:
-    """Get the most recent CPU measurements for each VM"""
-    results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
-    return [
-        CpuMeasurement(
-            vm_id=result.vm_id, cpu_percents=result.cpu_percents, ts=result.ts
-        )
-        for result in results
-    ]
-
-
-@app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
-@auth(datastore_client)
-def put_cpu_metric(
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    measurement: CpuMeasurement,
-) -> OkResponse:
-    """Put a cpu metric measurement into the datastore"""
-    datastore_client.add_cpu_measurement(
-        vm_id=measurement.vm_id,
-        metrics=measurement.cpu_percents,
-        ts=measurement.ts,
-    )
-    return OkResponse()
-
-
 @app.post(constants.CONTROL_PLANE_VM_REGISTRATION_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
 def register_vm(
@@ -239,6 +180,56 @@ def list_live_vms(
     )
     return live_vms
 
+# BEGIN GENERATED CODE
+
+@app.get(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_cpu_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+    from_ts: Optional[datetime.datetime] = None,
+    to_ts: Optional[datetime.datetime] = None,
+) -> list[CpuMeasurement]:
+    """
+    Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.
+    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    :param from_ts: Start time filter, inclusive. Optional.
+    :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
+                  error, but the results will be empty.
+    :return: List of CpuMeasurement objects
+    """
+    results = datastore_client.get_cpu_measurements(
+        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+    )
+    return [result.to_cpu_measurement() for result in results]
+
+
+@app.get(constants.CONTROL_PLANE_LATEST_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_latest_cpu_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+) -> list[CpuMeasurement]:
+    """Get the most recent CPU measurements for each VM"""
+    results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
+    return [result.to_cpu_measurement() for result in results]
+
+
+@app.post(constants.CONTROL_PLANE_CPU_METRIC_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def put_cpu_metric(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    measurement: CpuMeasurement,
+) -> OkResponse:
+    """Put a cpu metric measurement into the datastore"""
+    datastore_client.add_cpu_measurement(
+        vm_id=measurement.vm_id,
+        metrics=measurement.to_metrics(),
+        ts=measurement.ts,
+    )
+    return OkResponse()
+
+# END GENERATED CODE
 
 def generate_openapi_json():
     """Generate the OpenAPI JSON file and print it to stdout. (__main__ calls this)"""
