@@ -6,10 +6,11 @@ from rich.table import Table
 UsedMiB = float
 TotalMiB = float
 DiskMbInfo = tuple[UsedMiB, TotalMiB]
+DiskPartition = str
 
 
 class DiskMbSampler(MetricSampler):
-    def sample(self) -> dict[str, DiskMbInfo]:
+    def sample(self) -> dict[DiskPartition, DiskMbInfo]:
         usages = {}
         for partition in psutil.disk_partitions():
             try:
@@ -30,6 +31,7 @@ class DiskMbSampler(MetricSampler):
         table.add_column(header[0])
         table.add_column(header[1])
         table.add_column(header[2])
+        table.add_column(header[3])
         for disk_id in info.keys():
             used, total = info[disk_id]
             used = int(used)

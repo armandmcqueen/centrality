@@ -137,6 +137,11 @@ delete-sdk:
 delete-dump-db:
 	find . -name 'dump.db' -type f -delete
 
+.PHONY: codegen
+codegen:
+	make generate-sdk
+	make -C controlplane codegen
+
 
 .PHONY: clean
 clean:
@@ -145,6 +150,7 @@ clean:
 	docker compose rm -f
 	make pre-commit-install
 	make generate-sdk
+	make -C controlplane codegen
 	make install-dev
 	docker compose build
 

@@ -27,7 +27,7 @@ except ImportError:
 
 class CpuMeasurement(BaseModel):
     """
-    A single CPU measurement, with a list of CPU percents for each core
+    A measurement of Cpu
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime

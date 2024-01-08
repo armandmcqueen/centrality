@@ -40,6 +40,41 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
+    def test_get_disk_iops_metrics(self) -> None:
+        """Test case for get_disk_iops_metrics
+
+        Get Disk Iops Metrics
+        """
+        pass
+
+    def test_get_disk_throughput_metrics(self) -> None:
+        """Test case for get_disk_throughput_metrics
+
+        Get Disk Throughput Metrics
+        """
+        pass
+
+    def test_get_disk_usage_metrics(self) -> None:
+        """Test case for get_disk_usage_metrics
+
+        Get Disk Usage Metrics
+        """
+        pass
+
+    def test_get_gpu_memory_metrics(self) -> None:
+        """Test case for get_gpu_memory_metrics
+
+        Get Gpu Memory Metrics
+        """
+        pass
+
+    def test_get_gpu_utilization_metrics(self) -> None:
+        """Test case for get_gpu_utilization_metrics
+
+        Get Gpu Utilization Metrics
+        """
+        pass
+
     def test_get_healthcheck(self) -> None:
         """Test case for get_healthcheck
 
@@ -61,6 +96,69 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
+    def test_get_latest_disk_iops_metrics(self) -> None:
+        """Test case for get_latest_disk_iops_metrics
+
+        Get Latest Disk Iops Metrics
+        """
+        pass
+
+    def test_get_latest_disk_throughput_metrics(self) -> None:
+        """Test case for get_latest_disk_throughput_metrics
+
+        Get Latest Disk Throughput Metrics
+        """
+        pass
+
+    def test_get_latest_disk_usage_metrics(self) -> None:
+        """Test case for get_latest_disk_usage_metrics
+
+        Get Latest Disk Usage Metrics
+        """
+        pass
+
+    def test_get_latest_gpu_memory_metrics(self) -> None:
+        """Test case for get_latest_gpu_memory_metrics
+
+        Get Latest Gpu Memory Metrics
+        """
+        pass
+
+    def test_get_latest_gpu_utilization_metrics(self) -> None:
+        """Test case for get_latest_gpu_utilization_metrics
+
+        Get Latest Gpu Utilization Metrics
+        """
+        pass
+
+    def test_get_latest_memory_metrics(self) -> None:
+        """Test case for get_latest_memory_metrics
+
+        Get Latest Memory Metrics
+        """
+        pass
+
+    def test_get_latest_network_throughput_metrics(self) -> None:
+        """Test case for get_latest_network_throughput_metrics
+
+        Get Latest Network Throughput Metrics
+        """
+        pass
+
+    def test_get_memory_metrics(self) -> None:
+        """Test case for get_memory_metrics
+
+        Get Memory Metrics
+        """
+        pass
+
+    def test_get_network_throughput_metrics(self) -> None:
+        """Test case for get_network_throughput_metrics
+
+        Get Network Throughput Metrics
+        """
+        pass
+
     def test_list_live_vms(self) -> None:
         """Test case for list_live_vms
 
@@ -72,6 +170,55 @@ class TestDataApi(unittest.TestCase):
         """Test case for put_cpu_metric
 
         Put Cpu Metric
+        """
+        pass
+
+    def test_put_disk_iops_metric(self) -> None:
+        """Test case for put_disk_iops_metric
+
+        Put Disk Iops Metric
+        """
+        pass
+
+    def test_put_disk_throughput_metric(self) -> None:
+        """Test case for put_disk_throughput_metric
+
+        Put Disk Throughput Metric
+        """
+        pass
+
+    def test_put_disk_usage_metric(self) -> None:
+        """Test case for put_disk_usage_metric
+
+        Put Disk Usage Metric
+        """
+        pass
+
+    def test_put_gpu_memory_metric(self) -> None:
+        """Test case for put_gpu_memory_metric
+
+        Put Gpu Memory Metric
+        """
+        pass
+
+    def test_put_gpu_utilization_metric(self) -> None:
+        """Test case for put_gpu_utilization_metric
+
+        Put Gpu Utilization Metric
+        """
+        pass
+
+    def test_put_memory_metric(self) -> None:
+        """Test case for put_memory_metric
+
+        Put Memory Metric
+        """
+        pass
+
+    def test_put_network_throughput_metric(self) -> None:
+        """Test case for put_network_throughput_metric
+
+        Put Network Throughput Metric
         """
         pass
 

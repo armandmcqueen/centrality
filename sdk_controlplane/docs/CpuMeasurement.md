@@ -1,6 +1,6 @@
 # CpuMeasurement
 
-A single CPU measurement, with a list of CPU percents for each core
+A measurement of Cpu
 
 ## Properties
 Name | Type | Description | Notes

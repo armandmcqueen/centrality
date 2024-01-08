@@ -39,7 +39,7 @@ def test_sweeper(
     for ind, ts in enumerate(timestamps):
         client.add_cpu_measurement(
             vm_id=VM_ID,
-            cpu_percents=[ind, ind, ind, ind],
+            metrics=[ind, ind, ind, ind],
             ts=ts,
         )
 

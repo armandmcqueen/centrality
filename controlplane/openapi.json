@@ -76,195 +76,6 @@
         }
       }
     },
-    "/metrics/cpu": {
-      "get": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Get Cpu Metrics",
-        "description": "Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
-        "operationId": "get_cpu_metrics",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "vm_ids",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "title": "Vm Ids"
-            }
-          },
-          {
-            "name": "from_ts",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "From Ts"
-            }
-          },
-          {
-            "name": "to_ts",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "To Ts"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CpuMeasurement"
-                  },
-                  "title": "Response Get Cpu Metrics Metrics Cpu Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Put Cpu Metric",
-        "description": "Put a cpu metric measurement into the datastore",
-        "operationId": "put_cpu_metric",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CpuMeasurement"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OkResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/metrics/cpu/latest": {
-      "get": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Get Latest Cpu Metrics",
-        "description": "Get the most recent CPU measurements for each VM",
-        "operationId": "get_latest_cpu_metrics",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "vm_ids",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "title": "Vm Ids"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CpuMeasurement"
-                  },
-                  "title": "Response Get Latest Cpu Metrics Metrics Cpu Latest Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/vm/{vm_id}/register": {
       "post": {
         "tags": [
@@ -449,6 +260,1518 @@
           }
         ]
       }
+    },
+    "/metrics/cpu": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Cpu Metrics",
+        "description": "Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
+        "operationId": "get_cpu_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CpuMeasurement"
+                  },
+                  "title": "Response Get Cpu Metrics Metrics Cpu Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Cpu Metric",
+        "description": "Put a cpu metric measurement into the datastore",
+        "operationId": "put_cpu_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CpuMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/cpu/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Cpu Metrics",
+        "description": "Get the most recent cpu measurements for each VM",
+        "operationId": "get_latest_cpu_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CpuMeasurement"
+                  },
+                  "title": "Response Get Latest Cpu Metrics Metrics Cpu Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-iops": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Disk Iops Metrics",
+        "description": "Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
+        "operationId": "get_disk_iops_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskIopsMeasurement"
+                  },
+                  "title": "Response Get Disk Iops Metrics Metrics Disk Iops Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Disk Iops Metric",
+        "description": "Put a disk_iops metric measurement into the datastore",
+        "operationId": "put_disk_iops_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiskIopsMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-iops/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Disk Iops Metrics",
+        "description": "Get the most recent disk_iops measurements for each VM",
+        "operationId": "get_latest_disk_iops_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskIopsMeasurement"
+                  },
+                  "title": "Response Get Latest Disk Iops Metrics Metrics Disk Iops Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-usage": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Disk Usage Metrics",
+        "description": "Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
+        "operationId": "get_disk_usage_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskUsageMeasurement"
+                  },
+                  "title": "Response Get Disk Usage Metrics Metrics Disk Usage Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Disk Usage Metric",
+        "description": "Put a disk_usage metric measurement into the datastore",
+        "operationId": "put_disk_usage_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiskUsageMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-usage/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Disk Usage Metrics",
+        "description": "Get the most recent disk_usage measurements for each VM",
+        "operationId": "get_latest_disk_usage_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskUsageMeasurement"
+                  },
+                  "title": "Response Get Latest Disk Usage Metrics Metrics Disk Usage Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-throughput": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Disk Throughput Metrics",
+        "description": "Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
+        "operationId": "get_disk_throughput_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                  },
+                  "title": "Response Get Disk Throughput Metrics Metrics Disk Throughput Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Disk Throughput Metric",
+        "description": "Put a disk_throughput metric measurement into the datastore",
+        "operationId": "put_disk_throughput_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiskThroughputMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/disk-throughput/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Disk Throughput Metrics",
+        "description": "Get the most recent disk_throughput measurements for each VM",
+        "operationId": "get_latest_disk_throughput_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                  },
+                  "title": "Response Get Latest Disk Throughput Metrics Metrics Disk Throughput Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/gpu-memory": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Gpu Memory Metrics",
+        "description": "Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
+        "operationId": "get_gpu_memory_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                  },
+                  "title": "Response Get Gpu Memory Metrics Metrics Gpu Memory Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Gpu Memory Metric",
+        "description": "Put a gpu_memory metric measurement into the datastore",
+        "operationId": "put_gpu_memory_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpuMemoryMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/gpu-memory/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Gpu Memory Metrics",
+        "description": "Get the most recent gpu_memory measurements for each VM",
+        "operationId": "get_latest_gpu_memory_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                  },
+                  "title": "Response Get Latest Gpu Memory Metrics Metrics Gpu Memory Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/gpu-utilization": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Gpu Utilization Metrics",
+        "description": "Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
+        "operationId": "get_gpu_utilization_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                  },
+                  "title": "Response Get Gpu Utilization Metrics Metrics Gpu Utilization Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Gpu Utilization Metric",
+        "description": "Put a gpu_utilization metric measurement into the datastore",
+        "operationId": "put_gpu_utilization_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/gpu-utilization/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Gpu Utilization Metrics",
+        "description": "Get the most recent gpu_utilization measurements for each VM",
+        "operationId": "get_latest_gpu_utilization_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                  },
+                  "title": "Response Get Latest Gpu Utilization Metrics Metrics Gpu Utilization Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/memory": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Memory Metrics",
+        "description": "Get memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
+        "operationId": "get_memory_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemoryMeasurement"
+                  },
+                  "title": "Response Get Memory Metrics Metrics Memory Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Memory Metric",
+        "description": "Put a memory metric measurement into the datastore",
+        "operationId": "put_memory_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemoryMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/memory/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Memory Metrics",
+        "description": "Get the most recent memory measurements for each VM",
+        "operationId": "get_latest_memory_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemoryMeasurement"
+                  },
+                  "title": "Response Get Latest Memory Metrics Metrics Memory Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/network-throughput": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Network Throughput Metrics",
+        "description": "Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
+        "operationId": "get_network_throughput_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                  },
+                  "title": "Response Get Network Throughput Metrics Metrics Network Throughput Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Network Throughput Metric",
+        "description": "Put a network_throughput metric measurement into the datastore",
+        "operationId": "put_network_throughput_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/network-throughput/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Network Throughput Metrics",
+        "description": "Get the most recent network_throughput measurements for each VM",
+        "operationId": "get_latest_network_throughput_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                  },
+                  "title": "Response Get Latest Network Throughput Metrics Metrics Network Throughput Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -479,7 +1802,201 @@
           "cpu_percents"
         ],
         "title": "CpuMeasurement",
-        "description": "A single CPU measurement, with a list of CPU percents for each core"
+        "description": "A measurement of Cpu"
+      },
+      "DiskIopsMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "iops": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Iops"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "iops"
+        ],
+        "title": "DiskIopsMeasurement",
+        "description": "A measurement of DiskIops"
+      },
+      "DiskThroughput": {
+        "properties": {
+          "read_mbps": {
+            "type": "number",
+            "title": "Read Mbps"
+          },
+          "write_mbps": {
+            "type": "number",
+            "title": "Write Mbps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "read_mbps",
+          "write_mbps"
+        ],
+        "title": "DiskThroughput"
+      },
+      "DiskThroughputMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "throughput": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DiskThroughput"
+            },
+            "type": "object",
+            "title": "Throughput"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "throughput"
+        ],
+        "title": "DiskThroughputMeasurement",
+        "description": "A measurement of DiskThroughput"
+      },
+      "DiskUsage": {
+        "properties": {
+          "used_mb": {
+            "type": "number",
+            "title": "Used Mb"
+          },
+          "total_mb": {
+            "type": "number",
+            "title": "Total Mb"
+          }
+        },
+        "type": "object",
+        "required": [
+          "used_mb",
+          "total_mb"
+        ],
+        "title": "DiskUsage"
+      },
+      "DiskUsageMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "usage": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DiskUsage"
+            },
+            "type": "object",
+            "title": "Usage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "usage"
+        ],
+        "title": "DiskUsageMeasurement",
+        "description": "A measurement of DiskUsage"
+      },
+      "GpuMemory": {
+        "properties": {
+          "used_mb": {
+            "type": "number",
+            "title": "Used Mb"
+          },
+          "total_mb": {
+            "type": "number",
+            "title": "Total Mb"
+          }
+        },
+        "type": "object",
+        "required": [
+          "used_mb",
+          "total_mb"
+        ],
+        "title": "GpuMemory"
+      },
+      "GpuMemoryMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "memory": {
+            "items": {
+              "$ref": "#/components/schemas/GpuMemory"
+            },
+            "type": "array",
+            "title": "Memory"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "memory"
+        ],
+        "title": "GpuMemoryMeasurement",
+        "description": "A measurement of GpuMemory"
+      },
+      "GpuUtilizationMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "gpu_percents": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Gpu Percents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "gpu_percents"
+        ],
+        "title": "GpuUtilizationMeasurement",
+        "description": "A measurement of GpuUtilization"
       },
       "HTTPValidationError": {
         "properties": {
@@ -523,6 +2040,68 @@
         ],
         "title": "InfoResponse"
       },
+      "MemoryMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "free_memory_mb": {
+            "type": "number",
+            "title": "Free Memory Mb"
+          },
+          "total_memory_mb": {
+            "type": "number",
+            "title": "Total Memory Mb"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "free_memory_mb",
+          "total_memory_mb"
+        ],
+        "title": "MemoryMeasurement",
+        "description": "A measurement of Memory"
+      },
+      "NetworkThroughputMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "per_interface": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Throughput"
+            },
+            "type": "object",
+            "title": "Per Interface"
+          },
+          "total": {
+            "$ref": "#/components/schemas/Throughput"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "per_interface",
+          "total"
+        ],
+        "title": "NetworkThroughputMeasurement",
+        "description": "A measurement of NetworkThroughput"
+      },
       "OkResponse": {
         "properties": {
           "status": {
@@ -533,6 +2112,24 @@
         },
         "type": "object",
         "title": "OkResponse"
+      },
+      "Throughput": {
+        "properties": {
+          "sent_mbps": {
+            "type": "number",
+            "title": "Sent Mbps"
+          },
+          "recv_mbps": {
+            "type": "number",
+            "title": "Recv Mbps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sent_mbps",
+          "recv_mbps"
+        ],
+        "title": "Throughput"
       },
       "ValidationError": {
         "properties": {
