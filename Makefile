@@ -137,6 +137,7 @@ delete-sdk:
 delete-dump-db:
 	find . -name 'dump.db' -type f -delete
 
+# Run all codegen steps to ensure that the the current code is up-to-date
 .PHONY: codegen
 codegen:
 	make generate-sdk
@@ -149,8 +150,7 @@ clean:
 	docker compose down
 	docker compose rm -f
 	make pre-commit-install
-	make generate-sdk
-	make -C scripts codegen
+	make codegen
 	make install-dev
 	docker compose build
 

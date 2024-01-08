@@ -27,3 +27,9 @@ install:
 .PHONY: install-dev
 install-dev:
 	pip install -e .
+
+.PHONY: codegen
+codegen:
+	dev codegen types
+	dev codegen datastore-client
+	dev codegen rest
