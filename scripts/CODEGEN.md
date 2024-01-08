@@ -9,20 +9,21 @@ We generate three types of code:
 
 ## Details
 
-Each metric type has a definition model in `controlplane/codegenvars`. This module has the information needed to hydrate
-templates for each metric type.
+Each metric type has a definition model in `scripts/scripts/codegen/codegenvars`. This module has the information 
+needed to hydrate templates for each metric type.
 
 The templates are in `.template` files. The template files are:
-- `controlplane/datastore/client.template`: The datastore client methods. There methods are added to
+- `controlplane/controlplane/datastore/client.template`: The datastore client methods. There methods are added to
   `controlplane/datastore/client.py`
-- `controlplane/datastore/types/vmmetrics/types.template`: The ORM and pydantic models. Each metric generates 
+- `controlplane/controlplane/datastore/types/vmmetrics/types.template`: The ORM and pydantic models. Each metric generates 
    a complete file in `controlplane/datastore/types/vmmetrics/generated/`
-- `controlplane/rest/rest.template`: The REST API endpoints. These are added to `controlplane/rest/api.py`
+- `controlplane/controlplane/rest/rest.template`: The REST API endpoints. These are added to `controlplane/controlplane/rest/api.py`
 
 For the datastore client and REST API endpoints, we the code is generated an inserted into the existing files 
 between `# BEGIN GENERATED CODE` and `# END GENERATED CODE` comments. Existing code between these comments is 
 completely replaced.
 
-The code generation logic is done in `controlplane/codegen.py`. The templating language is custom. It's mostly 
-basic string replacement. Right now it is designed so the `.template` files can be valid python files. Currently,
-the logic is super simple. but if it gets more complicated, this should be ported to a real templating language.
+The code generation logic is done in `scripts/scripts/codegen/codegen.py`. The templating language is custom. 
+It's mostly basic string replacement. Right now it is designed so the `.template` files can be valid python 
+files. Currently, the logic is super simple. but if it gets more complicated, this should be ported to a real 
+templating language.

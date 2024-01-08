@@ -1,0 +1,36 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "centrality-scripts"
+version = "0.0.1"
+authors = [
+    {name = "Armand McQueen", email = "armandmcqueen@gmail.com"},
+]
+description = "Centrality Development Tooling and Scripts"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "centrality-common ~= 0.0.1",
+    "rich ~= 13.7.0",
+    "typer[all] ~= 0.9.0",
+    "watchdog ~= 3.0.0",
+    "GitPython ~= 3.1.40",
+    "ruff ~= 0.1.7",
+    "flit ~= 3.9.0",
+    "mypy ~= 1.8.0",
+]
+[project.scripts]
+dev="scripts.cli:app"
+
+
+
+[project.optional-dependencies]
+gpu = [
+    "torch"
+]
+
+[tool.flit.module]
+name = "scripts"
+

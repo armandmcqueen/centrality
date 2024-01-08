@@ -137,10 +137,13 @@ delete-sdk:
 delete-dump-db:
 	find . -name 'dump.db' -type f -delete
 
+# Run all codegen steps to ensure that the the current code is up-to-date
+# NOTE: the order matters because generate-sdk depends on the openapi.json file which is generated from the FastAPI
+# code which is partially codegen'd.
 .PHONY: codegen
 codegen:
+	make -C scripts codegen
 	make generate-sdk
-	make -C controlplane codegen
 
 
 .PHONY: clean
@@ -149,8 +152,7 @@ clean:
 	docker compose down
 	docker compose rm -f
 	make pre-commit-install
-	make generate-sdk
-	make -C controlplane codegen
+	make codegen
 	make install-dev
 	docker compose build
 

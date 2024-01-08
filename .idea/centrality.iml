@@ -16,6 +16,8 @@
       <sourceFolder url="file://$MODULE_DIR$/deploy/deploy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sdk_controlplane" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sdk_controlplane/controlplane_sdk" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scripts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scripts/scripts" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore" />
       <excludeFolder url="file://$MODULE_DIR$/.ignore/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />

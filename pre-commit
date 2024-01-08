@@ -2,6 +2,7 @@
 
 set -e
 
+make codegen  # TODO: Remove this if it is too slow for pre-commit
 make lint
 
 # Include any format changes in the commit
