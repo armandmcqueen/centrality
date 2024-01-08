@@ -20,6 +20,10 @@ dependencies = [
     "flit ~= 3.9.0",
     "mypy ~= 1.8.0",
 ]
+[project.scripts]
+dev="scripts.cli:app"
+
+
 
 [project.optional-dependencies]
 gpu = [
@@ -28,3 +32,4 @@ gpu = [
 
 [tool.flit.module]
 name = "scripts"
+

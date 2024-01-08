@@ -1,6 +1,7 @@
 import os
 import typer
 from rich import print
+import git
 
 app = typer.Typer()
 
@@ -31,13 +32,15 @@ def update_dependency(
 
     if updated:
         print(f"Updating {file_path}: {old_line.strip()} -> {new_line.strip()}")
-        confirm = input("Apply this change? (y/n): ")
-        if confirm.lower() == "y":
+        confirm = input("Apply this change? (Y/n): ")
+        if confirm.lower() == "y" or confirm == "":
             with open(file_path, "w", encoding="utf-8") as file:
                 file.writelines(lines)
             print("Changes applied.")
         else:
             print("No changes made.")
+    else:
+        print(f"Dependency {dependency_name} {old_version} not found")
 
 
 @app.command()
@@ -46,13 +49,16 @@ def upgrade(
     old_version: str,
     new_version: str,
 ):
-    for subdir, dirs, files in os.walk(".."):
+    repo_root = git.Repo(".", search_parent_directories=True)
+    # Wall all files recursively starting from the repo root
+    for subdir, dirs, files in os.walk(repo_root.working_tree_dir):
         for file in files:
             if file == "pyproject.toml":
                 file_path = os.path.join(subdir, file)
                 if ".ignore" in file_path:
                     continue
-                print(file_path)
+                print()
+                print(f"Checking {file_path}")
                 update_dependency(file_path, dependency_name, old_version, new_version)
 
 
