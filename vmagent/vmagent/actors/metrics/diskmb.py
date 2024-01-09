@@ -3,14 +3,15 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.samplers.diskmb import DiskMbSampler
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import DataApi, DiskUsageMeasurement
+from datetime import datetime, timezone
 
 
 class SendDiskMbMetrics(conclib.ActorMessage):
     pass
 
 
-class DiskMbMetricCollector(conclib.PeriodicActor):
+class DiskUsageMetricCollector(conclib.PeriodicActor):
     URN = constants.VM_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR
     TICKS = {
         SendDiskMbMetrics: constants.VM_AGENT_METRIC_DISK_INTERVAL_SECS,
@@ -22,7 +23,7 @@ class DiskMbMetricCollector(conclib.PeriodicActor):
         control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
-        self.config = self.vm_agent_config.metrics.diskmb
+        self.config = self.vm_agent_config.metrics.disk_usage
         self.control_plane_sdk = control_plane_sdk
         self.sampler = DiskMbSampler()
         self.fake_metric_generator = FakeMetricGenerator(self.config.fake)
@@ -37,15 +38,14 @@ class DiskMbMetricCollector(conclib.PeriodicActor):
         else:
             disk_infos = self.sampler.sample()
 
-        print(f"📡 {self.__class__.__name__} - sending metrics: {disk_infos}")
+        # print(f"📡 {self.__class__.__name__} - sending metrics: {disk_infos}")
 
-        pass
-        # measurement = CpuMeasurement(
-        #     vm_id=self.vm_agent_config.vm_id,
-        #     ts=datetime.datetime.now(datetime.timezone.utc),
-        #     cpu_percents=cpu_percents,
-        # )
-        # self.control_plane_sdk.put_cpu_metric(cpu_measurement=measurement)
+        measurement = DiskUsageMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=datetime.now(timezone.utc),
+            usage=disk_infos,
+        )
+        self.control_plane_sdk.put_disk_usage_metric(disk_usage_measurement=measurement)
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendDiskMbMetrics):
@@ -63,12 +63,12 @@ def test():
     from common.sdks.controlplane.sdk import get_sdk, ControlPlaneSdkConfig
 
     config = VmAgentConfig()
-    config.metrics.diskmb.use_fake = FAKE
+    config.metrics.disk_usage.use_fake = FAKE
     control_plane_sdk_config = ControlPlaneSdkConfig()
     control_plane_sdk = get_sdk(
         control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
-    actor = DiskMbMetricCollector.start(
+    actor = DiskUsageMetricCollector.start(
         vm_agent_config=config, control_plane_sdk=control_plane_sdk
     )
     while True:

@@ -18,6 +18,10 @@ docker-compose-mount-up:
 docker-compose-mount-up-controlplane:
 	make docker-compose-mount-up ARGS="postgres controlplane"
 
+.PHONY: docker-compose-mount-up-solo
+docker-compose-mount-up-solo:
+	make docker-compose-mount-up ARGS="postgres controlplane vmagent-gpu"
+
 
 .PHONY: test
 test:

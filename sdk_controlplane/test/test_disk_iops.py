@@ -15,10 +15,10 @@
 import unittest
 import datetime
 
-from centrality_controlplane_sdk.models.disk_usage import DiskUsage
+from centrality_controlplane_sdk.models.disk_iops import DiskIops
 
-class TestDiskUsage(unittest.TestCase):
-    """DiskUsage unit test stubs"""
+class TestDiskIops(unittest.TestCase):
+    """DiskIops unit test stubs"""
 
     def setUp(self):
         pass
@@ -26,30 +26,28 @@ class TestDiskUsage(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_instance(self, include_optional) -> DiskUsage:
-        """Test DiskUsage
+    def make_instance(self, include_optional) -> DiskIops:
+        """Test DiskIops
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # uncomment below to create an instance of `DiskUsage`
+        # uncomment below to create an instance of `DiskIops`
         """
-        model = DiskUsage()
+        model = DiskIops()
         if include_optional:
-            return DiskUsage(
+            return DiskIops(
                 disk_name = '',
-                used_mb = 1.337,
-                total_mb = 1.337
+                iops = 1.337
             )
         else:
-            return DiskUsage(
+            return DiskIops(
                 disk_name = '',
-                used_mb = 1.337,
-                total_mb = 1.337,
+                iops = 1.337,
         )
         """
 
-    def testDiskUsage(self):
-        """Test DiskUsage"""
+    def testDiskIops(self):
+        """Test DiskIops"""
         # inst_req_only = self.make_instance(include_optional=False)
         # inst_req_and_optional = self.make_instance(include_optional=True)
 

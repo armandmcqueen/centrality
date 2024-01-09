@@ -4,6 +4,11 @@ from typing import Optional
 
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.cpu import CpuMetricCollector
+from vmagent.actors.metrics.diskio import DiskIoMetricCollector
+from vmagent.actors.metrics.diskmb import DiskUsageMetricCollector
+from vmagent.actors.metrics.gpu import GpuMetricCollector
+from vmagent.actors.metrics.memory import MemoryMetricCollector
+from vmagent.actors.metrics.network import NetworkMetricCollector
 from vmagent.actors.heartbeat import HeartbeatSender
 from vmagent.machineinfo.machineinfo import get_machine_info
 from centrality_controlplane_sdk import DataApi
@@ -58,10 +63,34 @@ class MetricSubsystem:
         self.vm_agent_config = vm_agent_config
         self.control_plane_sdk = control_plane_sdk
         self.cpu_metric_collector_ref: Optional[pykka.ActorRef] = None
-        # TODO: Add other metric collectors here
+        self.disk_io_metric_collector_ref: Optional[pykka.ActorRef] = None
+        self.disk_mb_metric_collector_ref: Optional[pykka.ActorRef] = None
+        self.gpu_metric_collector_ref: Optional[pykka.ActorRef] = None
+        self.memory_metric_collector_ref: Optional[pykka.ActorRef] = None
+        self.network_metric_collector_ref: Optional[pykka.ActorRef] = None
 
     def start(self):
         self.cpu_metric_collector_ref = CpuMetricCollector.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
+        self.disk_io_metric_collector_ref = DiskIoMetricCollector.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
+        self.disk_mb_metric_collector_ref = DiskUsageMetricCollector.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
+        self.gpu_metric_collector_ref = GpuMetricCollector.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
+        self.memory_metric_collector_ref = MemoryMetricCollector.start(
+            vm_agent_config=self.vm_agent_config,
+            control_plane_sdk=self.control_plane_sdk,
+        )
+        self.network_metric_collector_ref = NetworkMetricCollector.start(
             vm_agent_config=self.vm_agent_config,
             control_plane_sdk=self.control_plane_sdk,
         )

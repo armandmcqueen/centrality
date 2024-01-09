@@ -17,23 +17,21 @@ import pprint
 import re  # noqa: F401
 import json
 
-from datetime import datetime
-from typing import Any, ClassVar, Dict, List
-from pydantic import BaseModel, StrictStr
-from centrality_controlplane_sdk.models.disk_iops import DiskIops
+
+from typing import Any, ClassVar, Dict, List, Union
+from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class DiskIopsMeasurement(BaseModel):
+class DiskIops(BaseModel):
     """
-    A measurement of DiskIops
+    DiskIops
     """ # noqa: E501
-    vm_id: StrictStr
-    ts: datetime
-    iops: List[DiskIops]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "iops"]
+    disk_name: StrictStr
+    iops: Union[StrictFloat, StrictInt]
+    __properties: ClassVar[List[str]] = ["disk_name", "iops"]
 
     model_config = {
         "populate_by_name": True,
@@ -52,7 +50,7 @@ class DiskIopsMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of DiskIopsMeasurement from a JSON string"""
+        """Create an instance of DiskIops from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,18 +69,11 @@ class DiskIopsMeasurement(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in iops (list)
-        _items = []
-        if self.iops:
-            for _item in self.iops:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict['iops'] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of DiskIopsMeasurement from a dict"""
+        """Create an instance of DiskIops from a dict"""
         if obj is None:
             return None
 
@@ -90,9 +81,8 @@ class DiskIopsMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
-            "ts": obj.get("ts"),
-            "iops": [DiskIops.from_dict(_item) for _item in obj.get("iops")] if obj.get("iops") is not None else None
+            "disk_name": obj.get("disk_name"),
+            "iops": obj.get("iops")
         })
         return _obj
 

@@ -3,14 +3,11 @@ from rich import print
 from rich.live import Live
 from rich.table import Table
 from vmagent.actors.metrics.samplers.sampler import MetricSampler
+from centrality_controlplane_sdk import GpuMemory
 
 
-GpuUtil = float
-GpuUtilList = list[GpuUtil]
-GpuUsedMemoryMiB = int
-GpuTotalMemoryMiB = int
-GpuMemoryUsedMiBTotalMiB = tuple[GpuUsedMemoryMiB, GpuTotalMemoryMiB]
-GpuMemoryUsedMiBTotalMibList = list[GpuMemoryUsedMiBTotalMiB]
+GpuUtils = list[float]
+GpuMemories = list[GpuMemory]
 
 
 # except if init doesn't set pynvml and then something tries to call get_metrics
@@ -41,7 +38,7 @@ class GpuSampler(MetricSampler):
                 pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(self.device_count)
             ]
 
-    def sample(self) -> tuple[GpuUtilList, GpuMemoryUsedMiBTotalMibList]:
+    def sample(self) -> tuple[GpuUtils, GpuMemories]:
         if not self.pynvml_available:
             raise PynvmlNotAvailableError(
                 "Failed to get metrics because pynvml was not found. After init, "
@@ -56,7 +53,9 @@ class GpuSampler(MetricSampler):
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
             memory_used_mib = memory.used / 1024 / 1024
             memory_total_mib = memory.total / 1024 / 1024
-            memory_datapoint = (memory_used_mib, memory_total_mib)
+            memory_datapoint = GpuMemory(
+                used_mb=memory_used_mib, total_mb=memory_total_mib
+            )
             gpu_memory_list.append(memory_datapoint)
 
         return gpu_util_list, gpu_memory_list

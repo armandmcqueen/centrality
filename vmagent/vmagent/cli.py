@@ -39,7 +39,7 @@ def wait_for_control_plane_healthy(control_plane_sdk: DataApi, timeout_secs: int
                     f"Unexpected error while waiting for control plane to be ready: {e}"
                 )
             print(
-                f"❗ Control plane health check not passing. Time until timeout: {time.time() - max_time}"
+                f"❗ Control plane health check not passing. Time until timeout: {max_time - time.time()}"
             )
             time.sleep(1)
     else:

@@ -1,12 +1,13 @@
+# Config for quickly testing vmagent. Can be run outside of docker-compose and points to the docker compose
+# controlplane on localhost
 vm_id: test-machine
 metrics:
   cpu:
     use_fake: false
-    fake:
-      algorithm: linear_synced  # linear_synced | random
-      jitter: true
-      num_vals: 2
-      period: 10
+  gpu_utilization:
+    use_fake: true
+  gpu_memory:
+    use_fake: true
 machine_info:
   use_fake: false
   fake:

@@ -6,7 +6,13 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.samplers.gpu import GpuSampler
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import (
+    DataApi,
+    GpuMemoryMeasurement,
+    GpuUtilizationMeasurement,
+    GpuMemory,
+)
+from datetime import datetime, timezone
 
 
 class SendGpuMetrics(conclib.ActorMessage):
@@ -25,8 +31,8 @@ class GpuMetricCollector(conclib.PeriodicActor):
         control_plane_sdk: DataApi,
     ):
         self.vm_agent_config = vm_agent_config
-        self.config_util = self.vm_agent_config.metrics.gpuutil
-        self.config_mem = self.vm_agent_config.metrics.gpumem
+        self.config_util = self.vm_agent_config.metrics.gpu_utilization
+        self.config_mem = self.vm_agent_config.metrics.gpu_memory
         self.control_plane_sdk = control_plane_sdk
 
         if self.config_util.use_fake and self.config_mem.use_fake:
@@ -47,9 +53,9 @@ class GpuMetricCollector(conclib.PeriodicActor):
         if not (self.config_util.use_fake and self.config_mem.use_fake):
             if not self.sampler.pynvml_available:
                 # TODO: Add trace logging once logging is configured
-                print(
-                    f"🚨 {self.__class__.__name__} - pynvml not available, skipping gpu metric"
-                )
+                # print(
+                #     f"🚨 {self.__class__.__name__} - pynvml not available, skipping gpu metric"
+                # )
                 return
             utils, mem = self.sampler.sample()
 
@@ -57,17 +63,30 @@ class GpuMetricCollector(conclib.PeriodicActor):
             utils = self.fake_metric_generator_util.sample()
         if self.config_mem.use_fake:
             used_mems = self.fake_metric_generator_mem.sample()
-            mem = [(used_mem, self.config_mem.fake.max_val) for used_mem in used_mems]
+            mem = [
+                GpuMemory(used_mb=used_mem, total_mb=self.config_mem.fake.max_val)
+                for used_mem in used_mems
+            ]
 
-        print(f"📡 {self.__class__.__name__} - sending metrics: {utils=}, {mem=}")
+        # print(f"📡 {self.__class__.__name__} - sending metrics: {utils=}, {mem=}")
 
-        pass
-        # measurement = CpuMeasurement(
-        #     vm_id=self.vm_agent_config.vm_id,
-        #     ts=datetime.datetime.now(datetime.timezone.utc),
-        #     cpu_percents=cpu_percents,
-        # )
-        # self.control_plane_sdk.put_cpu_metric(cpu_measurement=measurement)
+        now = datetime.now(timezone.utc)
+        memory_measurement = GpuMemoryMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=now,
+            memory=mem,
+        )
+        util_measurement = GpuUtilizationMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=now,
+            gpu_percents=utils,
+        )
+        self.control_plane_sdk.put_gpu_memory_metric(
+            gpu_memory_measurement=memory_measurement
+        )
+        self.control_plane_sdk.put_gpu_utilization_metric(
+            gpu_utilization_measurement=util_measurement
+        )
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendGpuMetrics):
@@ -98,8 +117,8 @@ def test():
     from common.sdks.controlplane.sdk import get_sdk, ControlPlaneSdkConfig
 
     config = VmAgentConfig()
-    config.metrics.gpuutil.use_fake = FAKE
-    config.metrics.gpumem.use_fake = FAKE
+    config.metrics.gpu_utilization.use_fake = FAKE
+    config.metrics.gpu_memory.use_fake = FAKE
     control_plane_sdk_config = ControlPlaneSdkConfig()
     control_plane_sdk = get_sdk(
         control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN

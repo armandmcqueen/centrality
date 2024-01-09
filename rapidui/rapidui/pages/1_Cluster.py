@@ -52,7 +52,7 @@ def gen_data(
     cpu_metrics = get_cpu_metrics(
         _sdk=_sdk,
         live_vms=live_vms,
-        epoch=calculate_epoch(interval_ms=config.cpu_metric_interval_ms),
+        epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
     )
     return live_vms, cpu_metrics
 
