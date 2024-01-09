@@ -36,8 +36,6 @@ class DiskMbSampler(MetricSampler):
             used = int(usage.used_mb)
             total = int(usage.total_mb)
             percent = round(used / total * 100, 2)
-            table.add_row(
-                usage.partition_name, str(used), str(total), str(percent) + "%"
-            )
+            table.add_row(usage.disk_name, str(used), str(total), str(percent) + "%")
 
         live.update(table)

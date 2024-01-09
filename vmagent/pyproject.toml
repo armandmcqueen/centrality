@@ -28,5 +28,9 @@ dev = [
     "mypy ~= 1.8.0",
 ]
 
+[project.scripts]
+metrics="vmagent.actors.metrics.samplers.cli:app"
+vmagent="vmagent.cli:app"
+
 [tool.flit.module]
 name = "vmagent"

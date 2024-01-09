@@ -66,10 +66,11 @@ class DiskIoSampler(MetricSampler):
         table.add_column(header[2])
         table.add_column(header[3])
 
+        iops_by_disk = {i.disk_name: i for i in iops}
         for t in throughputs:
-            disk_iops = iops[t.disk_name]
+            disk_iops = iops_by_disk[t.disk_name]
             read_mib = int(t.read_mbps)
             write_mib = int(t.write_mbps)
-            disk_iops = int(disk_iops)
+            disk_iops = int(disk_iops.iops)
             table.add_row(t.disk_name, str(read_mib), str(write_mib), str(disk_iops))
         live.update(table)

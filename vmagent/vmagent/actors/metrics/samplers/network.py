@@ -49,18 +49,27 @@ class NetworkSampler(MetricSampler):
         return interface_infos, total_info
 
     def sample_and_render(self, live: Live):
-        # TODO: Fix this
-        interface_info = self.sample()
+        interface_infos, total_info = self.sample()
+
+        def clean(xx_mbps):
+            return str(round(xx_mbps, 2))
+
         table = Table()
         header = ["Interface", "Sent MiB/sec", "Recv MiB/sec"]
         table.add_column(header[0])
         table.add_column(header[1])
         table.add_column(header[2])
-        for interface in interface_info.keys():
-            info = interface_info[interface]
+        table.add_row(
+            total_info.interface_name,
+            clean(total_info.sent_mbps),
+            clean(total_info.recv_mbps),
+        )
+        for info in interface_infos:
+            if info.interface_name == "total":
+                continue
             sent = round(info.sent_mbps, 2)
             recv = round(info.recv_mbps, 2)
 
-            table.add_row(interface, str(sent), str(recv))
+            table.add_row(info.interface_name, str(sent), str(recv))
 
         live.update(table)
