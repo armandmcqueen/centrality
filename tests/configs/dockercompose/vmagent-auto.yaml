@@ -1,11 +1,17 @@
+# Basic CPU config for testing that fakes just enough info to make the UI interesting
 controlplane_sdk:
   host: controlplane
 metrics:
   cpu:
     use_fake: true
     fake:
-      algorithm: linear_synced  # linear_synced | random
-      jitter: true
-      jitter_factor: 0.4
       num_vals: 16
-      period: 10
+machine_info:
+  use_fake: true
+  fake:
+    fake:
+      hostname: null
+      num_cpus: 16
+      cpu_description: null
+      host_memory_mb: null
+      num_gpus: null

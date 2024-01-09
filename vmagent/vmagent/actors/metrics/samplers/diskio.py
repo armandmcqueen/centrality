@@ -1,6 +1,7 @@
 import psutil
 from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from vmagent.actors.metrics.samplers.throughput import Throughput
+from centrality_controlplane_sdk import DiskThroughput as DiskThroughputHolder
 from rich.live import Live
 from rich.table import Table
 
@@ -8,7 +9,7 @@ ReadThroughputMiB = float
 WriteThroughputMiB = float
 Iops = float
 DiskName = str
-ThroughputPerDisk = dict[DiskName, tuple[ReadThroughputMiB, WriteThroughputMiB]]
+ThroughputPerDisk = dict[DiskName, DiskThroughputHolder]
 IopsPerDisk = dict[DiskName, Iops]
 
 
@@ -48,7 +49,9 @@ class DiskIoSampler(MetricSampler):
                 self.write_trackers[disk_name].add(disk.write_bytes) / 1024 / 1024
             )
             iops = self.iops_trackers[disk_name].add(disk.read_count + disk.write_count)
-            throughputs[disk_name] = (read_mb, write_mb)
+            throughputs[disk_name] = DiskThroughputHolder(
+                read_mbps=read_mb, write_mbps=write_mb
+            )
             iopses[disk_name] = iops
         return throughputs, iopses
 

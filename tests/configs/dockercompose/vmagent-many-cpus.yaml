@@ -1,3 +1,4 @@
+# CPU config that fakes having many CPUs. TODO: This might be redundant with vmagent-gpu.yaml having many CPUs.
 vm_id: many-cpus
 controlplane_sdk:
   host: controlplane
@@ -5,11 +6,7 @@ metrics:
   cpu:
     use_fake: true
     fake:
-      algorithm: linear_synced  # linear_synced | random
-      jitter: true
-      jitter_factor: 0.4
       num_vals: 64
-      period: 10
 machine_info:
   use_fake: true
   fake:

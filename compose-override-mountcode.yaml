@@ -5,10 +5,10 @@ services:
   vmagent-auto:
     volumes:
       - .:/centrality
-  vmagent-real-data:
+  vmagent-real:
     volumes:
       - .:/centrality
-  vmagent-many-cpus:
+  vmagent-fake:
     volumes:
       - .:/centrality
   vmagent-gpu:
