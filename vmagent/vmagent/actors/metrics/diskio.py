@@ -10,6 +10,7 @@ from centrality_controlplane_sdk import (
     DiskThroughputMeasurement,
 )
 from centrality_controlplane_sdk import DiskThroughput as DiskThroughputHolder
+from centrality_controlplane_sdk import DiskIops as DiskIopsHolder
 
 
 class SendDiskIoMetrics(conclib.ActorMessage):
@@ -43,17 +44,21 @@ class DiskIoMetricCollector(conclib.PeriodicActor):
             iops = self.fake_metric_generator_iops.sample()
             read_mbs = self.fake_metric_generator_throughput.sample()
             write_mbs = self.fake_metric_generator_throughput.sample()
-            throughput_infos = {}
-            iops_infos = {}
+            throughput_infos = []
+            iops_infos = []
             for i in range(self.throughput_config.fake.num_vals):
                 disk_name = f"/dev/fake{i}"
                 disk_iops = iops[i]
                 disk_read_mib = read_mbs[i]
                 disk_write_mib = write_mbs[i]
-                throughput_infos[disk_name] = DiskThroughputHolder(
-                    read_mbps=disk_read_mib, write_mbps=disk_write_mib
+                throughput_infos.append(
+                    DiskThroughputHolder(
+                        disk_name=disk_name,
+                        read_mbps=disk_read_mib,
+                        write_mbps=disk_write_mib,
+                    )
                 )
-                iops_infos[disk_name] = disk_iops
+                iops_infos.append(DiskIopsHolder(disk_name=disk_name, iops=disk_iops))
         else:
             throughput_infos, iops_infos = self.sampler.sample()
 

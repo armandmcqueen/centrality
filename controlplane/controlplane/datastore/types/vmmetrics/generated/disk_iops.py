@@ -20,17 +20,26 @@ metric_shape_db = dict[str, float]
 
 
 # Custom Types
-PerDiskIops = dict[str, float]
+class DiskIops(BaseModel):
+    disk_name: str
+    iops: float
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
-def convert_from_metrics(metrics: PerDiskIops) -> dict[str, PerDiskIops]:
-    return dict(iops=metrics)
+def convert_from_metrics(metrics: dict[str, float]) -> dict[str, list[DiskIops]]:
+    iops: list[DiskIops] = [
+        DiskIops(disk_name=device, iops=iops_val)
+        for device, iops_val in metrics.items()
+    ]
+    return dict(iops=iops)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, float]:
-    return self.iops
+    iops = {}
+    for iop in self.iops:
+        iops[iop.disk_name] = iop.iops
+    return iops
 
 
 class DiskIopsMetricLatestORM(MetricLatestBaseORM):
@@ -51,7 +60,7 @@ class DiskIopsMetricORM(MetricBaseORM):
 class DiskIopsMetricLatest(MetricLatestBaseModel):
     vm_id: str
     ts: datetime.datetime
-    iops: dict[str, float]
+    iops: list[DiskIops]
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricLatestORM, **kwargs) -> "DiskIopsMetricLatest":
@@ -67,7 +76,7 @@ class DiskIopsMetric(MetricBaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    iops: dict[str, float]
+    iops: list[DiskIops]
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricORM, **kwargs) -> "DiskIopsMetric":
@@ -88,7 +97,7 @@ class DiskIopsMeasurement(BaseModel):
     # This is the user-facing object that is sent to and from the REST endpoint
     vm_id: str
     ts: datetime.datetime
-    iops: dict[str, float]
+    iops: list[DiskIops]
 
     def to_metrics(self) -> dict[str, float]:
         return convert_to_metrics(self)

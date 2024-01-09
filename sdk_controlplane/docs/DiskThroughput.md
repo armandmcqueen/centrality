@@ -4,6 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**disk_name** | **str** |  | 
 **read_mbps** | **float** |  | 
 **write_mbps** | **float** |  | 
 

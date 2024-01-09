@@ -1,8 +1,10 @@
 # Config that fakes everything to test faking code
+vm_id: fake-data
 controlplane_sdk:
   host: controlplane
 metrics:
   cpu:
     use_fake: true
     fake:
-      num_vals: 16
+      num_vals: 64
+# TODO: Actually configure this to be fake!

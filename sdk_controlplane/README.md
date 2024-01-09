@@ -129,6 +129,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [CpuMeasurement](docs/CpuMeasurement.md)
+ - [DiskIops](docs/DiskIops.md)
  - [DiskIopsMeasurement](docs/DiskIopsMeasurement.md)
  - [DiskThroughput](docs/DiskThroughput.md)
  - [DiskThroughputMeasurement](docs/DiskThroughputMeasurement.md)

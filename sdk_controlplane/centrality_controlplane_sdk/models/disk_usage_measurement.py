@@ -18,8 +18,9 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List
 from pydantic import BaseModel, StrictStr
+from centrality_controlplane_sdk.models.disk_usage import DiskUsage
 try:
     from typing import Self
 except ImportError:
@@ -31,7 +32,7 @@ class DiskUsageMeasurement(BaseModel):
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    usage: Optional[Any]
+    usage: List[DiskUsage]
     __properties: ClassVar[List[str]] = ["vm_id", "ts", "usage"]
 
     model_config = {
@@ -70,11 +71,13 @@ class DiskUsageMeasurement(BaseModel):
             },
             exclude_none=True,
         )
-        # set to None if usage (nullable) is None
-        # and model_fields_set contains the field
-        if self.usage is None and "usage" in self.model_fields_set:
-            _dict['usage'] = None
-
+        # override the default output from pydantic by calling `to_dict()` of each item in usage (list)
+        _items = []
+        if self.usage:
+            for _item in self.usage:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['usage'] = _items
         return _dict
 
     @classmethod
@@ -89,6 +92,7 @@ class DiskUsageMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
+            "usage": [DiskUsage.from_dict(_item) for _item in obj.get("usage")] if obj.get("usage") is not None else None
         })
         return _obj
 

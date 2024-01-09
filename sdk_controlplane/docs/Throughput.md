@@ -4,6 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**interface_name** | **str** |  | 
 **sent_mbps** | **float** |  | 
 **recv_mbps** | **float** |  | 
 
