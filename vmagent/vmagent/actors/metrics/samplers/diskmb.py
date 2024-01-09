@@ -2,11 +2,16 @@ import psutil
 from vmagent.actors.metrics.samplers.sampler import MetricSampler
 from rich.live import Live
 from rich.table import Table
+from pydantic import BaseModel
 
 UsedMiB = float
 TotalMiB = float
-DiskMbInfo = tuple[UsedMiB, TotalMiB]
 DiskPartition = str
+
+
+class DiskMbInfo(BaseModel):
+    used_mb: UsedMiB
+    total_mb: TotalMiB
 
 
 class DiskMbSampler(MetricSampler):
@@ -21,7 +26,9 @@ class DiskMbSampler(MetricSampler):
 
             total_mb = usage.total / (1024 * 1024)
             used_mb = usage.used / (1024 * 1024)
-            usages[partition.mountpoint] = (used_mb, total_mb)
+            usages[partition.mountpoint] = DiskMbInfo(
+                used_mb=used_mb, total_mb=total_mb
+            )
         return usages
 
     def sample_and_render(self, live: Live):
@@ -33,9 +40,8 @@ class DiskMbSampler(MetricSampler):
         table.add_column(header[2])
         table.add_column(header[3])
         for disk_id in info.keys():
-            used, total = info[disk_id]
-            used = int(used)
-            total = int(total)
+            used = int(info[disk_id].used_mb)
+            total = int(info[disk_id].total_mb)
             percent = round(used / total * 100, 2)
             table.add_row(disk_id, str(used), str(total), str(percent) + "%")
 

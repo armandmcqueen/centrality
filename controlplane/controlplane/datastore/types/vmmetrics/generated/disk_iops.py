@@ -51,7 +51,7 @@ class DiskIopsMetricORM(MetricBaseORM):
 class DiskIopsMetricLatest(MetricLatestBaseModel):
     vm_id: str
     ts: datetime.datetime
-    iops: PerDiskIops
+    iops: dict[str, float]
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricLatestORM, **kwargs) -> "DiskIopsMetricLatest":
@@ -67,7 +67,7 @@ class DiskIopsMetric(MetricBaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    iops: PerDiskIops
+    iops: dict[str, float]
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricORM, **kwargs) -> "DiskIopsMetric":
@@ -88,7 +88,7 @@ class DiskIopsMeasurement(BaseModel):
     # This is the user-facing object that is sent to and from the REST endpoint
     vm_id: str
     ts: datetime.datetime
-    iops: PerDiskIops
+    iops: dict[str, float]
 
     def to_metrics(self) -> dict[str, float]:
         return convert_to_metrics(self)

@@ -36,7 +36,7 @@ class CpuMetricCollector(conclib.PeriodicActor):
         else:
             cpu_percents = self.sampler.sample()
 
-        print(f"📡 {self.__class__.__name__} - sending metrics: {cpu_percents}")
+        # print(f"📡 {self.__class__.__name__} - sending metrics: {cpu_percents}")
 
         measurement = CpuMeasurement(
             vm_id=self.vm_agent_config.vm_id,

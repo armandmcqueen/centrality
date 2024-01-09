@@ -3,7 +3,7 @@ from typing import Any
 PerDiskIops = dict[str, float]
 
 metric_obj_fields = """\
-    iops: PerDiskIops
+    iops: dict[str, float]
 """
 metric_name_lowercase = "disk_iops"
 metric_name_camelcase = "DiskIops"
