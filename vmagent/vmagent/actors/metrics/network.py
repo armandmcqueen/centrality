@@ -33,18 +33,23 @@ class NetworkMetricCollector(conclib.PeriodicActor):
 
     def send_network_metric(self) -> None:
         if self.config.use_fake:
-            sent_mibs = self.fake_metric_generator.sample()
-            recv_mibs = self.fake_metric_generator.sample()
-            iface_infos = {}
-            for i, (sent_mib, recv_mib) in enumerate(zip(sent_mibs, recv_mibs)):
-                iface_infos[f"fake{i}"] = ThroughputHolder(
-                    sent_mbps=sent_mib, recv_mbps=recv_mib
+            sent_mbs = self.fake_metric_generator.sample()
+            recv_mbs = self.fake_metric_generator.sample()
+            iface_infos = []
+            for i, (sent_mib, recv_mib) in enumerate(zip(sent_mbs, recv_mbs)):
+                iface_infos.append(
+                    ThroughputHolder(
+                        interface_name=f"fake{i}",
+                        sent_mbps=sent_mib,
+                        recv_mbps=recv_mib,
+                    )
                 )
-            iface_infos["total"] = ThroughputHolder(
-                sent_mbps=sum(sent_mibs), recv_mbps=sum(recv_mibs)
+            total_info = ThroughputHolder(
+                interface_name="total", sent_mbps=sum(sent_mbs), recv_mbps=sum(recv_mbs)
             )
+            iface_infos.append(total_info)
         else:
-            iface_infos = self.sampler.sample()
+            iface_infos, total_info = self.sampler.sample()
 
         # print(f"📡 {self.__class__.__name__} - sending metrics: {iface_infos}")
 
@@ -52,7 +57,7 @@ class NetworkMetricCollector(conclib.PeriodicActor):
             vm_id=self.vm_agent_config.vm_id,
             ts=datetime.now(timezone.utc),
             per_interface=iface_infos,
-            total=iface_infos["total"],
+            total=total_info,
         )
         self.control_plane_sdk.put_network_throughput_metric(
             network_throughput_measurement=measurement

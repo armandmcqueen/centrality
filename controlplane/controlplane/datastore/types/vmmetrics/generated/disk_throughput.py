@@ -21,6 +21,7 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class DiskThroughput(BaseModel):
+    disk_name: str
     read_mbps: float
     write_mbps: float
 
@@ -28,21 +29,21 @@ class DiskThroughput(BaseModel):
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, dict[str, DiskThroughput]]:
-    throughput: dict[str, DiskThroughput] = {
-        disk: DiskThroughput(
-            read_mbps=throughput_vals[0], write_mbps=throughput_vals[1]
+) -> dict[str, list[DiskThroughput]]:
+    throughput: list[DiskThroughput] = [
+        DiskThroughput(
+            disk_name=disk, read_mbps=throughput_vals[0], write_mbps=throughput_vals[1]
         )
         for disk, throughput_vals in metrics.items()
-    }
+    ]
     return dict(throughput=throughput)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
     return {
-        disk: [throughput.read_mbps, throughput.write_mbps]
-        for disk, throughput in self.throughput.items()
+        throughput.disk_name: [throughput.read_mbps, throughput.write_mbps]
+        for throughput in self.throughput
     }
 
 
@@ -64,7 +65,7 @@ class DiskThroughputMetricORM(MetricBaseORM):
 class DiskThroughputMetricLatest(MetricLatestBaseModel):
     vm_id: str
     ts: datetime.datetime
-    throughput: dict[str, DiskThroughput]
+    throughput: list[DiskThroughput]
 
     @classmethod
     def from_orm(
@@ -82,7 +83,7 @@ class DiskThroughputMetric(MetricBaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    throughput: dict[str, DiskThroughput]
+    throughput: list[DiskThroughput]
 
     @classmethod
     def from_orm(cls, orm: DiskThroughputMetricORM, **kwargs) -> "DiskThroughputMetric":
@@ -103,7 +104,7 @@ class DiskThroughputMeasurement(BaseModel):
     # This is the user-facing object that is sent to and from the REST endpoint
     vm_id: str
     ts: datetime.datetime
-    throughput: dict[str, DiskThroughput]
+    throughput: list[DiskThroughput]
 
     def to_metrics(self) -> dict[str, list[float]]:
         return convert_to_metrics(self)

@@ -19,7 +19,7 @@ import json
 
 
 from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt
+from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +29,10 @@ class Throughput(BaseModel):
     """
     Throughput
     """ # noqa: E501
+    interface_name: StrictStr
     sent_mbps: Union[StrictFloat, StrictInt]
     recv_mbps: Union[StrictFloat, StrictInt]
-    __properties: ClassVar[List[str]] = ["sent_mbps", "recv_mbps"]
+    __properties: ClassVar[List[str]] = ["interface_name", "sent_mbps", "recv_mbps"]
 
     model_config = {
         "populate_by_name": True,
@@ -81,6 +82,7 @@ class Throughput(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "interface_name": obj.get("interface_name"),
             "sent_mbps": obj.get("sent_mbps"),
             "recv_mbps": obj.get("recv_mbps")
         })

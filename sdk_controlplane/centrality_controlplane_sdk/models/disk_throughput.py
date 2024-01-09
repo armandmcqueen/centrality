@@ -19,7 +19,7 @@ import json
 
 
 from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt
+from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +29,10 @@ class DiskThroughput(BaseModel):
     """
     DiskThroughput
     """ # noqa: E501
+    disk_name: StrictStr
     read_mbps: Union[StrictFloat, StrictInt]
     write_mbps: Union[StrictFloat, StrictInt]
-    __properties: ClassVar[List[str]] = ["read_mbps", "write_mbps"]
+    __properties: ClassVar[List[str]] = ["disk_name", "read_mbps", "write_mbps"]
 
     model_config = {
         "populate_by_name": True,
@@ -81,6 +82,7 @@ class DiskThroughput(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "disk_name": obj.get("disk_name"),
             "read_mbps": obj.get("read_mbps"),
             "write_mbps": obj.get("write_mbps")
         })

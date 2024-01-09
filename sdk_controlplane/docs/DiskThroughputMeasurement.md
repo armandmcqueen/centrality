@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **vm_id** | **str** |  | 
 **ts** | **datetime** |  | 
-**throughput** | [**Dict[str, DiskThroughput]**](DiskThroughput.md) |  | 
+**throughput** | [**List[DiskThroughput]**](DiskThroughput.md) |  | 
 
 ## Example
 

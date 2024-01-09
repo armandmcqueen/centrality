@@ -7,6 +7,7 @@ from centrality_controlplane_sdk import Throughput as ThroughputInfo
 
 RecvBandwidthMiB = float
 SentBandwidthMiB = float
+TotalThroughputInfo = ThroughputInfo
 # InterfaceInfo = tuple[SentBandwidthMiB, RecvBandwidthMiB]
 
 
@@ -19,8 +20,8 @@ class NetworkSampler(MetricSampler):
             self.sent[interface] = Throughput(net.bytes_sent)
             self.recv[interface] = Throughput(net.bytes_recv)
 
-    def sample(self) -> dict[str, ThroughputInfo]:
-        interface_infos = {}
+    def sample(self) -> tuple[list[ThroughputInfo], TotalThroughputInfo]:
+        interface_infos = []
         net_per_iface = psutil.net_io_counters(pernic=True)
         for interface, net in net_per_iface.items():
             # nics could be added
@@ -32,18 +33,23 @@ class NetworkSampler(MetricSampler):
 
             recv_mib = self.recv[interface].add(net.bytes_recv) / 1024 / 1024
             sent_mib = self.sent[interface].add(net.bytes_sent) / 1024 / 1024
-            interface_infos[interface] = ThroughputInfo(
-                sent_mbps=sent_mib, recv_mbps=recv_mib
+            interface_infos.append(
+                ThroughputInfo(
+                    interface_name=interface, sent_mbps=sent_mib, recv_mbps=recv_mib
+                )
             )
 
-        total_sent_mib = sum([info.sent_mbps for info in interface_infos.values()])
-        total_recv_mib = sum([info.recv_mbps for info in interface_infos.values()])
-        total_info = ThroughputInfo(sent_mbps=total_sent_mib, recv_mbps=total_recv_mib)
-        interface_infos["total"] = total_info
+        total_sent_mib = sum([info.sent_mbps for info in interface_infos])
+        total_recv_mib = sum([info.recv_mbps for info in interface_infos])
+        total_info = ThroughputInfo(
+            interface_name="total", sent_mbps=total_sent_mib, recv_mbps=total_recv_mib
+        )
+        interface_infos.append(total_info)
 
-        return interface_infos
+        return interface_infos, total_info
 
     def sample_and_render(self, live: Live):
+        # TODO: Fix this
         interface_info = self.sample()
         table = Table()
         header = ["Interface", "Sent MiB/sec", "Recv MiB/sec"]

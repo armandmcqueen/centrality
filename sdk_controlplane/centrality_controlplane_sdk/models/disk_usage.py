@@ -19,7 +19,7 @@ import json
 
 
 from typing import Any, ClassVar, Dict, List, Union
-from pydantic import BaseModel, StrictFloat, StrictInt
+from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +29,10 @@ class DiskUsage(BaseModel):
     """
     DiskUsage
     """ # noqa: E501
+    disk_name: StrictStr
     used_mb: Union[StrictFloat, StrictInt]
     total_mb: Union[StrictFloat, StrictInt]
-    __properties: ClassVar[List[str]] = ["used_mb", "total_mb"]
+    __properties: ClassVar[List[str]] = ["disk_name", "used_mb", "total_mb"]
 
     model_config = {
         "populate_by_name": True,
@@ -81,6 +82,7 @@ class DiskUsage(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "disk_name": obj.get("disk_name"),
             "used_mb": obj.get("used_mb"),
             "total_mb": obj.get("total_mb")
         })

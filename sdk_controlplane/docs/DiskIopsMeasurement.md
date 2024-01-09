@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **vm_id** | **str** |  | 
 **ts** | **datetime** |  | 
-**iops** | **Dict[str, float]** |  | 
+**iops** | [**List[DiskIops]**](DiskIops.md) |  | 
 
 ## Example
 

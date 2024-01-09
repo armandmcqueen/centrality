@@ -36,11 +36,13 @@ class TestThroughput(unittest.TestCase):
         model = Throughput()
         if include_optional:
             return Throughput(
+                interface_name = '',
                 sent_mbps = 1.337,
                 recv_mbps = 1.337
             )
         else:
             return Throughput(
+                interface_name = '',
                 sent_mbps = 1.337,
                 recv_mbps = 1.337,
         )

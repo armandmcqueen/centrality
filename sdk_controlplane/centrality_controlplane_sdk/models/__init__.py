@@ -15,6 +15,7 @@
 
 # import models into model package
 from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
+from centrality_controlplane_sdk.models.disk_iops import DiskIops
 from centrality_controlplane_sdk.models.disk_iops_measurement import DiskIopsMeasurement
 from centrality_controlplane_sdk.models.disk_throughput import DiskThroughput
 from centrality_controlplane_sdk.models.disk_throughput_measurement import DiskThroughputMeasurement
