@@ -3,7 +3,12 @@
 import os
 import subprocess
 
+import subprocess
+import typer
+from scripts.gpt.persistence import UserTurn, AssistantTurn, ChatEntry, Chat
 from openai import OpenAI
+import os
+from rich.console import Console
 import typer
 from rich.console import Console
 from scripts.gpt.persistence import (
@@ -66,7 +71,7 @@ def run_interactive(model: str = "gpt-4-1106-preview"):
             final = prompt + "\n\n" + chat.config.chat_system_prompt
             print(prompt, style="white")
             chat.add_entry(UserTurn(prompt))
-            response = complete(final, model=model, conversation=chat.history[:-1])
+            response = complete_chat_stream(final, model=model, conversation=chat.history[:-1])
             chat.add_entry(AssistantTurn(response))
     except typer.Abort:
         print()
@@ -79,7 +84,7 @@ def run_noninteractive(prompt: str, model: str = "gpt-4-1106-preview"):
     chat = Chat()
     chat.add_entry(UserTurn(prompt))
     final = prompt + "\n\n" + chat.config.chat_system_prompt
-    response = complete(final, model=model, conversation=chat.history[:-1])
+    response = complete_chat_stream(final, model=model, conversation=chat.history[:-1])
     chat.add_entry(AssistantTurn(response))
 
 
@@ -92,7 +97,7 @@ def run_propose(
         chat = Chat()
         chat.add_entry(UserTurn(prompt))
         final = prompt + "\n\n" + chat.config.chatx_system_prompt
-        response = complete(final, model=model, conversation=chat.history[:-1])
+        response = complete_chat_stream(final, model=model, conversation=chat.history[:-1])
         chat.add_entry(AssistantTurn(response))
         if not auto_exec:
             inp = typer.prompt("[exec? Y/n]", default="Y", show_default=False)
