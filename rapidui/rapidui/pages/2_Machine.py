@@ -212,7 +212,7 @@ def main():
     num_cols = 4
     if len(cards) <= 8:
         num_cols = 2
-    if len(cards) > 32:
+    if len(cards) > 64:
         num_cols = 8
 
     flexbox = UniformFlexbox(num_cols=num_cols, card_type=card_type, border=use_border)

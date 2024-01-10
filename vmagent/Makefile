@@ -24,6 +24,10 @@ typecheck:
 launch:
 	python vmagent/cli.py launch
 
+.PHONY: launch-quick
+launch-quick:
+	python vmagent/cli.py launch -f ../tests/configs/quicktest/vmagent.yaml
+
 .PHONY: install
 install:
 	pip install -e .

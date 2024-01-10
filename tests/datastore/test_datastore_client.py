@@ -78,6 +78,7 @@ def test_vm_heartbeat_lifecycle(
     asserts.list_size(client.get_live_vms(liveness_threshold_secs=2), 1)
 
 
+# TODO: Parameterize this test across metrics
 def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
     # TODO: Test with multiple VM IDs in the db
     # TODO: Test filtering by timestamp
@@ -95,7 +96,9 @@ def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
             metrics=[ind, ind, ind, ind],
             ts=ts,
         )
+        # TODO: Write every metric type
 
+        # TODO: Check every metric type
         # Check that the latest CPU measurement was updated correctly
         measurements = client.get_latest_cpu_measurements(vm_ids=[VM_ID])
         asserts.list_size(measurements, 1)
@@ -104,6 +107,7 @@ def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
         asserts.set_equality(measurements[0].cpu_percents, [ind, ind, ind, ind])
 
         # Check the entire timeseries
+        # TODO: Check every metric type
         measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
         asserts.list_size(measurements, ind + 1)
         asserts.set_equality([m.ts for m in measurements], timestamps[: ind + 1])
