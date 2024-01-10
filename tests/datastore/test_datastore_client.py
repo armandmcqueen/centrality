@@ -201,35 +201,35 @@ def delete_old_measurements(
     metric_type: MetricType, client, vm_id: str, oldest_ts_to_keep
 ):
     if metric_type == MetricType.CPU:
-        return client.delete_old_cpu_measurements(
+        client.delete_old_cpu_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.MEMORY:
-        return client.delete_old_memory_measurements(
+        client.delete_old_memory_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.NETWORK:
-        return client.delete_old_network_throughput_measurements(
+        client.delete_old_network_throughput_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_USAGE:
-        return client.delete_old_disk_usage_measurements(
+        client.delete_old_disk_usage_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_IOPS:
-        return client.delete_old_disk_iops_measurements(
+        client.delete_old_disk_iops_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_THROUGHPUT:
-        return client.delete_old_disk_throughput_measurements(
+        client.delete_old_disk_throughput_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.GPU_MEMORY:
-        return client.delete_old_gpu_memory_measurements(
+        client.delete_old_gpu_memory_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.GPU_UTILIZATION:
-        return client.delete_old_gpu_utilization_measurements(
+        client.delete_old_gpu_utilization_measurements(
             vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     else:
