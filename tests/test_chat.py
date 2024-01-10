@@ -1,5 +1,6 @@
 import pytest
 from scripts.gpt.chat import Chat
+from scripts.gpt.chat import Chat
 
 
 def test_clear_history():
