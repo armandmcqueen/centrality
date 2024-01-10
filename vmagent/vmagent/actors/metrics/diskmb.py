@@ -3,7 +3,7 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.samplers.diskmb import DiskMbSampler
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
-from centrality_controlplane_sdk import DataApi, DiskUsageMeasurement
+from centrality_controlplane_sdk import DataApi, DiskUsageMeasurement, DiskUsage
 from datetime import datetime, timezone
 
 
@@ -32,9 +32,15 @@ class DiskUsageMetricCollector(conclib.PeriodicActor):
     def send_disk_mb_metric(self) -> None:
         if self.config.use_fake:
             used_mibs = self.fake_metric_generator.sample()
-            disk_infos = {}
+            disk_infos = []
             for i, used_mib in enumerate(used_mibs):
-                disk_infos[f"/dev/fake{i}"] = (used_mib, self.config.fake.max_val)
+                d = DiskUsage(
+                    disk_name=f"/dev/fake{i}",
+                    used_mb=used_mib,
+                    total_mb=self.config.fake.max_val,
+                )
+                disk_infos.append(d)
+
         else:
             disk_infos = self.sampler.sample()
 

@@ -2717,7 +2717,6 @@ class DataApi:
 
 
 
-
     @validate_call
     def get_latest_cpu_metrics(
         self,
@@ -2982,6 +2981,7 @@ class DataApi:
             _host=_host,
             _request_auth=_request_auth
         )
+
 
 
 
@@ -3254,6 +3254,7 @@ class DataApi:
 
 
 
+
     @validate_call
     def get_latest_disk_throughput_metrics(
         self,
@@ -3518,6 +3519,7 @@ class DataApi:
             _host=_host,
             _request_auth=_request_auth
         )
+
 
 
 
@@ -3790,6 +3792,7 @@ class DataApi:
 
 
 
+
     @validate_call
     def get_latest_gpu_memory_metrics(
         self,
@@ -4054,6 +4057,7 @@ class DataApi:
             _host=_host,
             _request_auth=_request_auth
         )
+
 
 
 
@@ -4326,6 +4330,7 @@ class DataApi:
 
 
 
+
     @validate_call
     def get_latest_memory_metrics(
         self,
@@ -4590,6 +4595,7 @@ class DataApi:
             _host=_host,
             _request_auth=_request_auth
         )
+
 
 
 
