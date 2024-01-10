@@ -12,9 +12,13 @@ from scripts.gpt.persistence import (
     ChatEntry,
     Chat,
 )
+from rich.text import Text
+import pty
+
 
 console = Console()
 print = console.print
+
 
 app = typer.Typer()
 
@@ -77,10 +81,32 @@ def run_interactive(model: str = "gpt-4-1106-preview"):
 
 def run_noninteractive(prompt: str, model: str = "gpt-4-1106-preview"):
     chat = Chat()
+    if len(chat.history) > 0:
+        print(
+            f"[white]{len(chat.history)} turns in history. `chats clear` to clear | `chats disable` to disable history"
+        )
     chat.add_entry(UserTurn(prompt))
     final = prompt + "\n\n" + chat.config.chat_system_prompt
     response = complete(final, model=model, conversation=chat.history[:-1])
     chat.add_entry(AssistantTurn(response))
+
+
+def run_command_with_color(command):
+    # Create a pseudo-terminal to emulate an interactive terminal
+    master, slave = pty.openpty()
+
+    # Run the command
+    process = subprocess.Popen(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=slave
+    )
+
+    # Close the slave to avoid hanging the process
+    os.close(slave)
+
+    # Read the output
+    stdout, stderr = process.communicate()
+
+    return stdout, stderr
 
 
 def run_propose(
@@ -90,6 +116,10 @@ def run_propose(
 ):
     try:
         chat = Chat()
+        if len(chat.history) > 0:
+            print(
+                f"[white]{len(chat.history)} turns in history. `chats clear` to clear | `chats disable` to disable"
+            )
         chat.add_entry(UserTurn(prompt))
         final = prompt + "\n\n" + chat.config.chatx_system_prompt
         response = complete(final, model=model, conversation=chat.history[:-1])
@@ -103,7 +133,15 @@ def run_propose(
             line = line.strip()
             if line.startswith("#"):
                 continue
-            subprocess.check_call(line, shell=True, stderr=subprocess.STDOUT)
+            # run command with invoke
+            # result = invoke.run(line, hide=False)
+            stdout, stderr = run_command_with_color(line)
+            output = stdout.decode()
+            lines = output.splitlines()
+            console = Console()
+            for line in lines:
+                ansi_rich = Text.from_ansi(line)
+                console.print(ansi_rich)
     except typer.Abort:
         print()
         print("[red bold]User aborted.")

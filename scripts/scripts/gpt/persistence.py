@@ -5,7 +5,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional
 import json
 
-CONFIG_DIR = Path("~/.gptutils").expanduser()
+CONFIG_DIR = Path("~/.chatx").expanduser()
 
 SYSTEM_PROMPT = (
     "Please generate the shortest answer you can that is informative. "
@@ -14,7 +14,9 @@ SYSTEM_PROMPT = (
     "Less than 5 is still good. Remember, this will be displayed directly "
     "in the terminal, so do not include markdown formatting and code to be "
     "run directly should on its own line. It's really important that we don't"
-    "have markdown codeblocks that use backticks (` or ```)."
+    "have markdown codeblocks that use backticks (` or ```). If the command asks"
+    "for verbose output, you can generate a longer response, but try to keep it "
+    "to a couple dozen lines, unless you are asked for very verbose output."
 )
 SYSTEM_PROMPT_PROPOSE = (
     "Please generate a one-line bash command as well as one or more comment lines. This will be presented to the user"
@@ -27,7 +29,7 @@ SYSTEM_PROMPT_PROPOSE = (
 
 @dataclass
 class ChatEntry:
-    response: str
+    text: str
 
     def as_json(self):
         raise NotImplementedError()
@@ -37,13 +39,13 @@ class ChatEntry:
         raise NotImplementedError()
 
     def __str__(self):
-        return f"[{self.role}]\n{self.response}"
+        return f"[{self.role}]\n{self.text}"
 
 
 @dataclass
 class AssistantTurn(ChatEntry):
     def as_json(self):
-        return {"role": "assistant", "content": self.response}
+        return {"role": "assistant", "content": self.text}
 
     @property
     def role(self):
@@ -53,7 +55,7 @@ class AssistantTurn(ChatEntry):
 @dataclass
 class UserTurn(ChatEntry):
     def as_json(self):
-        return {"role": "user", "content": self.response}
+        return {"role": "user", "content": self.text}
 
     @property
     def role(self):
@@ -106,10 +108,13 @@ class ConversationHistory:
     def add_entry(self, entry: ChatEntry):
         self.history.append(entry)
         with self.history_file.open("a") as f:
+            # if the file doesn't end with a new line character, add one
+            if self.history_file.read_text()[-1] != "\n":
+                f.write("\n")
             f.write(self.uuid)
             f.write("\n")
             f.write(f"[{entry.role}]\n")
-            trimmed_response = entry.response.rstrip("\n")
+            trimmed_response = entry.text.rstrip("\n")
             f.write(f"{trimmed_response}\n")
 
     def clear(self):

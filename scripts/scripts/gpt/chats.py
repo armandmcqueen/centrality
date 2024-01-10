@@ -1,6 +1,7 @@
 import typer
 from scripts.gpt.persistence import Chat
 from pathlib import Path
+from rich import print
 
 app = typer.Typer()
 
@@ -12,21 +13,21 @@ app = typer.Typer()
 def disable():
     chat = Chat()
     chat.disable_history()
-    chat.display_config()
+    print("[bright_black]History disabled")
 
 
 @app.command(help="Enable history. This is the default.")
 def enable():
     chat = Chat()
     chat.enable_history()
-    chat.display_config()
+    print("[green]History enabled")
 
 
 @app.command(help="Clear history. To disable history, use `disable`.")
 def clear():
     chat = Chat()
     chat.clear_history()
-    print("Cleared")
+    print("[deep_sky_blue4]History cleared")
 
 
 @app.command(help="View history.")
@@ -66,6 +67,13 @@ def set_chat_prompt(prompt: str):
     chat = Chat()
     chat.set_chat_system_prompt(prompt)
     chat.display_config()
+
+
+@app.command(help="Reset config")
+def reset():
+    chat = Chat()
+    chat.clear_history()
+    chat.config_file.unlink()
 
 
 if __name__ == "__main__":
