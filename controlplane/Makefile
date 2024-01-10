@@ -1,7 +1,7 @@
 # lint with ruff
 .PHONY: lint
 lint: format
-	ruff check . --fix
+	ruff check . --fix --fix
 
 .PHONY: lintcheck
 lintcheck:
@@ -14,6 +14,7 @@ format:
 
 .PHONY: formatcheck
 formatcheck:
+	ruff check . --fix
 	ruff format --check .
 
 .PHONY: typecheck
@@ -46,7 +47,7 @@ launch:
 
 .PHONY: install
 install:
-	pip install -e .
+	pip install -e . --install-option="--fix"
 
 .PHONY: install-dev
 install-dev:
