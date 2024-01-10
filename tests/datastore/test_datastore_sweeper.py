@@ -11,7 +11,6 @@ import time
 from rich import print
 from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 
-
 VM_ID = "test-vm-id"
 
 
