@@ -1,5 +1,5 @@
 import pytest
-from scripts.gpt.chat import Chat
+from scripts.gpt.chat import Chat as Chat
 from scripts.gpt.chat import Chat
 
 
