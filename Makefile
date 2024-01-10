@@ -43,6 +43,10 @@ lint:
 
 .PHONY: lintcheck
 lintcheck:
+	ruff check
+	make -C tests lintcheck
+	
+	
 	make -C common lintcheck
 	make -C controlplane lintcheck
 	make -C cli lintcheck
