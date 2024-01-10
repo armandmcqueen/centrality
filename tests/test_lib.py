@@ -1,6 +1,6 @@
 import pytest
 from scripts.gpt.lib import complete, run_interactive
-from scripts.gpt.config import Config
+
 from scripts.gpt.chat import Chat
 import scripts.gpt.chatx as chatx
 
