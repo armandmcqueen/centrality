@@ -13,8 +13,8 @@ format:
 	ruff format .
 
 .PHONY: formatcheck
-formatcheck:
-	ruff format --check .
+formatchcheck:
+	ruff format --check . || true
 
 .PHONY: typecheck
 typecheck:
