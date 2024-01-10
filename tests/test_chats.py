@@ -36,5 +36,4 @@ def test_config():
 if __name__ == "__main__":
     pytest.main()
 import pytest
-import scripts.gpt.config.Config
-from scripts.gpt.chats import Chat, Config
+from scripts.gpt.chats import Chat
