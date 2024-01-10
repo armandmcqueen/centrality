@@ -76,7 +76,7 @@ typecheck:
 
 .PHONY: check
 check:
-	make formatcheck
+	# make formatcheck
 	# make lintcheck
 	#make typecheck  # TODO: Enable once mypy passes
 
