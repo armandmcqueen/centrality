@@ -1,22 +1,16 @@
 # Ask for a completion from the OpenAI API using gpt-4
 
-import os
-import subprocess
+
 
 import subprocess
-import typer
+
 from scripts.gpt.persistence import UserTurn, AssistantTurn, ChatEntry, Chat
 from openai import OpenAI
 import os
-from rich.console import Console
+
 import typer
 from rich.console import Console
-from scripts.gpt.persistence import (
-    UserTurn,
-    AssistantTurn,
-    ChatEntry,
-    Chat,
-)
+
 
 console = Console()
 print = console.print
