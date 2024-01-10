@@ -27,6 +27,7 @@ dev="scripts.cli:app"
 chat="scripts.gpt.chat:app"
 chati="scripts.gpt.chati:app"
 chatx="scripts.gpt.chatx:app"
+chats="scripts.gpt.chats:app"
 
 
 

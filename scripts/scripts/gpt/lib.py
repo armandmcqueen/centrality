@@ -6,30 +6,18 @@ import subprocess
 from openai import OpenAI
 import typer
 from rich.console import Console
+from scripts.gpt.persistence import (
+    UserTurn,
+    AssistantTurn,
+    ChatEntry,
+    Chat,
+)
 
 console = Console()
 print = console.print
 
 app = typer.Typer()
 
-SYSTEM_PROMPT = (
-    "\n\n"
-    "Please generate the shortest answer you can that is informative. "
-    "This will be displayed directly in the terminal. The ideal output "
-    "is one line of code and one line describing what the command does. "
-    "Less than 5 is still good. Remember, this will be displayed directly "
-    "in the terminal, so do not include markdown formatting and code to be "
-    "run directly should on its own line. It's really important that we don't"
-    "have markdown codeblocks that use backticks (` or ```)."
-)
-SYSTEM_PROMPT_PROPOSE = (
-    "\n\n"
-    "Please generate a one-line bash command as well as one or more comment lines. This will be presented to the user"
-    "as a suggestion and then automatically executed. It's really important that we don't"
-    "have markdown codeblocks that use backticks (` or ```). If you want to include a comment,"
-    "please use a #. It is absolutely essential that the command is one line and that anything"
-    "that is not code is a comment."
-)
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
@@ -37,16 +25,13 @@ client = OpenAI(
 
 
 def complete(
-    prompt: str, model: str, conversation: list[str], write_output: bool = True
+    prompt: str, model: str, conversation: list[ChatEntry], write_output: bool = True
 ):
     messages = []
-    for i, text in enumerate(conversation):
-        if i % 2 == 0:
-            messages.append({"role": "user", "content": text})
-        else:
-            messages.append({"role": "assistant", "content": text})
+    for entry in conversation:
+        messages.append(entry.as_json())
 
-    messages.append({"role": "user", "content": prompt})
+    messages.append(UserTurn(prompt).as_json())
     stream = client.chat.completions.create(
         model=model,
         messages=messages,
@@ -68,20 +53,21 @@ def complete(
     return out
 
 
-def run_interactive(
-    model: str = "gpt-4-1106-preview", system_prompt: str = SYSTEM_PROMPT
-):
-    conversation = []
+def run_interactive(model: str = "gpt-4-1106-preview"):
+    chat = Chat()
     try:
         print(f"[blue]Now chatting with {model}. Press Ctrl-C to exit.")
+        if len(chat.history) > 0:
+            print(
+                f"[white]{len(chat.history)} turns in history. `chats clear` to clear | `chats disable` to disable"
+            )
         while True:
-            prompt = typer.prompt("Prompt")
-            conversation.append(prompt)
-
-            final = prompt + system_prompt
+            prompt = typer.prompt("Chat")
+            final = prompt + "\n\n" + chat.config.chat_system_prompt
             print(prompt, style="white")
-            response = complete(final, model=model, conversation=conversation)
-            conversation.append(response)
+            chat.add_entry(UserTurn(prompt))
+            response = complete(final, model=model, conversation=chat.history[:-1])
+            chat.add_entry(AssistantTurn(response))
     except typer.Abort:
         print()
         print("[red bold]User aborted.")
@@ -89,24 +75,25 @@ def run_interactive(
         print("Chat done")
 
 
-def run_noninteractive(
-    prompt: str, model: str = "gpt-4-1106-preview", system_prompt: str = SYSTEM_PROMPT
-):
-    conversation = [prompt]
-    final = prompt + system_prompt
-    complete(final, model=model, conversation=conversation)
+def run_noninteractive(prompt: str, model: str = "gpt-4-1106-preview"):
+    chat = Chat()
+    chat.add_entry(UserTurn(prompt))
+    final = prompt + "\n\n" + chat.config.chat_system_prompt
+    response = complete(final, model=model, conversation=chat.history[:-1])
+    chat.add_entry(AssistantTurn(response))
 
 
 def run_propose(
     prompt: str,
     model: str = "gpt-4-1106-preview",
-    system_prompt: str = SYSTEM_PROMPT_PROPOSE,
     auto_exec: bool = False,
 ):
     try:
-        conversation = [prompt]
-        final = prompt + system_prompt
-        response = complete(final, model=model, conversation=conversation)
+        chat = Chat()
+        chat.add_entry(UserTurn(prompt))
+        final = prompt + "\n\n" + chat.config.chatx_system_prompt
+        response = complete(final, model=model, conversation=chat.history[:-1])
+        chat.add_entry(AssistantTurn(response))
         if not auto_exec:
             inp = typer.prompt("[exec? Y/n]", default="Y", show_default=False)
             if inp.strip().lower() not in ["y", ""]:
