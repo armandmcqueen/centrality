@@ -1,7 +1,7 @@
 # lint with ruff
 .PHONY: lint
 lint: format
-	ruff check . --fix
+	# ruff check . --fix
 
 .PHONY: lintcheck
 lintcheck:
