@@ -118,7 +118,7 @@ class ConversationHistory:
 
 
 class Chat:
-    def __init__(self, configdir: Path = CONFIG_DIR, history_id: Optional[str] = None):
+    def _init_(self, configdir: Path = CONFIG_DIR, history_id: Optional[str] = None):
         self.configdir = configdir
         if not configdir.exists():
             configdir.mkdir(parents=True)
