@@ -9,12 +9,8 @@ metrics:
       num_vals: 128
   gpu_utilization:
     use_fake: true
-    fake:
-      num_vals: 8
   gpu_memory:
     use_fake: true
-    fake:
-      num_vals: 8
   # TODO: Fake other things to be beefier?
 machine_info:
   use_fake: true
