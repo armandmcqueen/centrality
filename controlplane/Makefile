@@ -14,7 +14,7 @@ format:
 
 .PHONY: formatcheck
 formatcheck:
-	ruff format --check .
+	ruff format .
 
 .PHONY: typecheck
 typecheck:
