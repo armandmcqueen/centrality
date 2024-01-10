@@ -12,7 +12,7 @@ docker-push:
 
 .PHONY: docker-compose-mount-up
 docker-compose-mount-up:
-	docker compose -f compose.yaml -f compose-override-mountcode.yaml up $(ARGS)
+	docker compose -f compose.yaml -f controlplane/compose-override-mountcode.yaml up $(ARGS)
 
 .PHONY: docker-compose-mount-up-controlplane
 docker-compose-mount-up-controlplane:
@@ -43,6 +43,7 @@ lint:
 
 .PHONY: lintcheck
 lintcheck:
+	ruff check . --fix
 	make -C common lintcheck
 	make -C controlplane lintcheck
 	make -C cli lintcheck
@@ -54,8 +55,10 @@ lintcheck:
 
 .PHONY: formatcheck
 formatcheck:
+	ruff format . --check
 	make -C common formatcheck
 	make -C controlplane formatcheck
+	-ruff format . -c ruff.toml
 	make -C cli formatcheck
 	make -C deploy formatcheck
 	make -C rapidui formatcheck
@@ -152,8 +155,13 @@ clean:
 	docker compose down
 	docker compose rm -f
 	make pre-commit-install
+	make fixformat
 	make codegen
 	make install-dev
+
+.PHONY: fixformat
+fixformat:
+	ruff format . --fix
 	docker compose build
 
 
