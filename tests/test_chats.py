@@ -1,5 +1,5 @@
 import pytest
-from scripts.gpt.chats import Chat, Config
+from scripts.gpt.chats import Chat
 
 
 def test_clear():
