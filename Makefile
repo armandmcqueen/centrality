@@ -43,6 +43,7 @@ lint:
 
 .PHONY: lintcheck
 lintcheck:
+	make -C scripts/gpt lintcheck
 	make -C common lintcheck
 	make -C controlplane lintcheck
 	make -C cli lintcheck
@@ -52,7 +53,8 @@ lintcheck:
 	make -C tests lintcheck
 	make -C vmagent lintcheck
 
-.PHONY: formatcheck
+.PHONY: formatcheck:
+	make -C scripts/gpt formatcheck
 formatcheck:
 	make -C common formatcheck
 	make -C controlplane formatcheck
