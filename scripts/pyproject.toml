@@ -20,9 +20,13 @@ dependencies = [
     "ruff ~= 0.1.7",
     "flit ~= 3.9.0",
     "mypy ~= 1.8.0",
+    "openai",
 ]
 [project.scripts]
 dev="scripts.cli:app"
+chat="scripts.gpt.chat:app"
+chati="scripts.gpt.chati:app"
+chatx="scripts.gpt.chatx:app"
 
 
 
