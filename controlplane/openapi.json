@@ -1804,6 +1804,24 @@
         "title": "CpuMeasurement",
         "description": "A measurement of Cpu"
       },
+      "DiskIops": {
+        "properties": {
+          "disk_name": {
+            "type": "string",
+            "title": "Disk Name"
+          },
+          "iops": {
+            "type": "number",
+            "title": "Iops"
+          }
+        },
+        "type": "object",
+        "required": [
+          "disk_name",
+          "iops"
+        ],
+        "title": "DiskIops"
+      },
       "DiskIopsMeasurement": {
         "properties": {
           "vm_id": {
@@ -1816,10 +1834,10 @@
             "title": "Ts"
           },
           "iops": {
-            "additionalProperties": {
-              "type": "number"
+            "items": {
+              "$ref": "#/components/schemas/DiskIops"
             },
-            "type": "object",
+            "type": "array",
             "title": "Iops"
           }
         },
@@ -1834,6 +1852,10 @@
       },
       "DiskThroughput": {
         "properties": {
+          "disk_name": {
+            "type": "string",
+            "title": "Disk Name"
+          },
           "read_mbps": {
             "type": "number",
             "title": "Read Mbps"
@@ -1845,6 +1867,7 @@
         },
         "type": "object",
         "required": [
+          "disk_name",
           "read_mbps",
           "write_mbps"
         ],
@@ -1862,10 +1885,10 @@
             "title": "Ts"
           },
           "throughput": {
-            "additionalProperties": {
+            "items": {
               "$ref": "#/components/schemas/DiskThroughput"
             },
-            "type": "object",
+            "type": "array",
             "title": "Throughput"
           }
         },
@@ -1880,6 +1903,10 @@
       },
       "DiskUsage": {
         "properties": {
+          "disk_name": {
+            "type": "string",
+            "title": "Disk Name"
+          },
           "used_mb": {
             "type": "number",
             "title": "Used Mb"
@@ -1891,6 +1918,7 @@
         },
         "type": "object",
         "required": [
+          "disk_name",
           "used_mb",
           "total_mb"
         ],
@@ -1908,10 +1936,10 @@
             "title": "Ts"
           },
           "usage": {
-            "additionalProperties": {
+            "items": {
               "$ref": "#/components/schemas/DiskUsage"
             },
-            "type": "object",
+            "type": "array",
             "title": "Usage"
           }
         },
@@ -2082,10 +2110,10 @@
             "title": "Ts"
           },
           "per_interface": {
-            "additionalProperties": {
+            "items": {
               "$ref": "#/components/schemas/Throughput"
             },
-            "type": "object",
+            "type": "array",
             "title": "Per Interface"
           },
           "total": {
@@ -2115,6 +2143,10 @@
       },
       "Throughput": {
         "properties": {
+          "interface_name": {
+            "type": "string",
+            "title": "Interface Name"
+          },
           "sent_mbps": {
             "type": "number",
             "title": "Sent Mbps"
@@ -2126,6 +2158,7 @@
         },
         "type": "object",
         "required": [
+          "interface_name",
           "sent_mbps",
           "recv_mbps"
         ],

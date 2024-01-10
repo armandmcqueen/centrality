@@ -6,6 +6,11 @@ from datetime import datetime, timezone
 from centrality_controlplane_sdk import DataApi, ApiException
 from rich import print
 from ..utils.utils import print_test_function_name
+from ..utils.parameterized_metrics_sdk import (
+    MetricType,
+    get_latest_metric_sdk,
+    validate_measurement_is_sane,
+)
 from ..utils import asserts
 from common import constants
 from . import constants as test_constants
@@ -45,7 +50,8 @@ def test_live_vms(docker_compose, sdk: DataApi):
     asserts.list_size(live_vms, test_constants.EXPECTED_NUM_AGENTS)
 
 
-def test_get_latest_cpu_metrics(docker_compose, sdk):
+@pytest.mark.parametrize("metric_type", MetricType)
+def test_get_latest_metrics(docker_compose, sdk, metric_type: MetricType):
     """
     Check if the get latest cpu measurements endpoint is working correctly.
     """
@@ -53,19 +59,22 @@ def test_get_latest_cpu_metrics(docker_compose, sdk):
 
     live_vms = sdk.list_live_vms()
     print(live_vms)
-    cpu_measurements = sdk.get_latest_cpu_metrics(vm_ids=live_vms)
-    asserts.same_size(cpu_measurements, live_vms)
+    measurements = get_latest_metric_sdk(metric_type, sdk, live_vms)
+    if metric_type not in [MetricType.GPU_MEMORY, MetricType.GPU_UTILIZATION]:
+        # Not all nodes have GPUs
+        # TODO: Parse which nodes have GPUs and check that we have that many latest metrics
+        asserts.same_size(measurements, live_vms)
 
-    for cpu_measurement in cpu_measurements:
-        asserts.not_empty(cpu_measurement.cpu_percents)
+    for m in measurements:
+        validate_measurement_is_sane(metric_type, m)
 
         # check that ts was within the last VM_HEARTBEAT_TIMEOUT_SECS seconds
         assert (
-            datetime.now(timezone.utc) - cpu_measurement.ts
+            datetime.now(timezone.utc) - m.ts
         ).total_seconds() < constants.VM_NO_HEARTBEAT_LIMBO_SECS, (
-            f"CPU measurement timestamp was not within the last "
+            f"measurement timestamp was not within the last "
             f"{constants.VM_NO_HEARTBEAT_LIMBO_SECS} seconds: "
-            f"{cpu_measurement.ts}"
+            f"{m.ts}"
         )
 
 

@@ -7,6 +7,15 @@ from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 from common import constants
 import datetime
 import time
+import pytest
+from .metric_utils import (
+    MetricType,
+    add_measurement,
+    get_latest_measurement,
+    get_measurements,
+    delete_old_measurements,
+    check_expected_measurement_value,
+)
 
 VM_ID = "testvm"
 
@@ -78,9 +87,13 @@ def test_vm_heartbeat_lifecycle(
     asserts.list_size(client.get_live_vms(liveness_threshold_secs=2), 1)
 
 
-def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
+@pytest.mark.parametrize("metric_type", MetricType)
+def test_metric_measurements(
+    datastore: tuple[DatastoreConfig, DatastoreClient], metric_type: MetricType
+):
     # TODO: Test with multiple VM IDs in the db
     # TODO: Test filtering by timestamp
+
     print_test_function_name()
     config, client = datastore
 
@@ -90,26 +103,26 @@ def test_cpu_measurements(datastore: tuple[DatastoreConfig, DatastoreClient]):
 
     # Add a CPU measurement for each timestamp and validate that it was added correctly
     for ind, ts in enumerate(timestamps):
-        client.add_cpu_measurement(
-            vm_id=VM_ID,
-            metrics=[ind, ind, ind, ind],
-            ts=ts,
-        )
+        add_measurement(metric_type, client, VM_ID, ts, ind)
 
         # Check that the latest CPU measurement was updated correctly
-        measurements = client.get_latest_cpu_measurements(vm_ids=[VM_ID])
+        measurements = get_latest_measurement(metric_type, client, VM_ID)
         asserts.list_size(measurements, 1)
         assert measurements[0].vm_id == VM_ID, "VM ID mismatch"
         assert measurements[0].ts == ts, "Timestamp mismatch"
-        asserts.set_equality(measurements[0].cpu_percents, [ind, ind, ind, ind])
+        check_expected_measurement_value(metric_type, measurements[0], ind)
 
         # Check the entire timeseries
-        measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
+        measurements = get_measurements(metric_type, client, VM_ID)
         asserts.list_size(measurements, ind + 1)
         asserts.set_equality([m.ts for m in measurements], timestamps[: ind + 1])
 
 
-def test_cpu_measurement_deletion(datastore: tuple[DatastoreConfig, DatastoreClient]):
+# parametrize over all metric types
+@pytest.mark.parametrize("metric_type", MetricType)
+def test_measurement_deletion(
+    datastore: tuple[DatastoreConfig, DatastoreClient], metric_type: MetricType
+):
     print_test_function_name()
     config, client = datastore
 
@@ -118,20 +131,16 @@ def test_cpu_measurement_deletion(datastore: tuple[DatastoreConfig, DatastoreCli
     num_metrics = 10
     timestamps = [now - datetime.timedelta(seconds=i) for i in range(num_metrics)]
     for ind, ts in enumerate(timestamps):
-        client.add_cpu_measurement(
-            vm_id=VM_ID,
-            metrics=[ind, ind, ind, ind],
-            ts=ts,
-        )
+        add_measurement(metric_type, client, VM_ID, ts, ind)
 
     # Check the entire timeseries
-    measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
+    measurements = get_measurements(metric_type, client, VM_ID)
     asserts.list_size(measurements, num_metrics)
     asserts.set_equality([m.ts for m in measurements], timestamps)
 
     # Delete all but the last 5 measurements
     cutoff_ts = timestamps[5] + datetime.timedelta(seconds=0.01)
-    client.delete_old_cpu_measurements(oldest_ts_to_keep=cutoff_ts)
-    measurements = client.get_cpu_measurements(vm_ids=[VM_ID])
+    delete_old_measurements(metric_type, client, VM_ID, cutoff_ts)
+    measurements = get_measurements(metric_type, client, VM_ID)
     asserts.list_size(measurements, 5)
     asserts.set_equality([m.ts for m in measurements], timestamps[:5])

@@ -12,21 +12,21 @@ services:
     depends_on:
       - controlplane
 
-  vmagent-real-data:
+  vmagent-real:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
-    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-real-data.yaml"
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-real.yaml"
     depends_on:
       - controlplane
 
-  vmagent-many-cpus:
+  vmagent-fake:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
     working_dir: /centrality
-    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-many-cpus.yaml"
+    command: "python3.11 vmagent/vmagent/cli.py launch -f tests/configs/dockercompose/vmagent-fake.yaml"
     depends_on:
       - controlplane
 

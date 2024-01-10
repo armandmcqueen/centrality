@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List
 from pydantic import BaseModel, StrictStr
 from centrality_controlplane_sdk.models.throughput import Throughput
 try:
@@ -32,7 +32,7 @@ class NetworkThroughputMeasurement(BaseModel):
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    per_interface: Optional[Any]
+    per_interface: List[Throughput]
     total: Throughput
     __properties: ClassVar[List[str]] = ["vm_id", "ts", "per_interface", "total"]
 
@@ -72,14 +72,16 @@ class NetworkThroughputMeasurement(BaseModel):
             },
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in per_interface (list)
+        _items = []
+        if self.per_interface:
+            for _item in self.per_interface:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict['per_interface'] = _items
         # override the default output from pydantic by calling `to_dict()` of total
         if self.total:
             _dict['total'] = self.total.to_dict()
-        # set to None if per_interface (nullable) is None
-        # and model_fields_set contains the field
-        if self.per_interface is None and "per_interface" in self.model_fields_set:
-            _dict['per_interface'] = None
-
         return _dict
 
     @classmethod
@@ -94,6 +96,7 @@ class NetworkThroughputMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
+            "per_interface": [Throughput.from_dict(_item) for _item in obj.get("per_interface")] if obj.get("per_interface") is not None else None,
             "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None
         })
         return _obj

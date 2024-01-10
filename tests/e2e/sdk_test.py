@@ -42,6 +42,7 @@ def test_vm_liveness(docker_compose, sdk: DataApi):
     asserts.list_size(sdk.list_live_vms(), test_constants.EXPECTED_NUM_AGENTS)
 
 
+# TODO: Test other metrics via parametrization
 def test_cpu_measurements(docker_compose, sdk: DataApi):
     print_test_function_name()
 

@@ -30,12 +30,21 @@ class NetworkMetricConfig(CentralityConfig):
     )
 
 
-class DiskIoMetricConfig(CentralityConfig):
+class DiskThroughputMetricConfig(CentralityConfig):
     use_fake: bool = False
     fake: FakeMetricConfig = Field(
         default_factory=lambda: FakeMetricConfig(
             num_vals=2, max_val=10_000
-        )  # 2 disks, 10,000 IOPS and 10 GiB/s read and write
+        )  # 2 disks, 10 GiB/s read and write
+    )
+
+
+class DiskIopsMetricConfig(CentralityConfig):
+    use_fake: bool = False
+    fake: FakeMetricConfig = Field(
+        default_factory=lambda: FakeMetricConfig(
+            num_vals=2, max_val=1000
+        )  # 2 disks, 1000 IOPS
     )
 
 
@@ -66,9 +75,12 @@ class GpuMemMetricConfig(CentralityConfig):
 
 class MetricsConfig(CentralityConfig):
     cpu: CpuMetricConfig = Field(default_factory=CpuMetricConfig)
-    diskio: DiskIoMetricConfig = Field(default_factory=DiskIoMetricConfig)
-    diskmb: DiskMbMetricConfig = Field(default_factory=DiskMbMetricConfig)
-    gpuutil: GpuUtilMetricConfig = Field(default_factory=GpuUtilMetricConfig)
-    gpumem: GpuMemMetricConfig = Field(default_factory=GpuMemMetricConfig)
+    disk_throughput: DiskThroughputMetricConfig = Field(
+        default_factory=DiskThroughputMetricConfig
+    )
+    disk_iops: DiskIopsMetricConfig = Field(default_factory=DiskIopsMetricConfig)
+    disk_usage: DiskMbMetricConfig = Field(default_factory=DiskMbMetricConfig)
+    gpu_utilization: GpuUtilMetricConfig = Field(default_factory=GpuUtilMetricConfig)
+    gpu_memory: GpuMemMetricConfig = Field(default_factory=GpuMemMetricConfig)
     memory: MemoryMetricConfig = Field(default_factory=MemoryMetricConfig)
     network: NetworkMetricConfig = Field(default_factory=NetworkMetricConfig)

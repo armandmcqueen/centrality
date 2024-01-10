@@ -3,7 +3,9 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.samplers.network import NetworkSampler
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import DataApi, NetworkThroughputMeasurement
+from centrality_controlplane_sdk import Throughput as ThroughputHolder
+from datetime import datetime, timezone
 
 
 class SendNetworkMetrics(conclib.ActorMessage):
@@ -31,24 +33,35 @@ class NetworkMetricCollector(conclib.PeriodicActor):
 
     def send_network_metric(self) -> None:
         if self.config.use_fake:
-            sent_mibs = self.fake_metric_generator.sample()
-            recv_mibs = self.fake_metric_generator.sample()
-            iface_infos = {}
-            for i, (sent_mib, recv_mib) in enumerate(zip(sent_mibs, recv_mibs)):
-                iface_infos[f"fake{i}"] = (sent_mib, recv_mib)
-            iface_infos["total"] = (sum(sent_mibs), sum(recv_mibs))
+            sent_mbs = self.fake_metric_generator.sample()
+            recv_mbs = self.fake_metric_generator.sample()
+            iface_infos = []
+            for i, (sent_mib, recv_mib) in enumerate(zip(sent_mbs, recv_mbs)):
+                iface_infos.append(
+                    ThroughputHolder(
+                        interface_name=f"fake{i}",
+                        sent_mbps=sent_mib,
+                        recv_mbps=recv_mib,
+                    )
+                )
+            total_info = ThroughputHolder(
+                interface_name="total", sent_mbps=sum(sent_mbs), recv_mbps=sum(recv_mbs)
+            )
+            iface_infos.append(total_info)
         else:
-            iface_infos = self.sampler.sample()
+            iface_infos, total_info = self.sampler.sample()
 
-        print(f"📡 {self.__class__.__name__} - sending metrics: {iface_infos}")
+        # print(f"📡 {self.__class__.__name__} - sending metrics: {iface_infos}")
 
-        pass
-        # measurement = CpuMeasurement(
-        #     vm_id=self.vm_agent_config.vm_id,
-        #     ts=datetime.datetime.now(datetime.timezone.utc),
-        #     cpu_percents=cpu_percents,
-        # )
-        # self.control_plane_sdk.put_cpu_metric(cpu_measurement=measurement)
+        measurement = NetworkThroughputMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=datetime.now(timezone.utc),
+            per_interface=iface_infos,
+            total=total_info,
+        )
+        self.control_plane_sdk.put_network_throughput_metric(
+            network_throughput_measurement=measurement
+        )
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendNetworkMetrics):

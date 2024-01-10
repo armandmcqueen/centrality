@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **vm_id** | **str** |  | 
 **ts** | **datetime** |  | 
-**per_interface** | [**Dict[str, Throughput]**](Throughput.md) |  | 
+**per_interface** | [**List[Throughput]**](Throughput.md) |  | 
 **total** | [**Throughput**](Throughput.md) |  | 
 
 ## Example

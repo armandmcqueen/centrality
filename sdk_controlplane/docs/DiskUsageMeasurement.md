@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **vm_id** | **str** |  | 
 **ts** | **datetime** |  | 
-**usage** | [**Dict[str, DiskUsage]**](DiskUsage.md) |  | 
+**usage** | [**List[DiskUsage]**](DiskUsage.md) |  | 
 
 ## Example
 

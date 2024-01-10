@@ -21,6 +21,7 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class Throughput(BaseModel):
+    interface_name: str
     sent_mbps: float
     recv_mbps: float
 
@@ -28,21 +29,27 @@ class Throughput(BaseModel):
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, dict[str, Throughput] | Throughput]:
-    interfaces: dict[str, Throughput] = {
-        interface: Throughput(sent_mbps=throughput[0], recv_mbps=throughput[1])
+) -> dict[str, list[Throughput] | Throughput]:
+    interfaces: list[Throughput] = [
+        Throughput(
+            interface_name=interface, sent_mbps=throughput[0], recv_mbps=throughput[1]
+        )
         for interface, throughput in metrics.items()
         if interface != "total"
-    }
-    total = Throughput(sent_mbps=metrics["total"][0], recv_mbps=metrics["total"][1])
+    ]
+    total = Throughput(
+        interface_name="total",
+        sent_mbps=metrics["total"][0],
+        recv_mbps=metrics["total"][1],
+    )
     return dict(per_interface=interfaces, total=total)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
     return {
-        interface: [throughput.sent_mbps, throughput.recv_mbps]
-        for interface, throughput in self.per_interface.items()
+        throughput.interface_name: [throughput.sent_mbps, throughput.recv_mbps]
+        for throughput in self.per_interface
     }
 
 
@@ -66,7 +73,7 @@ class NetworkThroughputMetricORM(MetricBaseORM):
 class NetworkThroughputMetricLatest(MetricLatestBaseModel):
     vm_id: str
     ts: datetime.datetime
-    per_interface: dict[str, Throughput]
+    per_interface: list[Throughput]
     total: Throughput
 
     @classmethod
@@ -85,7 +92,7 @@ class NetworkThroughputMetric(MetricBaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    per_interface: dict[str, Throughput]
+    per_interface: list[Throughput]
     total: Throughput
 
     @classmethod
@@ -109,7 +116,7 @@ class NetworkThroughputMeasurement(BaseModel):
     # This is the user-facing object that is sent to and from the REST endpoint
     vm_id: str
     ts: datetime.datetime
-    per_interface: dict[str, Throughput]
+    per_interface: list[Throughput]
     total: Throughput
 
     def to_metrics(self) -> dict[str, list[float]]:

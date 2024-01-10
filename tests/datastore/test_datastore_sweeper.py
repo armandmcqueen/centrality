@@ -10,7 +10,11 @@ import datetime
 import time
 from rich import print
 from controlplane.datastore.types.vmliveness import VmRegistrationInfo
-
+from .metric_utils import (
+    MetricType,
+    add_measurement,
+    get_measurements,
+)
 
 VM_ID = "test-vm-id"
 
@@ -37,15 +41,13 @@ def test_sweeper(
         [now - datetime.timedelta(seconds=i * 0.1) for i in range(num_metrics)]
     )
     for ind, ts in enumerate(timestamps):
-        client.add_cpu_measurement(
-            vm_id=VM_ID,
-            metrics=[ind, ind, ind, ind],
-            ts=ts,
-        )
+        for metric_type in MetricType:
+            add_measurement(metric_type, client, VM_ID, ts, ind)
 
     # Confirm that we have 20 data points
-    current_data = client.get_cpu_measurements(vm_ids=[VM_ID])
-    asserts.list_size(current_data, num_metrics * 2)
+    for metric_type in MetricType:
+        current_data = get_measurements(metric_type, client, VM_ID)
+        asserts.list_size(current_data, num_metrics * 2)
 
     # Start the sweeper so it runs frequently and deletes the 10 old data points
     datastore_sweeper_config = DatastoreSweeperConfig(
@@ -64,8 +66,9 @@ def test_sweeper(
         time.sleep(2)
 
         # Confirm that we now only have 10 data points
-        current_data = client.get_cpu_measurements(vm_ids=[VM_ID])
-        asserts.list_size(current_data, num_metrics)
+        for metric_type in MetricType:
+            current_data = get_measurements(metric_type, client, VM_ID)
+            asserts.list_size(current_data, num_metrics)
 
         # Cleanup
         print("Sweeper metric cleanup test passed")
@@ -82,6 +85,6 @@ def test_sweeper(
         time.sleep(5)
         asserts.list_size(client.get_all_vms(), 0)
 
-        print("Sweeper vm reaping test passed")
+        print("Sweeper VM reaping test passed")
     finally:
         sweeper.stop()

@@ -3,7 +3,8 @@ from common import constants
 from vmagent.config import VmAgentConfig
 from vmagent.actors.metrics.samplers.memory import MemorySampler
 from vmagent.actors.metrics.faketrics import FakeMetricGenerator
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import DataApi, MemoryMeasurement
+from datetime import datetime, timezone
 
 
 class SendMemoryMetrics(conclib.ActorMessage):
@@ -41,23 +42,23 @@ class MemoryMetricCollector(conclib.PeriodicActor):
         else:
             free_mem_mib, total_mem_mib = self.sampler.sample()
 
-        print(
-            f"{self.__class__.__name__} - sending memory metric: {int(free_mem_mib)} MiB free / {int(total_mem_mib)} MiB total"
-        )
-        pass
-        # measurement = CpuMeasurement(
-        #     vm_id=self.vm_agent_config.vm_id,
-        #     ts=datetime.datetime.now(datetime.timezone.utc),
-        #     cpu_percents=cpu_percents,
+        # print(
+        #     f"{self.__class__.__name__} - sending memory metric: {int(free_mem_mib)} MiB free / {int(total_mem_mib)} MiB total"
         # )
-        # self.control_plane_sdk.put_cpu_metric(cpu_measurement=measurement)
+        measurement = MemoryMeasurement(
+            vm_id=self.vm_agent_config.vm_id,
+            ts=datetime.now(timezone.utc),
+            free_memory_mb=free_mem_mib,
+            total_memory_mb=total_mem_mib,
+        )
+        self.control_plane_sdk.put_memory_metric(memory_measurement=measurement)
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendMemoryMetrics):
             try:
                 self.send_memory_metric()
             except Exception as e:
-                print(f"📡 {self.__class__.__name__} - sending metrics: {e}")
+                print(f"🚨 {self.__class__.__name__} - failed to send metric: {e}")
         else:
             raise conclib.errors.UnexpectedMessageError(message)
 

@@ -36,11 +36,13 @@ class TestDiskThroughput(unittest.TestCase):
         model = DiskThroughput()
         if include_optional:
             return DiskThroughput(
+                disk_name = '',
                 read_mbps = 1.337,
                 write_mbps = 1.337
             )
         else:
             return DiskThroughput(
+                disk_name = '',
                 read_mbps = 1.337,
                 write_mbps = 1.337,
         )

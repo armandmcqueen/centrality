@@ -8,4 +8,4 @@ class StreamlitUiConfig(CentralityConfig):
         default_factory=ControlPlaneSdkConfig
     )
     live_vm_interval_ms: int = 5000
-    cpu_metric_interval_ms: int = 200
+    metric_interval_ms: int = 200

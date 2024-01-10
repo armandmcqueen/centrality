@@ -1,3 +1,4 @@
+# GPU config for simulating beefy GPU machine
 vm_id: gpus
 controlplane_sdk:
   host: controlplane
@@ -5,19 +6,18 @@ metrics:
   cpu:
     use_fake: true
     fake:
-      algorithm: linear_synced  # linear_synced | random
-      jitter: true
-      jitter_factor: 0.4
       num_vals: 128
-      period: 10
+  gpu_utilization:
+    use_fake: true
+  gpu_memory:
+    use_fake: true
+  # TODO: Fake other things to be beefier?
 machine_info:
   use_fake: true
   fake:
     hostname: null
     num_cpus: 128
-    cpu_description: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
-    host_memory_mb: 16000
+    host_memory_mb: 1600000
     num_gpus: 8
-    nvidia_driver_version: 535.129.03
     gpu_memory_mb: 60000
     gpu_type: NVIDIA A100
