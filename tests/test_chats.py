@@ -1,5 +1,5 @@
 import pytest
-from scripts.gpt.chats import Chat
+from scripts.gpt.chats import Chat, Config
 
 
 def test_clear():
@@ -35,3 +35,4 @@ def test_config():
 
 if __name__ == "__main__":
     pytest.main()
+from scripts.gpt.config import Config
