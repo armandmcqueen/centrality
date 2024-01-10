@@ -1,0 +1,15 @@
+[lint]
+check = ["."]
+fix = ["."]
+
+[lint.ignore]
+paths = ["**/venv/**", "**/.venv/**", "**/.git/**", "**/.tox/**", "**/build/**", "**/dist/**", "**/__pycache__/**", "**/*.egg-info/**", "**/*.egg/**"]
+
+[lint.ignore.errors]
+# Add any specific errors to ignore here
+
+[lint.ignore.warnings]
+# Add any specific warnings to ignore here
+
+[lint.ignore.infos]
+# Add any specific infos to ignore here
