@@ -1772,6 +1772,195 @@
           }
         }
       }
+    },
+    "/metrics/nvidia-smi": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Nvidia Smi Metrics",
+        "description": "Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
+        "operationId": "get_nvidia_smi_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          },
+          {
+            "name": "from_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Ts"
+            }
+          },
+          {
+            "name": "to_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                  },
+                  "title": "Response Get Nvidia Smi Metrics Metrics Nvidia Smi Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Put Nvidia Smi Metric",
+        "description": "Put a nvidia_smi metric measurement into the datastore",
+        "operationId": "put_nvidia_smi_metric",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics/nvidia-smi/latest": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Latest Nvidia Smi Metrics",
+        "description": "Get the most recent nvidia_smi measurements for each VM",
+        "operationId": "get_latest_nvidia_smi_metrics",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vm_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "title": "Vm Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                  },
+                  "title": "Response Get Latest Nvidia Smi Metrics Metrics Nvidia Smi Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2129,6 +2318,31 @@
         ],
         "title": "NetworkThroughputMeasurement",
         "description": "A measurement of NetworkThroughput"
+      },
+      "NvidiaSmiMeasurement": {
+        "properties": {
+          "vm_id": {
+            "type": "string",
+            "title": "Vm Id"
+          },
+          "ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ts"
+          },
+          "nvidia_smi_output": {
+            "type": "string",
+            "title": "Nvidia Smi Output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vm_id",
+          "ts",
+          "nvidia_smi_output"
+        ],
+        "title": "NvidiaSmiMeasurement",
+        "description": "A measurement of NvidiaSmi"
       },
       "OkResponse": {
         "properties": {

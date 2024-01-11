@@ -8,6 +8,7 @@ metric_name_lowercase = "disk_iops"
 metric_name_camelcase = "DiskIops"
 metric_name_capitalized = "DISK_IOPS"
 metrics_shape_db = "dict[str, float]"
+metrics_type_db = "JSONB"
 example_metrics = "{disk1: iopsXXX, disk2: iopsYYY}"
 custom_types = """\
 class DiskIops(BaseModel):

@@ -8,6 +8,7 @@ metric_name_lowercase = "disk_usage"
 metric_name_camelcase = "DiskUsage"
 metric_name_capitalized = "DISK_USAGE"
 metrics_shape_db = "dict[str, list[float]]"
+metrics_type_db = "JSONB"
 example_metrics = "{disk1: [used, total], disk2: [used, total]}"
 custom_types = """\
 class DiskUsage(BaseModel):

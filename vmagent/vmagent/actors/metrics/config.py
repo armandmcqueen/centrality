@@ -73,6 +73,10 @@ class GpuMemMetricConfig(CentralityConfig):
     )
 
 
+class NvidiaSmiMetricConfig(CentralityConfig):
+    use_fake: bool = False
+
+
 class MetricsConfig(CentralityConfig):
     cpu: CpuMetricConfig = Field(default_factory=CpuMetricConfig)
     disk_throughput: DiskThroughputMetricConfig = Field(
@@ -84,3 +88,4 @@ class MetricsConfig(CentralityConfig):
     gpu_memory: GpuMemMetricConfig = Field(default_factory=GpuMemMetricConfig)
     memory: MemoryMetricConfig = Field(default_factory=MemoryMetricConfig)
     network: NetworkMetricConfig = Field(default_factory=NetworkMetricConfig)
+    nvidia_smi: NvidiaSmiMetricConfig = Field(default_factory=NvidiaSmiMetricConfig)

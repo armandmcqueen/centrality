@@ -28,6 +28,9 @@ from controlplane.datastore.types.vmmetrics.generated.memory import (
 from controlplane.datastore.types.vmmetrics.generated.network_throughput import (
     NetworkThroughputMeasurement,
 )
+from controlplane.datastore.types.vmmetrics.generated.nvidia_smi import (
+    NvidiaSmiMeasurement,
+)
 
 from controlplane.datastore.types.vmliveness import VmRegistrationInfo
 from common import constants
@@ -597,6 +600,56 @@ def put_network_throughput_metric(
 ) -> OkResponse:
     """Put a network_throughput metric measurement into the datastore"""
     datastore_client.add_network_throughput_measurement(
+        vm_id=measurement.vm_id,
+        metrics=measurement.to_metrics(),
+        ts=measurement.ts,
+    )
+    return OkResponse()
+
+
+@app.get(constants.CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_nvidia_smi_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+    from_ts: Optional[datetime.datetime] = None,
+    to_ts: Optional[datetime.datetime] = None,
+) -> list[NvidiaSmiMeasurement]:
+    """
+    Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive.
+    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    :param from_ts: Start time filter, inclusive. Optional.
+    :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
+                  error, but the results will be empty.
+    :return: List of NvidiaSmiMeasurement objects
+    """
+    results = datastore_client.get_nvidia_smi_measurements(
+        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+    )
+    return [result.to_nvidia_smi_measurement() for result in results]
+
+
+@app.get(
+    f"{constants.CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT}/latest", tags=[MAIN_TAG]
+)
+@auth(datastore_client)
+def get_latest_nvidia_smi_metrics(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    vm_ids: Annotated[list[str], Query()],
+) -> list[NvidiaSmiMeasurement]:
+    """Get the most recent nvidia_smi measurements for each VM"""
+    results = datastore_client.get_latest_nvidia_smi_measurements(vm_ids=vm_ids)
+    return [result.to_nvidia_smi_measurement() for result in results]
+
+
+@app.post(constants.CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def put_nvidia_smi_metric(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    measurement: NvidiaSmiMeasurement,
+) -> OkResponse:
+    """Put a nvidia_smi metric measurement into the datastore"""
+    datastore_client.add_nvidia_smi_measurement(
         vm_id=measurement.vm_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,

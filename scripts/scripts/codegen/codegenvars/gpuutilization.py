@@ -7,6 +7,7 @@ metric_name_lowercase = "gpu_utilization"
 metric_name_camelcase = "GpuUtilization"
 metric_name_capitalized = "GPU_UTILIZATION"
 metrics_shape_db = "list[float]"
+metrics_type_db = "JSONB"
 example_metrics = "[20, 40, 60, 80]"
 custom_types = """\
 """

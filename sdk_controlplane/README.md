@@ -110,8 +110,10 @@ Class | Method | HTTP request | Description
 *DataApi* | [**get_latest_gpu_utilization_metrics**](docs/DataApi.md#get_latest_gpu_utilization_metrics) | **GET** /metrics/gpu-utilization/latest | Get Latest Gpu Utilization Metrics
 *DataApi* | [**get_latest_memory_metrics**](docs/DataApi.md#get_latest_memory_metrics) | **GET** /metrics/memory/latest | Get Latest Memory Metrics
 *DataApi* | [**get_latest_network_throughput_metrics**](docs/DataApi.md#get_latest_network_throughput_metrics) | **GET** /metrics/network-throughput/latest | Get Latest Network Throughput Metrics
+*DataApi* | [**get_latest_nvidia_smi_metrics**](docs/DataApi.md#get_latest_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi/latest | Get Latest Nvidia Smi Metrics
 *DataApi* | [**get_memory_metrics**](docs/DataApi.md#get_memory_metrics) | **GET** /metrics/memory | Get Memory Metrics
 *DataApi* | [**get_network_throughput_metrics**](docs/DataApi.md#get_network_throughput_metrics) | **GET** /metrics/network-throughput | Get Network Throughput Metrics
+*DataApi* | [**get_nvidia_smi_metrics**](docs/DataApi.md#get_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi | Get Nvidia Smi Metrics
 *DataApi* | [**list_live_vms**](docs/DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 *DataApi* | [**put_cpu_metric**](docs/DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
 *DataApi* | [**put_disk_iops_metric**](docs/DataApi.md#put_disk_iops_metric) | **POST** /metrics/disk-iops | Put Disk Iops Metric
@@ -121,6 +123,7 @@ Class | Method | HTTP request | Description
 *DataApi* | [**put_gpu_utilization_metric**](docs/DataApi.md#put_gpu_utilization_metric) | **POST** /metrics/gpu-utilization | Put Gpu Utilization Metric
 *DataApi* | [**put_memory_metric**](docs/DataApi.md#put_memory_metric) | **POST** /metrics/memory | Put Memory Metric
 *DataApi* | [**put_network_throughput_metric**](docs/DataApi.md#put_network_throughput_metric) | **POST** /metrics/network-throughput | Put Network Throughput Metric
+*DataApi* | [**put_nvidia_smi_metric**](docs/DataApi.md#put_nvidia_smi_metric) | **POST** /metrics/nvidia-smi | Put Nvidia Smi Metric
 *DataApi* | [**register_vm**](docs/DataApi.md#register_vm) | **POST** /vm/{vm_id}/register | Register Vm
 *DataApi* | [**report_vm_death**](docs/DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
 *DataApi* | [**report_vm_heartbeat**](docs/DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
@@ -142,6 +145,7 @@ Class | Method | HTTP request | Description
  - [InfoResponse](docs/InfoResponse.md)
  - [MemoryMeasurement](docs/MemoryMeasurement.md)
  - [NetworkThroughputMeasurement](docs/NetworkThroughputMeasurement.md)
+ - [NvidiaSmiMeasurement](docs/NvidiaSmiMeasurement.md)
  - [OkResponse](docs/OkResponse.md)
  - [Throughput](docs/Throughput.md)
  - [ValidationError](docs/ValidationError.md)

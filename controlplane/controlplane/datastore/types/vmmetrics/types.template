@@ -3,6 +3,7 @@
 from typing import cast, Any
 import datetime
 from sqlalchemy import Index
+from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from controlplane.datastore.types.vmmetrics.metric import (
@@ -30,7 +31,7 @@ metric_shape_db = METRIC_SHAPE_DB
 
 class METRIC_NAME_CAMELCASEMetricLatestORM(MetricLatestBaseORM):
     __tablename__ = f"machine_metric_METRIC_NAME_LOWERCASE_latest"
-    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(METRIC_TYPE_DB, nullable=False)
 
 
 class METRIC_NAME_CAMELCASEMetricORM(MetricBaseORM):

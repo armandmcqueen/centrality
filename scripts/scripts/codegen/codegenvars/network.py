@@ -9,6 +9,7 @@ metric_name_lowercase = "network_throughput"
 metric_name_camelcase = "NetworkThroughput"
 metric_name_capitalized = "NETWORK_THROUGHPUT"
 metrics_shape_db = "dict[str, list[float]]"
+metrics_type_db = "JSONB"
 example_metrics = "{ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}"
 custom_types = """\
 class Throughput(BaseModel):
