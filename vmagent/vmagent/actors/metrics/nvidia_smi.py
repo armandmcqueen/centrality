@@ -52,8 +52,10 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
 
         self.nvidia_smi_available = True
         try:
-            subprocess.check_output("nvidia-smi", shell=True)
+            subprocess.check_call("nvidia-smi", shell=True)
+            print("📈 nvidia-smi is available")
         except FileNotFoundError:
+            print("📈 nvidia-smi is not available")
             self.nvidia_smi_available = False
 
         self.nvidia_smi_pid = None
@@ -63,8 +65,11 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
     def on_start(self) -> None:
         if self.nvidia_smi_available:
             try:
-                subprocess.check_output("nvidia-smi -pm 1", shell=True)
+                print("📈 Enabling persistence mode for nvidia-smi")
+                subprocess.check_call("nvidia-smi -pm 1", shell=True)
+                print("📈 Persistence mode enabled for nvidia-smi")
             except Exception:
+                print("📈 Failed to enable persistence mode for nvidia-smi")
                 pass
         super().on_start()
 
@@ -75,13 +80,14 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
             if not self.nvidia_smi_available:
                 return
             nvidia_smi_output = self.sampler.sample()
-
+        print("📈 Sending nvidia-smi metric")
         measurement = NvidiaSmiMeasurement(
             vm_id=self.vm_agent_config.vm_id,
             ts=datetime.now(timezone.utc),
             nvidia_smi_output=nvidia_smi_output,
         )
         self.control_plane_sdk.put_nvidia_smi_metric(measurement)
+        print("✅ Sent nvidia-smi metric")
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendNvidiaSmiMetric):

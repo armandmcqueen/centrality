@@ -95,5 +95,8 @@ metrics:
       min_val: 0
       num_vals: 1
       period: 10
+  nvidia_smi:
+    use_fake: true
+
 
 
