@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import subprocess
 
 
-nvidia_smi_output_example = """\
+output_example = """\
 +---------------------------------------------------------------------------------------+
 | NVIDIA-SMI 535.129.03             Driver Version: 535.129.03   CUDA Version: 12.2     |
 |-----------------------------------------+----------------------+----------------------+
@@ -53,9 +53,7 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
         self.nvidia_smi_available = True
         try:
             subprocess.check_call("nvidia-smi", shell=True)
-            print("📈 nvidia-smi is available")
         except Exception:
-            print("📈 nvidia-smi is not available")
             self.nvidia_smi_available = False
 
         self.nvidia_smi_pid = None
@@ -65,29 +63,25 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
     def on_start(self) -> None:
         if self.nvidia_smi_available:
             try:
-                print("📈 Enabling persistence mode for nvidia-smi")
                 subprocess.check_call("nvidia-smi -pm 1", shell=True)
-                print("📈 Persistence mode enabled for nvidia-smi")
             except Exception:
-                print("📈 Failed to enable persistence mode for nvidia-smi")
+                print("❗️ Failed to enable persistence mode for nvidia-smi. Non-fatal")
                 pass
         super().on_start()
 
     def send_nvidia_smi_metric(self) -> None:
         if self.config.use_fake:
-            nvidia_smi_output = nvidia_smi_output_example
+            output = output_example
         else:
             if not self.nvidia_smi_available:
                 return
-            nvidia_smi_output = self.sampler.sample()
-        print("📈 Sending nvidia-smi metric")
+            output = self.sampler.sample()
         measurement = NvidiaSmiMeasurement(
             vm_id=self.vm_agent_config.vm_id,
             ts=datetime.now(timezone.utc),
-            nvidia_smi_output=nvidia_smi_output,
+            output=output,
         )
         self.control_plane_sdk.put_nvidia_smi_metric(measurement)
-        print("✅ Sent nvidia-smi metric")
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendNvidiaSmiMetric):

@@ -180,7 +180,7 @@ def get_metrics_for_vm(
 
         card = [
             NvidiaSmiCardContents(
-                output=m.nvidia_smi_output,
+                output=m.output,
             )
         ]
         return NvidiaSmiCard, card, True

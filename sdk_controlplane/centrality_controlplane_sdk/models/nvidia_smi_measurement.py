@@ -31,8 +31,8 @@ class NvidiaSmiMeasurement(BaseModel):
     """ # noqa: E501
     vm_id: StrictStr
     ts: datetime
-    nvidia_smi_output: StrictStr
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "nvidia_smi_output"]
+    output: StrictStr
+    __properties: ClassVar[List[str]] = ["vm_id", "ts", "output"]
 
     model_config = {
         "populate_by_name": True,
@@ -84,7 +84,7 @@ class NvidiaSmiMeasurement(BaseModel):
         _obj = cls.model_validate({
             "vm_id": obj.get("vm_id"),
             "ts": obj.get("ts"),
-            "nvidia_smi_output": obj.get("nvidia_smi_output")
+            "output": obj.get("output")
         })
         return _obj
 

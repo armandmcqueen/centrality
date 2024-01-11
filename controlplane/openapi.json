@@ -2330,16 +2330,16 @@
             "format": "date-time",
             "title": "Ts"
           },
-          "nvidia_smi_output": {
+          "output": {
             "type": "string",
-            "title": "Nvidia Smi Output"
+            "title": "Output"
           }
         },
         "type": "object",
         "required": [
           "vm_id",
           "ts",
-          "nvidia_smi_output"
+          "output"
         ],
         "title": "NvidiaSmiMeasurement",
         "description": "A measurement of NvidiaSmi"

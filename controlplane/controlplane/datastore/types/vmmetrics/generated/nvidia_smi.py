@@ -24,12 +24,12 @@ metric_shape_db = str
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(metrics: str) -> dict[str, str]:
-    return dict(nvidia_smi_output=metrics)
+    return dict(output=metrics)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> str:
-    return self.nvidia_smi_output
+    return self.output
 
 
 class NvidiaSmiMetricLatestORM(MetricLatestBaseORM):
@@ -50,7 +50,7 @@ class NvidiaSmiMetricORM(MetricBaseORM):
 class NvidiaSmiMetricLatest(MetricLatestBaseModel):
     vm_id: str
     ts: datetime.datetime
-    nvidia_smi_output: str
+    output: str
 
     @classmethod
     def from_orm(
@@ -68,7 +68,7 @@ class NvidiaSmiMetric(MetricBaseModel):
     metric_id: str
     vm_id: str
     ts: datetime.datetime
-    nvidia_smi_output: str
+    output: str
 
     @classmethod
     def from_orm(cls, orm: NvidiaSmiMetricORM, **kwargs) -> "NvidiaSmiMetric":
@@ -89,7 +89,7 @@ class NvidiaSmiMeasurement(BaseModel):
     # This is the user-facing object that is sent to and from the REST endpoint
     vm_id: str
     ts: datetime.datetime
-    nvidia_smi_output: str
+    output: str
 
     def to_metrics(self) -> str:
         return convert_to_metrics(self)

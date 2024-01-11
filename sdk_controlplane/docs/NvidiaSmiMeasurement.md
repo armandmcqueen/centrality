@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **vm_id** | **str** |  | 
 **ts** | **datetime** |  | 
-**nvidia_smi_output** | **str** |  | 
+**output** | **str** |  | 
 
 ## Example
 

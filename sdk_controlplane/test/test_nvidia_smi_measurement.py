@@ -38,13 +38,13 @@ class TestNvidiaSmiMeasurement(unittest.TestCase):
             return NvidiaSmiMeasurement(
                 vm_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                nvidia_smi_output = ''
+                output = ''
             )
         else:
             return NvidiaSmiMeasurement(
                 vm_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                nvidia_smi_output = '',
+                output = '',
         )
         """
 

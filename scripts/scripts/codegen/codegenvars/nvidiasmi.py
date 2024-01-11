@@ -2,7 +2,7 @@ from typing import Any
 
 
 metric_obj_fields = """\
-    nvidia_smi_output: str
+    output: str
 """
 metric_name_lowercase = "nvidia_smi"
 metric_name_camelcase = "NvidiaSmi"
@@ -14,8 +14,8 @@ custom_types = ""
 
 
 def convert_from_metrics(metrics: str) -> dict[str, str]:
-    return dict(nvidia_smi_output=metrics)
+    return dict(output=metrics)
 
 
 def convert_to_metrics(self: Any) -> str:
-    return self.nvidia_smi_output
+    return self.output
