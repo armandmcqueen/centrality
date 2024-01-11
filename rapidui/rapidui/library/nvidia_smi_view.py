@@ -10,7 +10,7 @@ class NvidiaSmiCard(BaseCard):
         self.container = parent_container
         self.contents = contents
         self.text = self.container.empty()
-        self.text.markdown(f"```{contents.output}```")
+        self.text.markdown(f"```\n{contents.output}\n```")
 
     def empty(self):
         self.text.empty()
@@ -18,4 +18,4 @@ class NvidiaSmiCard(BaseCard):
 
     def update(self, contents: NvidiaSmiCardContents):
         self.contents = contents
-        self.text.markdown(f"```{contents.output}```")
+        self.text.markdown(f"```\n{contents.output}\n```")

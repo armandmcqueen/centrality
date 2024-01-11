@@ -72,7 +72,7 @@ VM_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_VM_AGENT_REST_CONFIG"
 
 # TODO: Make metric speed configurable
 # Enable this to make metrics slower for testing other functionality
-METRIC_SPEED = 0.2
+METRIC_SPEED = 0.25
 
 VM_AGENT_METRIC_CPU_INTERVAL_SECS = METRIC_SPEED
 VM_AGENT_METRIC_DISK_INTERVAL_SECS = METRIC_SPEED
