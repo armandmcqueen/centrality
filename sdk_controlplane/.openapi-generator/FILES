@@ -26,6 +26,7 @@ centrality_controlplane_sdk/models/http_validation_error.py
 centrality_controlplane_sdk/models/info_response.py
 centrality_controlplane_sdk/models/memory_measurement.py
 centrality_controlplane_sdk/models/network_throughput_measurement.py
+centrality_controlplane_sdk/models/nvidia_smi_measurement.py
 centrality_controlplane_sdk/models/ok_response.py
 centrality_controlplane_sdk/models/throughput.py
 centrality_controlplane_sdk/models/validation_error.py
@@ -48,6 +49,7 @@ docs/HTTPValidationError.md
 docs/InfoResponse.md
 docs/MemoryMeasurement.md
 docs/NetworkThroughputMeasurement.md
+docs/NvidiaSmiMeasurement.md
 docs/OkResponse.md
 docs/Throughput.md
 docs/ValidationError.md
@@ -75,6 +77,7 @@ test/test_http_validation_error.py
 test/test_info_response.py
 test/test_memory_measurement.py
 test/test_network_throughput_measurement.py
+test/test_nvidia_smi_measurement.py
 test/test_ok_response.py
 test/test_throughput.py
 test/test_validation_error.py

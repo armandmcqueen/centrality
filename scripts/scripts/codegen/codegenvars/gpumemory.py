@@ -8,6 +8,7 @@ metric_name_lowercase = "gpu_memory"
 metric_name_camelcase = "GpuMemory"
 metric_name_capitalized = "GPU_MEMORY"
 metrics_shape_db = "list[list[float]]"
+metrics_type_db = "JSONB"
 example_metrics = "[[used, total], [used, total]]"
 custom_types = """\
 class GpuMemory(BaseModel):

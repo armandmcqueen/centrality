@@ -113,6 +113,7 @@ def hydrate_template(
     template_str = template_str.replace(
         "METRIC_SHAPE_DB", template_vars.metrics_shape_db
     )
+    template_str = template_str.replace("METRIC_TYPE_DB", template_vars.metrics_type_db)
 
     lines = template_str.splitlines()
     return lines

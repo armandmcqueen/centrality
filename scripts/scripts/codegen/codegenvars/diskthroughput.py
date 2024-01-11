@@ -8,6 +8,7 @@ metric_name_lowercase = "disk_throughput"
 metric_name_camelcase = "DiskThroughput"
 metric_name_capitalized = "DISK_THROUGHPUT"
 metrics_shape_db = "dict[str, list[float]]"
+metrics_type_db = "JSONB"
 example_metrics = "{disk1: [read, write], disk2: [read, write]}"
 custom_types = """\
 class DiskThroughput(BaseModel):

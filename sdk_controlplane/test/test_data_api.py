@@ -145,6 +145,13 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
+    def test_get_latest_nvidia_smi_metrics(self) -> None:
+        """Test case for get_latest_nvidia_smi_metrics
+
+        Get Latest Nvidia Smi Metrics
+        """
+        pass
+
     def test_get_memory_metrics(self) -> None:
         """Test case for get_memory_metrics
 
@@ -156,6 +163,13 @@ class TestDataApi(unittest.TestCase):
         """Test case for get_network_throughput_metrics
 
         Get Network Throughput Metrics
+        """
+        pass
+
+    def test_get_nvidia_smi_metrics(self) -> None:
+        """Test case for get_nvidia_smi_metrics
+
+        Get Nvidia Smi Metrics
         """
         pass
 
@@ -219,6 +233,13 @@ class TestDataApi(unittest.TestCase):
         """Test case for put_network_throughput_metric
 
         Put Network Throughput Metric
+        """
+        pass
+
+    def test_put_nvidia_smi_metric(self) -> None:
+        """Test case for put_nvidia_smi_metric
+
+        Put Nvidia Smi Metric
         """
         pass
 

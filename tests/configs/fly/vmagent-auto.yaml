@@ -12,6 +12,8 @@ metrics:
     use_fake: true
   gpu_memory:
     use_fake: true
+  nvidia_smi:
+    use_fake: true
   # TODO: Fake other things to be beefier?
 machine_info:
   use_fake: true

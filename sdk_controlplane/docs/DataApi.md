@@ -21,8 +21,10 @@ Method | HTTP request | Description
 [**get_latest_gpu_utilization_metrics**](DataApi.md#get_latest_gpu_utilization_metrics) | **GET** /metrics/gpu-utilization/latest | Get Latest Gpu Utilization Metrics
 [**get_latest_memory_metrics**](DataApi.md#get_latest_memory_metrics) | **GET** /metrics/memory/latest | Get Latest Memory Metrics
 [**get_latest_network_throughput_metrics**](DataApi.md#get_latest_network_throughput_metrics) | **GET** /metrics/network-throughput/latest | Get Latest Network Throughput Metrics
+[**get_latest_nvidia_smi_metrics**](DataApi.md#get_latest_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi/latest | Get Latest Nvidia Smi Metrics
 [**get_memory_metrics**](DataApi.md#get_memory_metrics) | **GET** /metrics/memory | Get Memory Metrics
 [**get_network_throughput_metrics**](DataApi.md#get_network_throughput_metrics) | **GET** /metrics/network-throughput | Get Network Throughput Metrics
+[**get_nvidia_smi_metrics**](DataApi.md#get_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi | Get Nvidia Smi Metrics
 [**list_live_vms**](DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
 [**put_cpu_metric**](DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
 [**put_disk_iops_metric**](DataApi.md#put_disk_iops_metric) | **POST** /metrics/disk-iops | Put Disk Iops Metric
@@ -32,6 +34,7 @@ Method | HTTP request | Description
 [**put_gpu_utilization_metric**](DataApi.md#put_gpu_utilization_metric) | **POST** /metrics/gpu-utilization | Put Gpu Utilization Metric
 [**put_memory_metric**](DataApi.md#put_memory_metric) | **POST** /metrics/memory | Put Memory Metric
 [**put_network_throughput_metric**](DataApi.md#put_network_throughput_metric) | **POST** /metrics/network-throughput | Put Network Throughput Metric
+[**put_nvidia_smi_metric**](DataApi.md#put_nvidia_smi_metric) | **POST** /metrics/nvidia-smi | Put Nvidia Smi Metric
 [**register_vm**](DataApi.md#register_vm) | **POST** /vm/{vm_id}/register | Register Vm
 [**report_vm_death**](DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
 [**report_vm_heartbeat**](DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
@@ -1352,6 +1355,84 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **get_latest_nvidia_smi_metrics**
+> List[NvidiaSmiMeasurement] get_latest_nvidia_smi_metrics(vm_ids)
+
+Get Latest Nvidia Smi Metrics
+
+Get the most recent nvidia_smi measurements for each VM
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    vm_ids = ['vm_ids_example'] # List[str] | 
+
+    try:
+        # Get Latest Nvidia Smi Metrics
+        api_response = api_instance.get_latest_nvidia_smi_metrics(vm_ids)
+        print("The response of DataApi->get_latest_nvidia_smi_metrics:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->get_latest_nvidia_smi_metrics: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **vm_ids** | [**List[str]**](str.md)|  | 
+
+### Return type
+
+[**List[NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **get_memory_metrics**
 > List[MemoryMeasurement] get_memory_metrics(vm_ids, from_ts=from_ts, to_ts=to_ts)
 
@@ -1498,6 +1579,88 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List[NetworkThroughputMeasurement]**](NetworkThroughputMeasurement.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_nvidia_smi_metrics**
+> List[NvidiaSmiMeasurement] get_nvidia_smi_metrics(vm_ids, from_ts=from_ts, to_ts=to_ts)
+
+Get Nvidia Smi Metrics
+
+Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    vm_ids = ['vm_ids_example'] # List[str] | 
+    from_ts = '2013-10-20T19:20:30+01:00' # datetime |  (optional)
+    to_ts = '2013-10-20T19:20:30+01:00' # datetime |  (optional)
+
+    try:
+        # Get Nvidia Smi Metrics
+        api_response = api_instance.get_nvidia_smi_metrics(vm_ids, from_ts=from_ts, to_ts=to_ts)
+        print("The response of DataApi->get_nvidia_smi_metrics:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->get_nvidia_smi_metrics: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **vm_ids** | [**List[str]**](str.md)|  | 
+ **from_ts** | **datetime**|  | [optional] 
+ **to_ts** | **datetime**|  | [optional] 
+
+### Return type
+
+[**List[NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
 
 ### Authorization
 
@@ -2198,6 +2361,85 @@ with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **network_throughput_measurement** | [**NetworkThroughputMeasurement**](NetworkThroughputMeasurement.md)|  | 
+
+### Return type
+
+[**OkResponse**](OkResponse.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **put_nvidia_smi_metric**
+> OkResponse put_nvidia_smi_metric(nvidia_smi_measurement)
+
+Put Nvidia Smi Metric
+
+Put a nvidia_smi metric measurement into the datastore
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    nvidia_smi_measurement = centrality_controlplane_sdk.NvidiaSmiMeasurement() # NvidiaSmiMeasurement | 
+
+    try:
+        # Put Nvidia Smi Metric
+        api_response = api_instance.put_nvidia_smi_metric(nvidia_smi_measurement)
+        print("The response of DataApi->put_nvidia_smi_metric:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->put_nvidia_smi_metric: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **nvidia_smi_measurement** | [**NvidiaSmiMeasurement**](NvidiaSmiMeasurement.md)|  | 
 
 ### Return type
 

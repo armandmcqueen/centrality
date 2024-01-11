@@ -10,6 +10,7 @@ metric_name_lowercase = "cpu"
 metric_name_camelcase = "Cpu"
 metric_name_capitalized = "CPU"
 metrics_shape_db = "list[float]"
+metrics_type_db = "JSONB"
 example_metrics = "[cpuWWW, cpuXXX, cpuYYY, cpuZZZ]"
 custom_types = "CpuPercents = list[float]"
 

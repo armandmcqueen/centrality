@@ -72,6 +72,12 @@ from controlplane.datastore.types.vmmetrics.generated.network_throughput import 
     NetworkThroughputMetric,
     NetworkThroughputMetricLatest,
 )
+from controlplane.datastore.types.vmmetrics.generated.nvidia_smi import (
+    NvidiaSmiMetricORM,
+    NvidiaSmiMetricLatestORM,
+    NvidiaSmiMetric,
+    NvidiaSmiMetricLatest,
+)
 
 
 from controlplane.datastore.types.utils import gen_random_uuid
@@ -761,6 +767,52 @@ class DatastoreClient:
     ) -> None:
         self._delete_old_measurements(
             metric_orm=NetworkThroughputMetricORM,
+            oldest_ts_to_keep=oldest_ts_to_keep,
+            vm_ids=vm_ids,
+        )
+
+    # NvidiaSmi
+    def add_nvidia_smi_measurement(
+        self, vm_id: str, ts: datetime.datetime, metrics: str
+    ) -> None:
+        self._add_measurement(
+            vm_id=vm_id,
+            ts=ts,
+            metrics=metrics,
+            metric_orm=NvidiaSmiMetricORM,
+            latest_metric_orm=NvidiaSmiMetricLatestORM,
+        )
+
+    def get_nvidia_smi_measurements(
+        self,
+        vm_ids: list[str],
+        start_ts: Optional[datetime.datetime] = None,
+        end_ts: Optional[datetime.datetime] = None,
+    ) -> list[NvidiaSmiMetric]:
+        return self._get_measurements(
+            metric_orm=NvidiaSmiMetricORM,
+            metric=NvidiaSmiMetric,
+            vm_ids=vm_ids,
+            start_ts=start_ts,
+            end_ts=end_ts,
+        )
+
+    def get_latest_nvidia_smi_measurements(
+        self, vm_ids: list[str]
+    ) -> list[NvidiaSmiMetricLatest]:
+        return self._get_latest_measurements(
+            vm_ids=vm_ids,
+            latest_metric_orm=NvidiaSmiMetricLatestORM,
+            latest_metric=NvidiaSmiMetricLatest,
+        )
+
+    def delete_old_nvidia_smi_measurements(
+        self,
+        oldest_ts_to_keep: datetime.datetime,
+        vm_ids: Optional[list[str]] = None,
+    ) -> None:
+        self._delete_old_measurements(
+            metric_orm=NvidiaSmiMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
             vm_ids=vm_ids,
         )

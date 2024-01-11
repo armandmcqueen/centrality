@@ -15,6 +15,7 @@ from rapidui.library.mem_view import MemCardContents, MemCard
 from rapidui.library.disk_usage_view import DiskUsageCardContents, DiskUsageCard
 from rapidui.library.disk_io_view import DiskIoCardContents, DiskIoCard
 from rapidui.library.net_view import NetThroughputCardContents, NetThroughputCard
+from rapidui.library.nvidia_smi_view import NvidiaSmiCardContents, NvidiaSmiCard
 from enum import Enum
 
 
@@ -26,6 +27,7 @@ class MetricType(Enum):
     DISK_IO = "disk_io"
     GPU_MEMORY = "gpu_memory"
     GPU_UTILIZATION = "gpu_utilization"
+    NVIDIA_SMI = "nvidia_smi"
 
 
 UseBorder = bool
@@ -167,6 +169,21 @@ def get_metrics_for_vm(
         cards = sorted(cards, key=lambda c: c.interface_name)
         cards.insert(0, total_card)
         return NetThroughputCard, cards, True
+    elif metric_type == MetricType.NVIDIA_SMI:
+        measurements = _sdk.get_latest_nvidia_smi_metrics(vm_ids=[vm_id])
+        if len(measurements) == 0:
+            return NvidiaSmiCard, [], True
+        assert (
+            len(measurements) == 1
+        ), f"There should exactly 1 result, but there was {len(measurements)}."
+        m = measurements[0]
+
+        card = [
+            NvidiaSmiCardContents(
+                output=m.output,
+            )
+        ]
+        return NvidiaSmiCard, card, True
     else:
         raise NotImplementedError(f"Metric type {metric_type} not implemented")
 
@@ -210,10 +227,14 @@ def main():
         return
 
     num_cols = 4
+
     if len(cards) <= 8:
         num_cols = 2
     if len(cards) > 64:
         num_cols = 8
+
+    if card_type == NvidiaSmiCard:
+        num_cols = 1
 
     flexbox = UniformFlexbox(num_cols=num_cols, card_type=card_type, border=use_border)
     flexbox.set_initial_cards(cards)

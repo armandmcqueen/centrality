@@ -8,6 +8,7 @@ metric_name_lowercase = "memory"
 metric_name_camelcase = "Memory"
 metric_name_capitalized = "MEMORY"
 metrics_shape_db = "list[float]"
+metrics_type_db = "JSONB"
 example_metrics = "[1000, 2000]"
 custom_types = ""
 

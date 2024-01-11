@@ -8,6 +8,7 @@ from vmagent.actors.metrics.samplers.diskmb import DiskMbSampler
 from vmagent.actors.metrics.samplers.gpu import GpuSampler
 from vmagent.actors.metrics.samplers.memory import MemorySampler
 from vmagent.actors.metrics.samplers.network import NetworkSampler
+from vmagent.actors.metrics.samplers.nvidia_smi import NvidiaSmiSampler
 
 import typer
 
@@ -36,7 +37,7 @@ def loop_and_render(metric_sampler, refresh_rate=10):
 def main(
     sampler: str = typer.Argument(
         ...,
-        help="The metric sampler to use. Valid options are: gpu, diskio, diskmb, network (aka: net), cpu, memory (aka: mem)",
+        help="The metric sampler to use. Valid options are: gpu, diskio, diskmb, network (aka: net), cpu, memory (aka: mem), nvidia-smi",
     ),
     refresh_rate: int = typer.Option(10, help="The refresh rate in Hz"),
 ):
@@ -52,6 +53,8 @@ def main(
         metric_sampler = CpuSampler()
     elif sampler == "memory" or sampler == "mem":
         metric_sampler = MemorySampler()
+    elif sampler == "nvidia-smi":
+        metric_sampler = NvidiaSmiSampler()
     else:
         raise typer.BadParameter("Invalid collector")
 
