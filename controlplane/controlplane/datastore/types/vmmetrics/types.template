@@ -36,7 +36,7 @@ class METRIC_NAME_CAMELCASEMetricLatestORM(MetricLatestBaseORM):
 
 class METRIC_NAME_CAMELCASEMetricORM(MetricBaseORM):
     __tablename__ = f"machine_metric_METRIC_NAME_LOWERCASE"
-    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(JSONB, nullable=False)
+    metrics: Mapped[METRIC_SHAPE_DB] = mapped_column(METRIC_TYPE_DB, nullable=False)
 
     __table_args__ = (
         Index("idx_metric_METRIC_NAME_LOWERCASE_ts", "ts"),  # Creating the index

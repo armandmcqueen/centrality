@@ -4,7 +4,6 @@ from typing import cast, Any
 import datetime
 from sqlalchemy import Index
 from sqlalchemy import String
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from controlplane.datastore.types.vmmetrics.metric import (
     MetricBaseORM,
@@ -40,7 +39,7 @@ class NvidiaSmiMetricLatestORM(MetricLatestBaseORM):
 
 class NvidiaSmiMetricORM(MetricBaseORM):
     __tablename__ = "machine_metric_nvidia_smi"
-    metrics: Mapped[str] = mapped_column(JSONB, nullable=False)
+    metrics: Mapped[str] = mapped_column(String, nullable=False)
 
     __table_args__ = (
         Index("idx_metric_nvidia_smi_ts", "ts"),  # Creating the index
