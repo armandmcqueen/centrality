@@ -54,7 +54,7 @@ class NvidiaSmiMetricCollector(conclib.PeriodicActor):
         try:
             subprocess.check_call("nvidia-smi", shell=True)
             print("📈 nvidia-smi is available")
-        except FileNotFoundError:
+        except Exception:
             print("📈 nvidia-smi is not available")
             self.nvidia_smi_available = False
 
