@@ -1,4 +1,4 @@
-import constants
+from common import constants
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
 from controlplane.datastore.types.machine_info import (
