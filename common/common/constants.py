@@ -7,7 +7,6 @@ HEALTHCHECK_ENDPOINT = "/healthz"
 AUTH_HEALTHCHECK_ENDPOINT = "/healthz/auth"
 INFO_ENDPOINT = "/info"
 
-# TODO: Change this to have machine_id as URL param?
 # Control Plane specific endpoints
 CONTROL_PLANE_METRIC_CPU_ENDPOINT = "/machine/metrics/cpu"
 CONTROL_PLANE_METRIC_DISK_IOPS_ENDPOINT = "/machine/metrics/disk-iops"

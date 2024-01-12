@@ -1,3 +1,4 @@
+import constants
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
 from controlplane.datastore.types.machine_info import (
@@ -186,6 +187,10 @@ class DatastoreClient:
         nvidia-driver-version is not checked for equality because it can be upgraded without changing
         machines.
         """
+        if machine_id in constants.RESERVED_MACHINE_NAMES:
+            raise ValueError(
+                f"machine_id cannot be '{machine_id}' - these are reserved names: {constants.RESERVED_MACHINE_NAMES}"
+            )
         with Session(bind=self.engine) as session:
             existing_machine = (
                 session.query(MachineInfoOrm)
@@ -289,9 +294,8 @@ class DatastoreClient:
     ) -> list[MachineInfo]:
         """
         Return a list of Machines filtered by machine_ids if provided,
-        otherwise return all Machines in the DB. Optionally filter
-        out machines that don't have a heartbeat more recent than
-        oldest_heartbeat_ts
+        otherwise return all Machines. Optionally filter out machines
+        that don't have a heartbeat more recent than oldest_heartbeat_ts.
         """
         with Session(bind=self.engine) as session:
             query = session.query(MachineInfoOrm)

@@ -160,6 +160,10 @@ def register_machine(
     registration_info: MachineRegistrationInfo,
 ) -> OkResponse:
     """Register a machine"""
+    if machine_id in constants.RESERVED_MACHINE_NAMES:
+        raise ValueError(
+            f"machine_id cannot be '{machine_id}' - these are reserved names: {constants.RESERVED_MACHINE_NAMES}"
+        )
     try:
         datastore_client.add_or_update_machine_info(
             machine_id=machine_id, registration_info=registration_info

@@ -30,7 +30,6 @@ def watch_machines() -> None:
                 if tick_count % 200 == 0:
                     # Update the list of machines we track
                     live_machines = sdk.get_live_machines()
-                    # TODO: Check this makes sense
                     live_machines = [m.machine_id for m in live_machines]
                     text = Text("\n".join(live_machines))
                     live.update(text)

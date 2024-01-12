@@ -9,7 +9,7 @@ def get_METRIC_NAME_LOWERCASE_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[METRIC_NAME_CAMELCASEMeasurement]:
     """
-    Get METRIC_NAME_LOWERCASE metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get METRIC_NAME_LOWERCASE metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an

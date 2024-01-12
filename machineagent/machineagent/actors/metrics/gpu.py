@@ -47,14 +47,14 @@ class GpuMetricCollector(conclib.PeriodicActor):
         super().__init__()
 
     def send_gpu_metric(self) -> None:
-        # If we aren't faking all the data, check if pynmachinel is available and skip sampling if not
+        # If we aren't faking all the data, check if pynvml is available and skip sampling if not
         utils = None
         mem = None
         if not (self.config_util.use_fake and self.config_mem.use_fake):
-            if not self.sampler.pynmachinel_available:
+            if not self.sampler.pynvml_available:
                 # TODO: Add trace logging once logging is configured
                 # print(
-                #     f"🚨 {self.__class__.__name__} - pynmachinel not available, skipping gpu metric"
+                #     f"🚨 {self.__class__.__name__} - pynvml not available, skipping gpu metric"
                 # )
                 return
             utils, mem = self.sampler.sample()

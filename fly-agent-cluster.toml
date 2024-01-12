@@ -17,7 +17,7 @@ primary_region = "iad"
 [processes]
   agent = "python machineagent/machineagent/cli.py launch -f tests/configs/fly/machineagent-auto.yaml --machine-id auto"
 
-[[machine]]
+[[vm]]
   cpu_kind = "shared"
   cpus = 1
   memory_mb = 256

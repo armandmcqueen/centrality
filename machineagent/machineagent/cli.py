@@ -82,8 +82,10 @@ def launch(
         config = MachineAgentConfig(config_overrides=config_overrides)
 
     # This is a reserved name for the live machine due to API endpoint structure of /machine/live
-    if config.machine_id == "live":
-        raise RuntimeError("machine_id cannot be 'live' - this is a reserved name")
+    if config.machine_id in constants.RESERVED_MACHINE_NAMES:
+        raise RuntimeError(
+            f"machine_id cannot be '{config.machine_id}' - these are reserved names: {constants.RESERVED_MACHINE_NAMES}"
+        )
     print("⚙️ Config:")
     config.pretty_print_yaml()
 
