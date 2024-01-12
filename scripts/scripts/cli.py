@@ -23,7 +23,7 @@ def hello_world():
 def sync(
     local_directory: str = typer.Argument(
         ...,
-        help="The local directory to watch and sync, e.g. ../vmagent",
+        help="The local directory to watch and sync, e.g. ../machineagent",
     ),
     host: str = typer.Argument(
         ...,

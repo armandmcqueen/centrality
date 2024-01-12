@@ -9,19 +9,19 @@ from ..utils import asserts
 import datetime
 import time
 from rich import print
-from controlplane.datastore.types.vmliveness import VmRegistrationInfo
+from controlplane.datastore.types.machine_info import MachineRegistrationInfo
 from .metric_utils import (
     MetricType,
     add_measurement,
     get_measurements,
 )
 
-VM_ID = "test-vm-id"
+machine_id = "test-machine-id"
 
 
 def test_sweeper(
     datastore: tuple[DatastoreConfig, DatastoreClient],
-    vm_registration_info: VmRegistrationInfo,
+    machine_registration_info: MachineRegistrationInfo,
 ):
     """
     Test that the sweeper actor deletes old data points
@@ -42,19 +42,19 @@ def test_sweeper(
     )
     for ind, ts in enumerate(timestamps):
         for metric_type in MetricType:
-            add_measurement(metric_type, client, VM_ID, ts, ind)
+            add_measurement(metric_type, client, machine_id, ts, ind)
 
     # Confirm that we have 20 data points
     for metric_type in MetricType:
-        current_data = get_measurements(metric_type, client, VM_ID)
+        current_data = get_measurements(metric_type, client, machine_id)
         asserts.list_size(current_data, num_metrics * 2)
 
     # Start the sweeper so it runs frequently and deletes the 10 old data points
     datastore_sweeper_config = DatastoreSweeperConfig(
         sweep_interval_secs=1,
         data_retention_secs=60,
-        reap_vms_interval_secs=1,
-        vm_no_heartbeat_reap_secs=3,
+        reap_machines_interval_secs=1,
+        machine_no_heartbeat_reap_secs=3,
     )
     sweeper = DatastoreSweeper.start(
         datastore_sweeper_config=datastore_sweeper_config,
@@ -67,7 +67,7 @@ def test_sweeper(
 
         # Confirm that we now only have 10 data points
         for metric_type in MetricType:
-            current_data = get_measurements(metric_type, client, VM_ID)
+            current_data = get_measurements(metric_type, client, machine_id)
             asserts.list_size(current_data, num_metrics)
 
         # Cleanup
@@ -78,12 +78,12 @@ def test_sweeper(
 
     # Test VM reaping
     try:
-        client.add_or_update_vm_info(
-            vm_id=VM_ID, registration_info=vm_registration_info
+        client.add_or_update_machine_info(
+            machine_id=machine_id, registration_info=machine_registration_info
         )
-        asserts.list_size(client.get_all_vms(), 1)
+        asserts.list_size(client.get_machines(), 1)
         time.sleep(5)
-        asserts.list_size(client.get_all_vms(), 0)
+        asserts.list_size(client.get_machines(), 0)
 
         print("Sweeper VM reaping test passed")
     finally:

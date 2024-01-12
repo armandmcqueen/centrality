@@ -20,7 +20,7 @@ docker-compose-mount-up-controlplane:
 
 .PHONY: docker-compose-mount-up-solo
 docker-compose-mount-up-solo:
-	make docker-compose-mount-up ARGS="postgres controlplane vmagent-gpu"
+	make docker-compose-mount-up ARGS="postgres controlplane machineagent-gpu"
 
 
 .PHONY: test
@@ -43,7 +43,7 @@ lint:
 	make -C rapidui lint
 	make -C scripts lint
 	make -C tests lint
-	make -C vmagent lint
+	make -C machineagent lint
 
 .PHONY: lintcheck
 lintcheck:
@@ -54,7 +54,7 @@ lintcheck:
 	make -C rapidui lintcheck
 	make -C scripts lintcheck
 	make -C tests lintcheck
-	make -C vmagent lintcheck
+	make -C machineagent lintcheck
 
 .PHONY: formatcheck
 formatcheck:
@@ -65,7 +65,7 @@ formatcheck:
 	make -C rapidui formatcheck
 	make -C scripts formatcheck
 	make -C tests formatcheck
-	make -C vmagent formatcheck
+	make -C machineagent formatcheck
 
 .PHONY: typecheck
 typecheck:
@@ -76,7 +76,7 @@ typecheck:
 	make -C rapidui typecheck
 	make -C scripts typecheck
 	make -C tests typecheck
-	make -C vmagent typecheck
+	make -C machineagent typecheck
 
 .PHONY: check
 check:
@@ -94,7 +94,7 @@ install:
 	make -C rapidui install
 	make -C scripts install
 	make -C tests install
-	make -C vmagent install
+	make -C machineagent install
 
 .PHONY: install-dev
 install-dev:
@@ -106,7 +106,7 @@ install-dev:
 	make -C rapidui install-dev
 	make -C scripts install-dev
 	make -C tests install-dev
-	make -C vmagent install-dev
+	make -C machineagent install-dev
 
 
 .PHONY: pre-commit-install

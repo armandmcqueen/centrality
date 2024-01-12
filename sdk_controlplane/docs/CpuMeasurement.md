@@ -5,7 +5,7 @@ A measurement of Cpu
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **cpu_percents** | **List[float]** |  | 
 

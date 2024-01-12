@@ -7,5 +7,5 @@ class StreamlitUiConfig(CentralityConfig):
     control_plane_sdk: ControlPlaneSdkConfig = Field(
         default_factory=ControlPlaneSdkConfig
     )
-    live_vm_interval_ms: int = 5000
+    live_machine_interval_ms: int = 5000
     metric_interval_ms: int = 200

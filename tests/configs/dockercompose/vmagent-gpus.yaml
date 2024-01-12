@@ -1,5 +1,5 @@
 # GPU config for simulating beefy GPU machine
-vm_id: gpus
+machine_id: gpus
 controlplane_sdk:
   host: controlplane
 metrics:

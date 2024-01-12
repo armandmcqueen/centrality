@@ -36,13 +36,13 @@ class TestNvidiaSmiMeasurement(unittest.TestCase):
         model = NvidiaSmiMeasurement()
         if include_optional:
             return NvidiaSmiMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 output = ''
             )
         else:
             return NvidiaSmiMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 output = '',
         )

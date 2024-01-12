@@ -1,5 +1,5 @@
 # Config that fakes everything to test faking code
-vm_id: fake-data
+machine_id: fake-data
 controlplane_sdk:
   host: controlplane
 machine_info:

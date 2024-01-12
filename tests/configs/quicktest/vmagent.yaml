@@ -1,6 +1,6 @@
-# Config for quickly testing vmagent. Can be run outside of docker-compose and points to the docker compose
+# Config for quickly testing machineagent. Can be run outside of docker-compose and points to the docker compose
 # controlplane on localhost
-vm_id: test-machine
+machine_id: test-machine
 metrics:
   cpu:
     use_fake: false

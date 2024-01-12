@@ -94,39 +94,40 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DataApi* | [**get_auth_healthcheck**](docs/DataApi.md#get_auth_healthcheck) | **GET** /healthz/auth | Get Auth Healthcheck
-*DataApi* | [**get_cpu_metrics**](docs/DataApi.md#get_cpu_metrics) | **GET** /metrics/cpu | Get Cpu Metrics
-*DataApi* | [**get_disk_iops_metrics**](docs/DataApi.md#get_disk_iops_metrics) | **GET** /metrics/disk-iops | Get Disk Iops Metrics
-*DataApi* | [**get_disk_throughput_metrics**](docs/DataApi.md#get_disk_throughput_metrics) | **GET** /metrics/disk-throughput | Get Disk Throughput Metrics
-*DataApi* | [**get_disk_usage_metrics**](docs/DataApi.md#get_disk_usage_metrics) | **GET** /metrics/disk-usage | Get Disk Usage Metrics
-*DataApi* | [**get_gpu_memory_metrics**](docs/DataApi.md#get_gpu_memory_metrics) | **GET** /metrics/gpu-memory | Get Gpu Memory Metrics
-*DataApi* | [**get_gpu_utilization_metrics**](docs/DataApi.md#get_gpu_utilization_metrics) | **GET** /metrics/gpu-utilization | Get Gpu Utilization Metrics
+*DataApi* | [**get_cpu_metrics**](docs/DataApi.md#get_cpu_metrics) | **GET** /machine/metrics/cpu | Get Cpu Metrics
+*DataApi* | [**get_disk_iops_metrics**](docs/DataApi.md#get_disk_iops_metrics) | **GET** /machine/metrics/disk-iops | Get Disk Iops Metrics
+*DataApi* | [**get_disk_throughput_metrics**](docs/DataApi.md#get_disk_throughput_metrics) | **GET** /machine/metrics/disk-throughput | Get Disk Throughput Metrics
+*DataApi* | [**get_disk_usage_metrics**](docs/DataApi.md#get_disk_usage_metrics) | **GET** /machine/metrics/disk-usage | Get Disk Usage Metrics
+*DataApi* | [**get_gpu_memory_metrics**](docs/DataApi.md#get_gpu_memory_metrics) | **GET** /machine/metrics/gpu-memory | Get Gpu Memory Metrics
+*DataApi* | [**get_gpu_utilization_metrics**](docs/DataApi.md#get_gpu_utilization_metrics) | **GET** /machine/metrics/gpu-utilization | Get Gpu Utilization Metrics
 *DataApi* | [**get_healthcheck**](docs/DataApi.md#get_healthcheck) | **GET** /healthz | Get Healthcheck
 *DataApi* | [**get_info**](docs/DataApi.md#get_info) | **GET** /info | Get Info
-*DataApi* | [**get_latest_cpu_metrics**](docs/DataApi.md#get_latest_cpu_metrics) | **GET** /metrics/cpu/latest | Get Latest Cpu Metrics
-*DataApi* | [**get_latest_disk_iops_metrics**](docs/DataApi.md#get_latest_disk_iops_metrics) | **GET** /metrics/disk-iops/latest | Get Latest Disk Iops Metrics
-*DataApi* | [**get_latest_disk_throughput_metrics**](docs/DataApi.md#get_latest_disk_throughput_metrics) | **GET** /metrics/disk-throughput/latest | Get Latest Disk Throughput Metrics
-*DataApi* | [**get_latest_disk_usage_metrics**](docs/DataApi.md#get_latest_disk_usage_metrics) | **GET** /metrics/disk-usage/latest | Get Latest Disk Usage Metrics
-*DataApi* | [**get_latest_gpu_memory_metrics**](docs/DataApi.md#get_latest_gpu_memory_metrics) | **GET** /metrics/gpu-memory/latest | Get Latest Gpu Memory Metrics
-*DataApi* | [**get_latest_gpu_utilization_metrics**](docs/DataApi.md#get_latest_gpu_utilization_metrics) | **GET** /metrics/gpu-utilization/latest | Get Latest Gpu Utilization Metrics
-*DataApi* | [**get_latest_memory_metrics**](docs/DataApi.md#get_latest_memory_metrics) | **GET** /metrics/memory/latest | Get Latest Memory Metrics
-*DataApi* | [**get_latest_network_throughput_metrics**](docs/DataApi.md#get_latest_network_throughput_metrics) | **GET** /metrics/network-throughput/latest | Get Latest Network Throughput Metrics
-*DataApi* | [**get_latest_nvidia_smi_metrics**](docs/DataApi.md#get_latest_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi/latest | Get Latest Nvidia Smi Metrics
-*DataApi* | [**get_memory_metrics**](docs/DataApi.md#get_memory_metrics) | **GET** /metrics/memory | Get Memory Metrics
-*DataApi* | [**get_network_throughput_metrics**](docs/DataApi.md#get_network_throughput_metrics) | **GET** /metrics/network-throughput | Get Network Throughput Metrics
-*DataApi* | [**get_nvidia_smi_metrics**](docs/DataApi.md#get_nvidia_smi_metrics) | **GET** /metrics/nvidia-smi | Get Nvidia Smi Metrics
-*DataApi* | [**list_live_vms**](docs/DataApi.md#list_live_vms) | **GET** /vm/live | List Live Vms
-*DataApi* | [**put_cpu_metric**](docs/DataApi.md#put_cpu_metric) | **POST** /metrics/cpu | Put Cpu Metric
-*DataApi* | [**put_disk_iops_metric**](docs/DataApi.md#put_disk_iops_metric) | **POST** /metrics/disk-iops | Put Disk Iops Metric
-*DataApi* | [**put_disk_throughput_metric**](docs/DataApi.md#put_disk_throughput_metric) | **POST** /metrics/disk-throughput | Put Disk Throughput Metric
-*DataApi* | [**put_disk_usage_metric**](docs/DataApi.md#put_disk_usage_metric) | **POST** /metrics/disk-usage | Put Disk Usage Metric
-*DataApi* | [**put_gpu_memory_metric**](docs/DataApi.md#put_gpu_memory_metric) | **POST** /metrics/gpu-memory | Put Gpu Memory Metric
-*DataApi* | [**put_gpu_utilization_metric**](docs/DataApi.md#put_gpu_utilization_metric) | **POST** /metrics/gpu-utilization | Put Gpu Utilization Metric
-*DataApi* | [**put_memory_metric**](docs/DataApi.md#put_memory_metric) | **POST** /metrics/memory | Put Memory Metric
-*DataApi* | [**put_network_throughput_metric**](docs/DataApi.md#put_network_throughput_metric) | **POST** /metrics/network-throughput | Put Network Throughput Metric
-*DataApi* | [**put_nvidia_smi_metric**](docs/DataApi.md#put_nvidia_smi_metric) | **POST** /metrics/nvidia-smi | Put Nvidia Smi Metric
-*DataApi* | [**register_vm**](docs/DataApi.md#register_vm) | **POST** /vm/{vm_id}/register | Register Vm
-*DataApi* | [**report_vm_death**](docs/DataApi.md#report_vm_death) | **POST** /vm/{vm_id}/death | Report Vm Death
-*DataApi* | [**report_vm_heartbeat**](docs/DataApi.md#report_vm_heartbeat) | **POST** /vm/{vm_id}/heartbeat | Report Vm Heartbeat
+*DataApi* | [**get_latest_cpu_metrics**](docs/DataApi.md#get_latest_cpu_metrics) | **GET** /machine/metrics/cpu/latest | Get Latest Cpu Metrics
+*DataApi* | [**get_latest_disk_iops_metrics**](docs/DataApi.md#get_latest_disk_iops_metrics) | **GET** /machine/metrics/disk-iops/latest | Get Latest Disk Iops Metrics
+*DataApi* | [**get_latest_disk_throughput_metrics**](docs/DataApi.md#get_latest_disk_throughput_metrics) | **GET** /machine/metrics/disk-throughput/latest | Get Latest Disk Throughput Metrics
+*DataApi* | [**get_latest_disk_usage_metrics**](docs/DataApi.md#get_latest_disk_usage_metrics) | **GET** /machine/metrics/disk-usage/latest | Get Latest Disk Usage Metrics
+*DataApi* | [**get_latest_gpu_memory_metrics**](docs/DataApi.md#get_latest_gpu_memory_metrics) | **GET** /machine/metrics/gpu-memory/latest | Get Latest Gpu Memory Metrics
+*DataApi* | [**get_latest_gpu_utilization_metrics**](docs/DataApi.md#get_latest_gpu_utilization_metrics) | **GET** /machine/metrics/gpu-utilization/latest | Get Latest Gpu Utilization Metrics
+*DataApi* | [**get_latest_memory_metrics**](docs/DataApi.md#get_latest_memory_metrics) | **GET** /machine/metrics/memory/latest | Get Latest Memory Metrics
+*DataApi* | [**get_latest_network_throughput_metrics**](docs/DataApi.md#get_latest_network_throughput_metrics) | **GET** /machine/metrics/network-throughput/latest | Get Latest Network Throughput Metrics
+*DataApi* | [**get_latest_nvidia_smi_metrics**](docs/DataApi.md#get_latest_nvidia_smi_metrics) | **GET** /machine/metrics/nvidia-smi/latest | Get Latest Nvidia Smi Metrics
+*DataApi* | [**get_live_machines**](docs/DataApi.md#get_live_machines) | **GET** /machine/live | Get Live Machines
+*DataApi* | [**get_machine**](docs/DataApi.md#get_machine) | **GET** /machine/{machine_id} | Get Machine
+*DataApi* | [**get_memory_metrics**](docs/DataApi.md#get_memory_metrics) | **GET** /machine/metrics/memory | Get Memory Metrics
+*DataApi* | [**get_network_throughput_metrics**](docs/DataApi.md#get_network_throughput_metrics) | **GET** /machine/metrics/network-throughput | Get Network Throughput Metrics
+*DataApi* | [**get_nvidia_smi_metrics**](docs/DataApi.md#get_nvidia_smi_metrics) | **GET** /machine/metrics/nvidia-smi | Get Nvidia Smi Metrics
+*DataApi* | [**put_cpu_metric**](docs/DataApi.md#put_cpu_metric) | **POST** /machine/metrics/cpu | Put Cpu Metric
+*DataApi* | [**put_disk_iops_metric**](docs/DataApi.md#put_disk_iops_metric) | **POST** /machine/metrics/disk-iops | Put Disk Iops Metric
+*DataApi* | [**put_disk_throughput_metric**](docs/DataApi.md#put_disk_throughput_metric) | **POST** /machine/metrics/disk-throughput | Put Disk Throughput Metric
+*DataApi* | [**put_disk_usage_metric**](docs/DataApi.md#put_disk_usage_metric) | **POST** /machine/metrics/disk-usage | Put Disk Usage Metric
+*DataApi* | [**put_gpu_memory_metric**](docs/DataApi.md#put_gpu_memory_metric) | **POST** /machine/metrics/gpu-memory | Put Gpu Memory Metric
+*DataApi* | [**put_gpu_utilization_metric**](docs/DataApi.md#put_gpu_utilization_metric) | **POST** /machine/metrics/gpu-utilization | Put Gpu Utilization Metric
+*DataApi* | [**put_memory_metric**](docs/DataApi.md#put_memory_metric) | **POST** /machine/metrics/memory | Put Memory Metric
+*DataApi* | [**put_network_throughput_metric**](docs/DataApi.md#put_network_throughput_metric) | **POST** /machine/metrics/network-throughput | Put Network Throughput Metric
+*DataApi* | [**put_nvidia_smi_metric**](docs/DataApi.md#put_nvidia_smi_metric) | **POST** /machine/metrics/nvidia-smi | Put Nvidia Smi Metric
+*DataApi* | [**register_machine**](docs/DataApi.md#register_machine) | **POST** /machine/{machine_id}/register | Register Machine
+*DataApi* | [**report_machine_death**](docs/DataApi.md#report_machine_death) | **POST** /machine/{machine_id}/report-death | Report Machine Death
+*DataApi* | [**report_machine_heartbeat**](docs/DataApi.md#report_machine_heartbeat) | **POST** /machine/{machine_id}/heartbeat | Report Machine Heartbeat
 
 
 ## Documentation For Models
@@ -143,6 +144,8 @@ Class | Method | HTTP request | Description
  - [GpuUtilizationMeasurement](docs/GpuUtilizationMeasurement.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
  - [InfoResponse](docs/InfoResponse.md)
+ - [MachineInfo](docs/MachineInfo.md)
+ - [MachineRegistrationInfo](docs/MachineRegistrationInfo.md)
  - [MemoryMeasurement](docs/MemoryMeasurement.md)
  - [NetworkThroughputMeasurement](docs/NetworkThroughputMeasurement.md)
  - [NvidiaSmiMeasurement](docs/NvidiaSmiMeasurement.md)
@@ -150,7 +153,6 @@ Class | Method | HTTP request | Description
  - [Throughput](docs/Throughput.md)
  - [ValidationError](docs/ValidationError.md)
  - [ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
- - [VmRegistrationInfo](docs/VmRegistrationInfo.md)
 
 
 <a id="documentation-for-authorization"></a>

@@ -18,43 +18,43 @@ from common import constants
 
 # Use caching with epochs to only refresh data at some interval
 @st.cache_data
-def get_live_vms(_sdk: DataApi, epoch: int) -> list[str]:
-    live_vms = _sdk.list_live_vms()
+def get_live_machines(_sdk: DataApi, epoch: int) -> list[str]:
+    live_machines = _sdk.list_live_machines()
     # TODO: Handle errors?
-    return sorted(live_vms)
+    return sorted(live_machines)
 
 
 # Use caching with epochs to only refresh data at some interval
 @st.cache_data
 def get_cpu_metrics(
-    _sdk: DataApi, live_vms: list[str], epoch: int
+    _sdk: DataApi, live_machines: list[str], epoch: int
 ) -> list[MachineOverviewCardContents]:
     """Use epoch as a cache key to force a refresh at some interval"""
-    measurements = _sdk.get_latest_cpu_metrics(vm_ids=live_vms)
+    measurements = _sdk.get_latest_cpu_metrics(machine_ids=live_machines)
     # TODO: Handle errors?
     return [
         MachineOverviewCardContents(
-            vm_id=m.vm_id, avg_cpu=sum(m.cpu_percents) / len(m.cpu_percents)
+            machine_id=m.machine_id, avg_cpu=sum(m.cpu_percents) / len(m.cpu_percents)
         )
-        for m in sorted(measurements, key=lambda m: m.vm_id)
+        for m in sorted(measurements, key=lambda m: m.machine_id)
     ]
 
 
 def gen_data(
     _sdk: DataApi, config: StreamlitUiConfig
 ) -> tuple[list[str], list[MachineOverviewCardContents]]:
-    live_vms = get_live_vms(
+    live_machines = get_live_machines(
         _sdk=_sdk,
-        epoch=calculate_epoch(interval_ms=config.live_vm_interval_ms),
+        epoch=calculate_epoch(interval_ms=config.live_machine_interval_ms),
     )
-    if len(live_vms) == 0:
+    if len(live_machines) == 0:
         return [], []
     cpu_metrics = get_cpu_metrics(
         _sdk=_sdk,
-        live_vms=live_vms,
+        live_machines=live_machines,
         epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
     )
-    return live_vms, cpu_metrics
+    return live_machines, cpu_metrics
 
 
 def main():

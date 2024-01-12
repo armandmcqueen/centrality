@@ -85,17 +85,17 @@ def docker_compose(sdk: DataApi, sdk_config: ControlPlaneSdkConfig):
     while True:
         if time.time() > max_time:
             raise Exception(
-                f"Timed out waiting for live vms endpoint to show {test_constants.EXPECTED_NUM_AGENTS} machines"
+                f"Timed out waiting for live machines endpoint to show {test_constants.EXPECTED_NUM_AGENTS} machines"
             )
-        live_vms = sdk.list_live_vms()
-        if len(live_vms) == test_constants.EXPECTED_NUM_AGENTS:
+        live_machines = sdk.list_live_machines()
+        if len(live_machines) == test_constants.EXPECTED_NUM_AGENTS:
             print(
-                f"Live vms endpoint shows {test_constants.EXPECTED_NUM_AGENTS} machines as expected."
+                f"Live machines endpoint shows {test_constants.EXPECTED_NUM_AGENTS} machines as expected."
             )
             break
         else:
             print(
-                f"Waiting for live vms endpoint to show {test_constants.EXPECTED_NUM_AGENTS} machines, currently {len(live_vms)}"
+                f"Waiting for live machines endpoint to show {test_constants.EXPECTED_NUM_AGENTS} machines, currently {len(live_machines)}"
             )
         time.sleep(0.5)
 

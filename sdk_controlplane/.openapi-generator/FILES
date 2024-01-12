@@ -24,6 +24,8 @@ centrality_controlplane_sdk/models/gpu_memory_measurement.py
 centrality_controlplane_sdk/models/gpu_utilization_measurement.py
 centrality_controlplane_sdk/models/http_validation_error.py
 centrality_controlplane_sdk/models/info_response.py
+centrality_controlplane_sdk/models/machine_info.py
+centrality_controlplane_sdk/models/machine_registration_info.py
 centrality_controlplane_sdk/models/memory_measurement.py
 centrality_controlplane_sdk/models/network_throughput_measurement.py
 centrality_controlplane_sdk/models/nvidia_smi_measurement.py
@@ -31,7 +33,6 @@ centrality_controlplane_sdk/models/ok_response.py
 centrality_controlplane_sdk/models/throughput.py
 centrality_controlplane_sdk/models/validation_error.py
 centrality_controlplane_sdk/models/validation_error_loc_inner.py
-centrality_controlplane_sdk/models/vm_registration_info.py
 centrality_controlplane_sdk/py.typed
 centrality_controlplane_sdk/rest.py
 docs/CpuMeasurement.md
@@ -47,6 +48,8 @@ docs/GpuMemoryMeasurement.md
 docs/GpuUtilizationMeasurement.md
 docs/HTTPValidationError.md
 docs/InfoResponse.md
+docs/MachineInfo.md
+docs/MachineRegistrationInfo.md
 docs/MemoryMeasurement.md
 docs/NetworkThroughputMeasurement.md
 docs/NvidiaSmiMeasurement.md
@@ -54,7 +57,6 @@ docs/OkResponse.md
 docs/Throughput.md
 docs/ValidationError.md
 docs/ValidationErrorLocInner.md
-docs/VmRegistrationInfo.md
 git_push.sh
 pyproject.toml
 requirements.txt
@@ -75,6 +77,8 @@ test/test_gpu_memory_measurement.py
 test/test_gpu_utilization_measurement.py
 test/test_http_validation_error.py
 test/test_info_response.py
+test/test_machine_info.py
+test/test_machine_registration_info.py
 test/test_memory_measurement.py
 test/test_network_throughput_measurement.py
 test/test_nvidia_smi_measurement.py
@@ -82,5 +86,4 @@ test/test_ok_response.py
 test/test_throughput.py
 test/test_validation_error.py
 test/test_validation_error_loc_inner.py
-test/test_vm_registration_info.py
 tox.ini

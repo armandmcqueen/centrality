@@ -5,7 +5,7 @@ A measurement of DiskThroughput
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **throughput** | [**List[DiskThroughput]**](DiskThroughput.md) |  | 
 

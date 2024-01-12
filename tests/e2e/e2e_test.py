@@ -39,15 +39,15 @@ def test_auth(docker_compose, unauthed_sdk: DataApi):
         assert e.status == 403, f"Expected 403 error code, got {e.status}"
 
 
-def test_live_vms(docker_compose, sdk: DataApi):
+def test_live_machines(docker_compose, sdk: DataApi):
     """
-    Check if the live vms endpoint is working correctly. Implicitly checks if the
+    Check if the live machines endpoint is working correctly. Implicitly checks if the
     agents are sending heartbeats correctly.
     """
     print_test_function_name()
 
-    live_vms = sdk.list_live_vms()
-    asserts.list_size(live_vms, test_constants.EXPECTED_NUM_AGENTS)
+    live_machines = sdk.list_live_machines()
+    asserts.list_size(live_machines, test_constants.EXPECTED_NUM_AGENTS)
 
 
 @pytest.mark.parametrize("metric_type", MetricType)
@@ -57,13 +57,13 @@ def test_get_latest_metrics(docker_compose, sdk, metric_type: MetricType):
     """
     print_test_function_name()
 
-    live_vms = sdk.list_live_vms()
-    print(live_vms)
-    measurements = get_latest_metric_sdk(metric_type, sdk, live_vms)
+    live_machines = sdk.list_live_machines()
+    print(live_machines)
+    measurements = get_latest_metric_sdk(metric_type, sdk, live_machines)
     if metric_type not in [MetricType.GPU_MEMORY, MetricType.GPU_UTILIZATION]:
         # Not all nodes have GPUs
         # TODO: Parse which nodes have GPUs and check that we have that many latest metrics
-        asserts.same_size(measurements, live_vms)
+        asserts.same_size(measurements, live_machines)
 
     for m in measurements:
         validate_measurement_is_sane(metric_type, m)
@@ -78,4 +78,4 @@ def test_get_latest_metrics(docker_compose, sdk, metric_type: MetricType):
         )
 
 
-# TODO: test e2e datastore sweeper (metric deletion and vm reaping)
+# TODO: test e2e datastore sweeper (metric deletion and machine reaping)

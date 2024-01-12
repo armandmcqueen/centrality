@@ -30,10 +30,10 @@ class DiskThroughputMeasurement(BaseModel):
     """
     A measurement of DiskThroughput
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     throughput: List[DiskThroughput]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "throughput"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "throughput"]
 
     model_config = {
         "populate_by_name": True,
@@ -90,7 +90,7 @@ class DiskThroughputMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "throughput": [DiskThroughput.from_dict(_item) for _item in obj.get("throughput")] if obj.get("throughput") is not None else None
         })

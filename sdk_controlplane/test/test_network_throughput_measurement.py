@@ -36,7 +36,7 @@ class TestNetworkThroughputMeasurement(unittest.TestCase):
         model = NetworkThroughputMeasurement()
         if include_optional:
             return NetworkThroughputMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 per_interface = [
                     centrality_controlplane_sdk.models.throughput.Throughput(
@@ -51,7 +51,7 @@ class TestNetworkThroughputMeasurement(unittest.TestCase):
             )
         else:
             return NetworkThroughputMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 per_interface = [
                     centrality_controlplane_sdk.models.throughput.Throughput(

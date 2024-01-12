@@ -7,25 +7,30 @@ HEALTHCHECK_ENDPOINT = "/healthz"
 AUTH_HEALTHCHECK_ENDPOINT = "/healthz/auth"
 INFO_ENDPOINT = "/info"
 
+# TODO: Change this to have machine_id as URL param?
 # Control Plane specific endpoints
-CONTROL_PLANE_METRIC_CPU_ENDPOINT = "/metrics/cpu"
-CONTROL_PLANE_METRIC_DISK_IOPS_ENDPOINT = "/metrics/disk-iops"
-CONTROL_PLANE_METRIC_DISK_USAGE_ENDPOINT = "/metrics/disk-usage"
-CONTROL_PLANE_METRIC_DISK_THROUGHPUT_ENDPOINT = "/metrics/disk-throughput"
-CONTROL_PLANE_METRIC_GPU_MEMORY_ENDPOINT = "/metrics/gpu-memory"
-CONTROL_PLANE_METRIC_GPU_UTILIZATION_ENDPOINT = "/metrics/gpu-utilization"
-CONTROL_PLANE_METRIC_MEMORY_ENDPOINT = "/metrics/memory"
-CONTROL_PLANE_METRIC_NETWORK_THROUGHPUT_ENDPOINT = "/metrics/network-throughput"
-CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT = "/metrics/nvidia-smi"
+CONTROL_PLANE_METRIC_CPU_ENDPOINT = "/machine/metrics/cpu"
+CONTROL_PLANE_METRIC_DISK_IOPS_ENDPOINT = "/machine/metrics/disk-iops"
+CONTROL_PLANE_METRIC_DISK_USAGE_ENDPOINT = "/machine/metrics/disk-usage"
+CONTROL_PLANE_METRIC_DISK_THROUGHPUT_ENDPOINT = "/machine/metrics/disk-throughput"
+CONTROL_PLANE_METRIC_GPU_MEMORY_ENDPOINT = "/machine/metrics/gpu-memory"
+CONTROL_PLANE_METRIC_GPU_UTILIZATION_ENDPOINT = "/machine/metrics/gpu-utilization"
+CONTROL_PLANE_METRIC_MEMORY_ENDPOINT = "/machine/metrics/memory"
+CONTROL_PLANE_METRIC_NETWORK_THROUGHPUT_ENDPOINT = "/machine/metrics/network-throughput"
+CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT = "/machine/metrics/nvidia-smi"
 
-CONTROL_PLANE_LIVE_VM_ENDPOINT = "/vm/live"
-CONTROL_PLANE_VM_REGISTRATION_ENDPOINT = "/vm/{vm_id}/register"
-CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/vm/{vm_id}/heartbeat"
-CONTROL_PLANE_VM_DEATH_ENDPOINT = "/vm/{vm_id}/death"
+CONTROL_PLANE_GET_LIVE_VMS_ENDPOINT = "/machine/live"
+CONTROL_PLANE_GET_MACHINE_ENDPOINT = "/machine/{machine_id}"
+CONTROL_PLANE_VM_REGISTRATION_ENDPOINT = "/machine/{machine_id}/register"
+CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/machine/{machine_id}/heartbeat"
+CONTROL_PLANE_VM_DEATH_ENDPOINT = "/machine/{machine_id}/report-death"
+
+# Disallowed machine names to preserve API endpoint structure
+RESERVED_MACHINE_NAMES = ["live", "metrics"]
 
 
-def get_control_plane_vm_heartbeat_endpoint(vm_id: str) -> str:
-    return f"/vm/heartbeat/{vm_id}"
+def get_control_plane_machine_heartbeat_endpoint(machine_id: str) -> str:
+    return f"/machine/heartbeat/{machine_id}"
 
 
 #####################################################################

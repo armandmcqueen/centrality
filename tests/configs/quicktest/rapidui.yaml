@@ -3,4 +3,4 @@ control_plane_sdk:
   https: false
   port: 8000
 cpu_metric_interval_ms: 200
-live_vm_interval_ms: 5000
+live_machine_interval_ms: 5000

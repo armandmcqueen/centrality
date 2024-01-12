@@ -7,57 +7,57 @@ from ..utils.parameterized_metrics_sdk import MetricType
 def add_measurement(
     metric_type: MetricType,
     client,
-    vm_id: str,
+    machine_id: str,
     ts,
     ind,
 ):
     if metric_type == MetricType.CPU:
         client.add_cpu_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics=[ind, ind, ind, ind],
             ts=ts,
         )
     elif metric_type == MetricType.MEMORY:
         client.add_memory_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics=[ind, ind],
             ts=ts,
         )
 
     elif metric_type == MetricType.NETWORK:
         client.add_network_throughput_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics={"iface": [ind, ind], "total": [ind, ind]},
             ts=ts,
         )
 
     elif metric_type == MetricType.DISK_USAGE:
         client.add_disk_usage_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics={"disk": [ind, ind], "total": [ind, ind]},
             ts=ts,
         )
     elif metric_type == MetricType.DISK_IOPS:
         client.add_disk_iops_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics={"disk": ind},
             ts=ts,
         )
     elif metric_type == MetricType.DISK_THROUGHPUT:
         client.add_disk_throughput_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics={"disk": [ind, ind]},
             ts=ts,
         )
     elif metric_type == MetricType.GPU_MEMORY:
         client.add_gpu_memory_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics=[[ind, ind], [ind, ind]],
             ts=ts,
         )
     elif metric_type == MetricType.GPU_UTILIZATION:
         client.add_gpu_utilization_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             metrics=[ind, ind],
             ts=ts,
         )
@@ -66,83 +66,85 @@ def add_measurement(
 
 
 def get_latest_measurement(
-    metric_type: MetricType, client: DatastoreClient, vm_id: str
+    metric_type: MetricType, client: DatastoreClient, machine_id: str
 ):
     if metric_type == MetricType.CPU:
-        return client.get_latest_cpu_measurements(vm_ids=[vm_id])
+        return client.get_latest_cpu_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.MEMORY:
-        return client.get_latest_memory_measurements(vm_ids=[vm_id])
+        return client.get_latest_memory_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.NETWORK:
-        return client.get_latest_network_throughput_measurements(vm_ids=[vm_id])
+        return client.get_latest_network_throughput_measurements(
+            machine_ids=[machine_id]
+        )
     elif metric_type == MetricType.DISK_USAGE:
-        return client.get_latest_disk_usage_measurements(vm_ids=[vm_id])
+        return client.get_latest_disk_usage_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.DISK_IOPS:
-        return client.get_latest_disk_iops_measurements(vm_ids=[vm_id])
+        return client.get_latest_disk_iops_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.DISK_THROUGHPUT:
-        return client.get_latest_disk_throughput_measurements(vm_ids=[vm_id])
+        return client.get_latest_disk_throughput_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.GPU_MEMORY:
-        return client.get_latest_gpu_memory_measurements(vm_ids=[vm_id])
+        return client.get_latest_gpu_memory_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.GPU_UTILIZATION:
-        return client.get_latest_gpu_utilization_measurements(vm_ids=[vm_id])
+        return client.get_latest_gpu_utilization_measurements(machine_ids=[machine_id])
     else:
         raise Exception("Unknown metric type")
 
 
-def get_measurements(metric_type: MetricType, client, vm_id: str):
+def get_measurements(metric_type: MetricType, client, machine_id: str):
     if metric_type == MetricType.CPU:
-        return client.get_cpu_measurements(vm_ids=[vm_id])
+        return client.get_cpu_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.MEMORY:
-        return client.get_memory_measurements(vm_ids=[vm_id])
+        return client.get_memory_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.NETWORK:
-        return client.get_network_throughput_measurements(vm_ids=[vm_id])
+        return client.get_network_throughput_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.DISK_USAGE:
-        return client.get_disk_usage_measurements(vm_ids=[vm_id])
+        return client.get_disk_usage_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.DISK_IOPS:
-        return client.get_disk_iops_measurements(vm_ids=[vm_id])
+        return client.get_disk_iops_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.DISK_THROUGHPUT:
-        return client.get_disk_throughput_measurements(vm_ids=[vm_id])
+        return client.get_disk_throughput_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.GPU_MEMORY:
-        return client.get_gpu_memory_measurements(vm_ids=[vm_id])
+        return client.get_gpu_memory_measurements(machine_ids=[machine_id])
     elif metric_type == MetricType.GPU_UTILIZATION:
-        return client.get_gpu_utilization_measurements(vm_ids=[vm_id])
+        return client.get_gpu_utilization_measurements(machine_ids=[machine_id])
     else:
         raise Exception("Unknown metric type")
 
 
 def delete_old_measurements(
-    metric_type: MetricType, client, vm_id: str, oldest_ts_to_keep
+    metric_type: MetricType, client, machine_id: str, oldest_ts_to_keep
 ):
     if metric_type == MetricType.CPU:
         client.delete_old_cpu_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.MEMORY:
         client.delete_old_memory_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.NETWORK:
         client.delete_old_network_throughput_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_USAGE:
         client.delete_old_disk_usage_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_IOPS:
         client.delete_old_disk_iops_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.DISK_THROUGHPUT:
         client.delete_old_disk_throughput_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.GPU_MEMORY:
         client.delete_old_gpu_memory_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     elif metric_type == MetricType.GPU_UTILIZATION:
         client.delete_old_gpu_utilization_measurements(
-            vm_ids=[vm_id], oldest_ts_to_keep=oldest_ts_to_keep
+            machine_ids=[machine_id], oldest_ts_to_keep=oldest_ts_to_keep
         )
     else:
         raise Exception("Unknown metric type")

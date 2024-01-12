@@ -4,11 +4,11 @@ from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
 import time
 from rich import print
-from controlplane.datastore.types.vmliveness import (
-    VmRegistrationInfo as DatastoreVmRegistrationInfo,
+from controlplane.datastore.types.machine_info import (
+    MachineRegistrationInfo as DatastoreVmRegistrationInfo,
 )
-from vmagent.machineinfo.machineinfo import get_machine_info
-from vmagent.machineinfo.config import MachineInfoConfig
+from machineagent.machineinfo.machineinfo import get_machine_info
+from machineagent.machineinfo.config import MachineInfoConfig
 
 
 @pytest.fixture(scope="session")
@@ -41,7 +41,7 @@ def datastore():
 
 
 @pytest.fixture(scope="session")
-def vm_registration_info():
+def machine_registration_info():
     machine_info_config = MachineInfoConfig(use_fake=True)
     # Convert from SDK type to equivalent backend type. In the real world, this conversion happens
     # implicitly when the SDK sends data to the API, but here we need to do it manually. The backend

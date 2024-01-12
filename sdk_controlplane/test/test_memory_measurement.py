@@ -36,14 +36,14 @@ class TestMemoryMeasurement(unittest.TestCase):
         model = MemoryMeasurement()
         if include_optional:
             return MemoryMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 free_memory_mb = 1.337,
                 total_memory_mb = 1.337
             )
         else:
             return MemoryMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 free_memory_mb = 1.337,
                 total_memory_mb = 1.337,

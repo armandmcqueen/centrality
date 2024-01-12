@@ -5,7 +5,7 @@ A measurement of GpuUtilization
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **gpu_percents** | **List[float]** |  | 
 
