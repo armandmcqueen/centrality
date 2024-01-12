@@ -28,8 +28,10 @@ def watch_machines() -> None:
             loop_interval_ticks = 100
             while True:
                 if tick_count % 200 == 0:
-                    # Update the list of VMs we track
-                    live_machines = sdk.list_live_machines()
+                    # Update the list of machines we track
+                    live_machines = sdk.get_live_machines()
+                    # TODO: Check this makes sense
+                    live_machines = [m.machine_id for m in live_machines]
                     text = Text("\n".join(live_machines))
                     live.update(text)
 
@@ -51,7 +53,7 @@ def watch_cpu() -> None:
     console = rich.console.Console()
 
     def get_progress_descriptions(machine_id: str) -> str:
-        return f"[cyan]VM {machine_id}"
+        return f"[cyan]Machine {machine_id}"
 
     with CliContextManager():
         console.print("[bold underline cyan]Active Machines CPU")
@@ -62,7 +64,7 @@ def watch_cpu() -> None:
             refresh_per_second=10,
         ) as progress:
             machine_bars = {}
-            live_machines = sdk.list_live_machines()
+            live_machines = [m.machine_id for m in sdk.get_live_machines()]
             # TODO: Handle errors?
             for machine_id in live_machines:
                 machine_bars[machine_id] = progress.add_task(
@@ -74,8 +76,8 @@ def watch_cpu() -> None:
 
             while True:
                 if tick_count % 10_000 == 0:
-                    # Update the list of VMs we track
-                    live_machines = sdk.list_live_machines()
+                    # Update the list of machines we track
+                    live_machines = [m.machine_id for m in sdk.get_live_machines()]
                     # TODO: Handle errors?
                     new_set = set(live_machines)
                     old_set = set(machine_bars.keys())
@@ -90,7 +92,7 @@ def watch_cpu() -> None:
                         del machine_bars[machine_id]
 
                 if tick_count % 200 == 0:
-                    # Update the CPU metrics for all VMs current tracked
+                    # Update the CPU metrics for all machines current tracked
                     live_machines = list(machine_bars.keys())
                     if len(live_machines) != 0:
                         latest_cpu_measurements = sdk.get_latest_cpu_metrics(

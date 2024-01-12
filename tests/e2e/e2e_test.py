@@ -46,7 +46,7 @@ def test_live_machines(docker_compose, sdk: DataApi):
     """
     print_test_function_name()
 
-    live_machines = sdk.list_live_machines()
+    live_machines = [m.machine_id for m in sdk.get_live_machines()]
     asserts.list_size(live_machines, test_constants.EXPECTED_NUM_AGENTS)
 
 
@@ -55,9 +55,8 @@ def test_get_latest_metrics(docker_compose, sdk, metric_type: MetricType):
     """
     Check if the get latest cpu measurements endpoint is working correctly.
     """
-    print_test_function_name()
-
-    live_machines = sdk.list_live_machines()
+    print_test_function_name(additional_info=metric_type)
+    live_machines = [m.machine_id for m in sdk.get_live_machines()]
     print(live_machines)
     measurements = get_latest_metric_sdk(metric_type, sdk, live_machines)
     if metric_type not in [MetricType.GPU_MEMORY, MetricType.GPU_UTILIZATION]:
@@ -68,12 +67,12 @@ def test_get_latest_metrics(docker_compose, sdk, metric_type: MetricType):
     for m in measurements:
         validate_measurement_is_sane(metric_type, m)
 
-        # check that ts was within the last VM_HEARTBEAT_TIMEOUT_SECS seconds
+        # check that ts was within the last MACHINE_HEARTBEAT_TIMEOUT_SECS seconds
         assert (
             datetime.now(timezone.utc) - m.ts
-        ).total_seconds() < constants.VM_NO_HEARTBEAT_LIMBO_SECS, (
+        ).total_seconds() < constants.MACHINE_NO_HEARTBEAT_LIMBO_SECS, (
             f"measurement timestamp was not within the last "
-            f"{constants.VM_NO_HEARTBEAT_LIMBO_SECS} seconds: "
+            f"{constants.MACHINE_NO_HEARTBEAT_LIMBO_SECS} seconds: "
             f"{m.ts}"
         )
 

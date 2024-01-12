@@ -87,7 +87,7 @@ def docker_compose(sdk: DataApi, sdk_config: ControlPlaneSdkConfig):
             raise Exception(
                 f"Timed out waiting for live machines endpoint to show {test_constants.EXPECTED_NUM_AGENTS} machines"
             )
-        live_machines = sdk.list_live_machines()
+        live_machines = [m.machine_id for m in sdk.get_live_machines()]
         if len(live_machines) == test_constants.EXPECTED_NUM_AGENTS:
             print(
                 f"Live machines endpoint shows {test_constants.EXPECTED_NUM_AGENTS} machines as expected."

@@ -329,7 +329,7 @@ class DataApi:
     ) -> List[CpuMeasurement]:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -406,7 +406,7 @@ class DataApi:
     ) -> ApiResponse[List[CpuMeasurement]]:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -483,7 +483,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -649,7 +649,7 @@ class DataApi:
     ) -> List[DiskIopsMeasurement]:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -726,7 +726,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskIopsMeasurement]]:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -803,7 +803,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -969,7 +969,7 @@ class DataApi:
     ) -> List[DiskThroughputMeasurement]:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1046,7 +1046,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskThroughputMeasurement]]:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1123,7 +1123,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1289,7 +1289,7 @@ class DataApi:
     ) -> List[DiskUsageMeasurement]:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1366,7 +1366,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskUsageMeasurement]]:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1443,7 +1443,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1609,7 +1609,7 @@ class DataApi:
     ) -> List[GpuMemoryMeasurement]:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1686,7 +1686,7 @@ class DataApi:
     ) -> ApiResponse[List[GpuMemoryMeasurement]]:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1763,7 +1763,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -1929,7 +1929,7 @@ class DataApi:
     ) -> List[GpuUtilizationMeasurement]:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -2006,7 +2006,7 @@ class DataApi:
     ) -> ApiResponse[List[GpuUtilizationMeasurement]]:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -2083,7 +2083,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -2739,7 +2739,7 @@ class DataApi:
     ) -> List[CpuMeasurement]:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -2808,7 +2808,7 @@ class DataApi:
     ) -> ApiResponse[List[CpuMeasurement]]:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -2877,7 +2877,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3007,7 +3007,7 @@ class DataApi:
     ) -> List[DiskIopsMeasurement]:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3076,7 +3076,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskIopsMeasurement]]:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3145,7 +3145,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3275,7 +3275,7 @@ class DataApi:
     ) -> List[DiskThroughputMeasurement]:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3344,7 +3344,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskThroughputMeasurement]]:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3413,7 +3413,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3543,7 +3543,7 @@ class DataApi:
     ) -> List[DiskUsageMeasurement]:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3612,7 +3612,7 @@ class DataApi:
     ) -> ApiResponse[List[DiskUsageMeasurement]]:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3681,7 +3681,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3811,7 +3811,7 @@ class DataApi:
     ) -> List[GpuMemoryMeasurement]:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3880,7 +3880,7 @@ class DataApi:
     ) -> ApiResponse[List[GpuMemoryMeasurement]]:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -3949,7 +3949,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4079,7 +4079,7 @@ class DataApi:
     ) -> List[GpuUtilizationMeasurement]:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4148,7 +4148,7 @@ class DataApi:
     ) -> ApiResponse[List[GpuUtilizationMeasurement]]:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4217,7 +4217,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4347,7 +4347,7 @@ class DataApi:
     ) -> List[MemoryMeasurement]:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4416,7 +4416,7 @@ class DataApi:
     ) -> ApiResponse[List[MemoryMeasurement]]:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4485,7 +4485,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4615,7 +4615,7 @@ class DataApi:
     ) -> List[NetworkThroughputMeasurement]:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4684,7 +4684,7 @@ class DataApi:
     ) -> ApiResponse[List[NetworkThroughputMeasurement]]:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4753,7 +4753,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4883,7 +4883,7 @@ class DataApi:
     ) -> List[NvidiaSmiMeasurement]:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -4952,7 +4952,7 @@ class DataApi:
     ) -> ApiResponse[List[NvidiaSmiMeasurement]]:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -5021,7 +5021,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -5150,7 +5150,7 @@ class DataApi:
     ) -> List[MachineInfo]:
         """Get Live Machines
 
-        Return a list of the active VMs
+        Return a list of the active machines
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -5214,7 +5214,7 @@ class DataApi:
     ) -> ApiResponse[List[MachineInfo]]:
         """Get Live Machines
 
-        Return a list of the active VMs
+        Return a list of the active machines
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -5278,7 +5278,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Live Machines
 
-        Return a list of the active VMs
+        Return a list of the active machines
 
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
@@ -5665,7 +5665,7 @@ class DataApi:
     ) -> List[MemoryMeasurement]:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -5742,7 +5742,7 @@ class DataApi:
     ) -> ApiResponse[List[MemoryMeasurement]]:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -5819,7 +5819,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -5985,7 +5985,7 @@ class DataApi:
     ) -> List[NetworkThroughputMeasurement]:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -6062,7 +6062,7 @@ class DataApi:
     ) -> ApiResponse[List[NetworkThroughputMeasurement]]:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -6139,7 +6139,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -6305,7 +6305,7 @@ class DataApi:
     ) -> List[NvidiaSmiMeasurement]:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -6382,7 +6382,7 @@ class DataApi:
     ) -> ApiResponse[List[NvidiaSmiMeasurement]]:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -6459,7 +6459,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
         :param machine_ids: (required)
         :type machine_ids: List[str]
@@ -9126,7 +9126,7 @@ class DataApi:
     ) -> OkResponse:
         """Register Machine
 
-        Register a VM
+        Register a machine
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9199,7 +9199,7 @@ class DataApi:
     ) -> ApiResponse[OkResponse]:
         """Register Machine
 
-        Register a VM
+        Register a machine
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9272,7 +9272,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Register Machine
 
-        Register a VM
+        Register a machine
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9418,7 +9418,7 @@ class DataApi:
     ) -> OkResponse:
         """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9487,7 +9487,7 @@ class DataApi:
     ) -> ApiResponse[OkResponse]:
         """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9556,7 +9556,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9683,7 +9683,7 @@ class DataApi:
     ) -> OkResponse:
         """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9752,7 +9752,7 @@ class DataApi:
     ) -> ApiResponse[OkResponse]:
         """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
         :param machine_id: (required)
         :type machine_id: str
@@ -9821,7 +9821,7 @@ class DataApi:
     ) -> RESTResponseType:
         """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
         :param machine_id: (required)
         :type machine_id: str

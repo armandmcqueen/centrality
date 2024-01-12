@@ -20,7 +20,7 @@ from .metric_utils import (
 machine_id = "testmachine"
 
 # Short names to make the tests more readable
-LIVETHRESH = constants.VM_NO_HEARTBEAT_LIMBO_SECS
+LIVETHRESH = constants.MACHINE_NO_HEARTBEAT_LIMBO_SECS
 TOKEN = constants.CONTROL_PLANE_SDK_DEV_TOKEN
 
 
@@ -49,7 +49,7 @@ def test_machine_addition_and_removal(
     datastore: tuple[DatastoreConfig, DatastoreClient],
     machine_registration_info: MachineRegistrationInfo,
 ):
-    """Test VM addition and removal"""
+    """Test machine addition and removal"""
     print_test_function_name()
     config, client = datastore
 
@@ -60,7 +60,9 @@ def test_machine_addition_and_removal(
     client.add_or_update_machine_info(
         machine_id=machine_id, registration_info=machine_registration_info
     )
-    asserts.set_equality(client.get_live_machines(LIVETHRESH), [machine_id])
+    asserts.set_equality(
+        [m.machine_id for m in client.get_live_machines(LIVETHRESH)], [machine_id]
+    )
 
     # Test removal
     client.delete_machine_info(machine_id)
@@ -71,16 +73,18 @@ def test_machine_heartbeat_lifecycle(
     datastore: tuple[DatastoreConfig, DatastoreClient],
     machine_registration_info: MachineRegistrationInfo,
 ):
-    """Test the addition, liveness timeout removal, and heartbeat-based refresh of VMs"""
+    """Test the addition, liveness timeout removal, and heartbeat-based refresh of machines"""
     print_test_function_name()
     config, client = datastore
 
     client.add_or_update_machine_info(
         machine_id=machine_id, registration_info=machine_registration_info
     )
-    asserts.set_equality(client.get_live_machines(LIVETHRESH), [machine_id])
+    asserts.set_equality(
+        [m.machine_id for m in client.get_live_machines(LIVETHRESH)], [machine_id]
+    )
 
-    # Wait so that the VM is considered dead with a small liveness_threshold_secs but not
+    # Wait so that the machine is considered dead with a small liveness_threshold_secs but not
     # with a larger one
     time.sleep(3)
     asserts.list_size(client.get_live_machines(liveness_threshold_secs=2), 0)
@@ -95,7 +99,7 @@ def test_machine_heartbeat_lifecycle(
 def test_metric_measurements(
     datastore: tuple[DatastoreConfig, DatastoreClient], metric_type: MetricType
 ):
-    # TODO: Test with multiple VM IDs in the db
+    # TODO: Test with multiple machine IDs in the db
     # TODO: Test filtering by timestamp
 
     print_test_function_name()
@@ -112,7 +116,7 @@ def test_metric_measurements(
         # Check that the latest CPU measurement was updated correctly
         measurements = get_latest_measurement(metric_type, client, machine_id)
         asserts.list_size(measurements, 1)
-        assert measurements[0].machine_id == machine_id, "VM ID mismatch"
+        assert measurements[0].machine_id == machine_id, "Machine ID mismatch"
         assert measurements[0].ts == ts, "Timestamp mismatch"
         check_expected_measurement_value(metric_type, measurements[0], ind)
 

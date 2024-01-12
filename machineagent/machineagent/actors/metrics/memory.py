@@ -12,9 +12,9 @@ class SendMemoryMetrics(conclib.ActorMessage):
 
 
 class MemoryMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_MEMORY_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_MEMORY_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendMemoryMetrics: constants.VM_AGENT_METRIC_MEMORY_INTERVAL_SECS,
+        SendMemoryMetrics: constants.MACHINE_AGENT_METRIC_MEMORY_INTERVAL_SECS,
     }
 
     def __init__(

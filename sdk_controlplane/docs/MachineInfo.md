@@ -1,6 +1,6 @@
 # MachineInfo
 
-Information about a VM's current state
+Information about a machine's current state
 
 ## Properties
 Name | Type | Description | Notes

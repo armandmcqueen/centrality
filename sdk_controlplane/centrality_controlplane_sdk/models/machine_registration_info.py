@@ -27,7 +27,7 @@ except ImportError:
 
 class MachineRegistrationInfo(BaseModel):
     """
-    Information about a VM to register with the control plane.  Same as VM heartbeat, but without a few fields that are either set via URL params or automatically set server-side.
+    Information about a machine to register with the control plane.  Same as machine heartbeat, but without a few fields that are either set via URL params or automatically set server-side.
     """ # noqa: E501
     num_cpus: StrictInt
     cpu_description: StrictStr

@@ -18,9 +18,9 @@ class SendDiskIoMetrics(conclib.ActorMessage):
 
 
 class DiskIoMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_DISK_IO_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_DISK_IO_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendDiskIoMetrics: constants.VM_AGENT_METRIC_DISK_INTERVAL_SECS,
+        SendDiskIoMetrics: constants.MACHINE_AGENT_METRIC_DISK_INTERVAL_SECS,
     }
 
     def __init__(

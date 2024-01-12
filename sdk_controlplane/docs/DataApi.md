@@ -119,7 +119,7 @@ This endpoint does not need any parameter.
 
 Get Cpu Metrics
 
-Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
 ### Example
 
@@ -201,7 +201,7 @@ Name | Type | Description  | Notes
 
 Get Disk Iops Metrics
 
-Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
 ### Example
 
@@ -283,7 +283,7 @@ Name | Type | Description  | Notes
 
 Get Disk Throughput Metrics
 
-Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
 ### Example
 
@@ -365,7 +365,7 @@ Name | Type | Description  | Notes
 
 Get Disk Usage Metrics
 
-Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
 ### Example
 
@@ -447,7 +447,7 @@ Name | Type | Description  | Notes
 
 Get Gpu Memory Metrics
 
-Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
 ### Example
 
@@ -529,7 +529,7 @@ Name | Type | Description  | Notes
 
 Get Gpu Utilization Metrics
 
-Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
 ### Example
 
@@ -737,7 +737,7 @@ No authorization required
 
 Get Latest Cpu Metrics
 
-Get the most recent cpu measurements for each VM
+Get the most recent cpu measurements for each machine
 
 ### Example
 
@@ -815,7 +815,7 @@ Name | Type | Description  | Notes
 
 Get Latest Disk Iops Metrics
 
-Get the most recent disk_iops measurements for each VM
+Get the most recent disk_iops measurements for each machine
 
 ### Example
 
@@ -893,7 +893,7 @@ Name | Type | Description  | Notes
 
 Get Latest Disk Throughput Metrics
 
-Get the most recent disk_throughput measurements for each VM
+Get the most recent disk_throughput measurements for each machine
 
 ### Example
 
@@ -971,7 +971,7 @@ Name | Type | Description  | Notes
 
 Get Latest Disk Usage Metrics
 
-Get the most recent disk_usage measurements for each VM
+Get the most recent disk_usage measurements for each machine
 
 ### Example
 
@@ -1049,7 +1049,7 @@ Name | Type | Description  | Notes
 
 Get Latest Gpu Memory Metrics
 
-Get the most recent gpu_memory measurements for each VM
+Get the most recent gpu_memory measurements for each machine
 
 ### Example
 
@@ -1127,7 +1127,7 @@ Name | Type | Description  | Notes
 
 Get Latest Gpu Utilization Metrics
 
-Get the most recent gpu_utilization measurements for each VM
+Get the most recent gpu_utilization measurements for each machine
 
 ### Example
 
@@ -1205,7 +1205,7 @@ Name | Type | Description  | Notes
 
 Get Latest Memory Metrics
 
-Get the most recent memory measurements for each VM
+Get the most recent memory measurements for each machine
 
 ### Example
 
@@ -1283,7 +1283,7 @@ Name | Type | Description  | Notes
 
 Get Latest Network Throughput Metrics
 
-Get the most recent network_throughput measurements for each VM
+Get the most recent network_throughput measurements for each machine
 
 ### Example
 
@@ -1361,7 +1361,7 @@ Name | Type | Description  | Notes
 
 Get Latest Nvidia Smi Metrics
 
-Get the most recent nvidia_smi measurements for each VM
+Get the most recent nvidia_smi measurements for each machine
 
 ### Example
 
@@ -1439,7 +1439,7 @@ Name | Type | Description  | Notes
 
 Get Live Machines
 
-Return a list of the active VMs
+Return a list of the active machines
 
 ### Example
 
@@ -1590,7 +1590,7 @@ Name | Type | Description  | Notes
 
 Get Memory Metrics
 
-Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
 ### Example
 
@@ -1672,7 +1672,7 @@ Name | Type | Description  | Notes
 
 Get Network Throughput Metrics
 
-Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
 ### Example
 
@@ -1754,7 +1754,7 @@ Name | Type | Description  | Notes
 
 Get Nvidia Smi Metrics
 
-Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
 ### Example
 
@@ -2547,7 +2547,7 @@ Name | Type | Description  | Notes
 
 Register Machine
 
-Register a VM
+Register a machine
 
 ### Example
 
@@ -2628,7 +2628,7 @@ Name | Type | Description  | Notes
 
 Report Machine Death
 
-Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
 ### Example
 
@@ -2706,7 +2706,7 @@ Name | Type | Description  | Notes
 
 Report Machine Heartbeat
 
-Report a heartbeat for a VM
+Report a heartbeat for a machine
 
 ### Example
 

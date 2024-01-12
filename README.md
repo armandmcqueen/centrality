@@ -28,7 +28,7 @@ data to the control plane REST endpoints.
 
 Early
 
-Currently the control plane exists and there is a VMAgent (technically a bad name because it works just as well on bare metal)
+Currently the control plane exists and there is a MachineAgent (technically a bad name because it works just as well on bare metal)
 that sends data to the control plane. Check out https://centrality-dev.fly.dev/Cluster for a rough UI that displays some of the
 data being collected.
 
@@ -123,7 +123,7 @@ To scale the agent cluster.
 fly --config fly-agent-cluster.toml scale count --process-group agent 5
 ```
 
-To run a local VM Agent that talks to the Fly control plane:
+To run a local Machine Agent that talks to the Fly control plane:
 
 ```bash
 python machineagent/machineagent/cli.py launch -f tests/configs/fly/machineagent-local.yaml

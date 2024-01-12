@@ -94,18 +94,18 @@ TMetricBaseModel = TypeVar("TMetricBaseModel", bound=MetricBaseModel)
 TMetricLatestBaseModel = TypeVar("TMetricLatestBaseModel", bound=MetricLatestBaseModel)
 
 
-class VmRegistrationConflictError(Exception):
+class MachineRegistrationConflictError(Exception):
     """
-    Raised when a VM tries to register with a different machine spec than what is
+    Raised when a machine tries to register with a different machine spec than what is
     already in the database
     """
 
     pass
 
 
-class VmHeartbeatBeforeRegistrationError(Exception):
+class MachineHeartbeatBeforeRegistrationError(Exception):
     """
-    Raised when a VM tries to heartbeat before registering
+    Raised when a machine tries to heartbeat before registering
     """
 
     pass
@@ -178,13 +178,13 @@ class DatastoreClient:
         registration_info: MachineRegistrationInfo,
     ) -> None:
         """
-        Register a VM with information about the machine.
+        Register a machine with information about the machine.
 
-        Will raise an exception if the VM is already registered with different machine specs. If the machine
+        Will raise an exception if the machine is already registered with different machine specs. If the machine
         spec is the same, it will update the registration timestamp and last heartbeat timestamp.
 
         nvidia-driver-version is not checked for equality because it can be upgraded without changing
-        VMs.
+        machines.
         """
         with Session(bind=self.engine) as session:
             existing_machine = (
@@ -192,7 +192,7 @@ class DatastoreClient:
                 .filter(MachineInfoOrm.machine_id == machine_id)
                 .first()
             )
-            # If the VM is not already registered, add it
+            # If the machine is not already registered, add it
             if existing_machine is None:
                 registration = registration_info.to_machine_info_orm(
                     machine_id=machine_id
@@ -212,8 +212,8 @@ class DatastoreClient:
                     if getattr(previous_registration_info, field) != getattr(
                         registration_info, field
                     ):
-                        raise VmRegistrationConflictError(
-                            f"VM registration info does not match what is already in the database. "
+                        raise MachineRegistrationConflictError(
+                            f"Machine registration info does not match what is already in the database. "
                             f"Field: {field}, existing: {getattr(existing_machine, field)}, "
                             f"new: {getattr(registration_info, field)}."
                         )
@@ -231,7 +231,7 @@ class DatastoreClient:
         self,
         machine_id: str,
     ) -> None:
-        """Set the last heartbeat for a VM to be the current time"""
+        """Set the last heartbeat for a machine to be the current time"""
         with Session(bind=self.engine) as session:
             existing_machine = (
                 session.query(MachineInfoOrm)
@@ -239,8 +239,8 @@ class DatastoreClient:
                 .first()
             )
             if existing_machine is None:
-                raise VmHeartbeatBeforeRegistrationError(
-                    f"VM {machine_id} is reporting heartbeat, but has not registered yet"
+                raise MachineHeartbeatBeforeRegistrationError(
+                    f"Machine {machine_id} is reporting heartbeat, but has not registered yet"
                 )
             existing_machine = cast(MachineInfoOrm, existing_machine)
             existing_machine.last_heartbeat_ts = datetime.datetime.utcnow()
@@ -250,7 +250,7 @@ class DatastoreClient:
         self,
         machine_id: str,
     ) -> None:
-        """Remove the VM from the list of active VMs."""
+        """Remove the machine from the list of active machines."""
         with Session(bind=self.engine) as session:
             delete_stmt = delete(MachineInfoOrm).where(
                 MachineInfoOrm.machine_id == machine_id
@@ -262,7 +262,7 @@ class DatastoreClient:
         self,
         oldest_ts_to_keep: datetime.datetime,
     ) -> None:
-        """Delete all VMs that have not reported a heartbeat since oldest_ts_to_keep"""
+        """Delete all machines that have not reported a heartbeat since oldest_ts_to_keep"""
         with Session(bind=self.engine) as session:
             delete_stmt = delete(MachineInfoOrm).where(
                 MachineInfoOrm.last_heartbeat_ts < oldest_ts_to_keep

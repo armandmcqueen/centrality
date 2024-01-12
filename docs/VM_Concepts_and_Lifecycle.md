@@ -1,6 +1,6 @@
-# VM Concepts and Lifecycle
+# Machine Concepts and Lifecycle
 
-A VM is a machine that is connected to the cluster. 
+A Machine is a machine that is connected to the cluster. 
 
 This is the lifecycle:
 

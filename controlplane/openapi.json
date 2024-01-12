@@ -82,7 +82,7 @@
           "data"
         ],
         "summary": "Register Machine",
-        "description": "Register a VM",
+        "description": "Register a machine",
         "operationId": "register_machine",
         "security": [
           {
@@ -140,7 +140,7 @@
           "data"
         ],
         "summary": "Report Machine Heartbeat",
-        "description": "Report a heartbeat for a VM",
+        "description": "Report a heartbeat for a machine",
         "operationId": "report_machine_heartbeat",
         "security": [
           {
@@ -188,7 +188,7 @@
           "data"
         ],
         "summary": "Report Machine Death",
-        "description": "Report that a VM is dead, so that it is removed immediately.\n\nThis can be useful when you need the live list to update faster than the timeout.",
+        "description": "Report that a machine is dead, so that it is removed immediately.\n\nThis can be useful when you need the live list to update faster than the timeout.",
         "operationId": "report_machine_death",
         "security": [
           {
@@ -236,7 +236,7 @@
           "data"
         ],
         "summary": "Get Live Machines",
-        "description": "Return a list of the active VMs",
+        "description": "Return a list of the active machines",
         "operationId": "get_live_machines",
         "responses": {
           "200": {
@@ -315,7 +315,7 @@
           "data"
         ],
         "summary": "Get Cpu Metrics",
-        "description": "Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
+        "description": "Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
         "operationId": "get_cpu_metrics",
         "security": [
           {
@@ -449,7 +449,7 @@
           "data"
         ],
         "summary": "Get Latest Cpu Metrics",
-        "description": "Get the most recent cpu measurements for each VM",
+        "description": "Get the most recent cpu measurements for each machine",
         "operationId": "get_latest_cpu_metrics",
         "security": [
           {
@@ -504,7 +504,7 @@
           "data"
         ],
         "summary": "Get Disk Iops Metrics",
-        "description": "Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
+        "description": "Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
         "operationId": "get_disk_iops_metrics",
         "security": [
           {
@@ -638,7 +638,7 @@
           "data"
         ],
         "summary": "Get Latest Disk Iops Metrics",
-        "description": "Get the most recent disk_iops measurements for each VM",
+        "description": "Get the most recent disk_iops measurements for each machine",
         "operationId": "get_latest_disk_iops_metrics",
         "security": [
           {
@@ -693,7 +693,7 @@
           "data"
         ],
         "summary": "Get Disk Usage Metrics",
-        "description": "Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
+        "description": "Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
         "operationId": "get_disk_usage_metrics",
         "security": [
           {
@@ -827,7 +827,7 @@
           "data"
         ],
         "summary": "Get Latest Disk Usage Metrics",
-        "description": "Get the most recent disk_usage measurements for each VM",
+        "description": "Get the most recent disk_usage measurements for each machine",
         "operationId": "get_latest_disk_usage_metrics",
         "security": [
           {
@@ -882,7 +882,7 @@
           "data"
         ],
         "summary": "Get Disk Throughput Metrics",
-        "description": "Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
+        "description": "Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
         "operationId": "get_disk_throughput_metrics",
         "security": [
           {
@@ -1016,7 +1016,7 @@
           "data"
         ],
         "summary": "Get Latest Disk Throughput Metrics",
-        "description": "Get the most recent disk_throughput measurements for each VM",
+        "description": "Get the most recent disk_throughput measurements for each machine",
         "operationId": "get_latest_disk_throughput_metrics",
         "security": [
           {
@@ -1071,7 +1071,7 @@
           "data"
         ],
         "summary": "Get Gpu Memory Metrics",
-        "description": "Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
+        "description": "Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
         "operationId": "get_gpu_memory_metrics",
         "security": [
           {
@@ -1205,7 +1205,7 @@
           "data"
         ],
         "summary": "Get Latest Gpu Memory Metrics",
-        "description": "Get the most recent gpu_memory measurements for each VM",
+        "description": "Get the most recent gpu_memory measurements for each machine",
         "operationId": "get_latest_gpu_memory_metrics",
         "security": [
           {
@@ -1260,7 +1260,7 @@
           "data"
         ],
         "summary": "Get Gpu Utilization Metrics",
-        "description": "Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
+        "description": "Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
         "operationId": "get_gpu_utilization_metrics",
         "security": [
           {
@@ -1394,7 +1394,7 @@
           "data"
         ],
         "summary": "Get Latest Gpu Utilization Metrics",
-        "description": "Get the most recent gpu_utilization measurements for each VM",
+        "description": "Get the most recent gpu_utilization measurements for each machine",
         "operationId": "get_latest_gpu_utilization_metrics",
         "security": [
           {
@@ -1449,7 +1449,7 @@
           "data"
         ],
         "summary": "Get Memory Metrics",
-        "description": "Get memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
+        "description": "Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
         "operationId": "get_memory_metrics",
         "security": [
           {
@@ -1583,7 +1583,7 @@
           "data"
         ],
         "summary": "Get Latest Memory Metrics",
-        "description": "Get the most recent memory measurements for each VM",
+        "description": "Get the most recent memory measurements for each machine",
         "operationId": "get_latest_memory_metrics",
         "security": [
           {
@@ -1638,7 +1638,7 @@
           "data"
         ],
         "summary": "Get Network Throughput Metrics",
-        "description": "Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
+        "description": "Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
         "operationId": "get_network_throughput_metrics",
         "security": [
           {
@@ -1772,7 +1772,7 @@
           "data"
         ],
         "summary": "Get Latest Network Throughput Metrics",
-        "description": "Get the most recent network_throughput measurements for each VM",
+        "description": "Get the most recent network_throughput measurements for each machine",
         "operationId": "get_latest_network_throughput_metrics",
         "security": [
           {
@@ -1827,7 +1827,7 @@
           "data"
         ],
         "summary": "Get Nvidia Smi Metrics",
-        "description": "Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
+        "description": "Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
         "operationId": "get_nvidia_smi_metrics",
         "security": [
           {
@@ -1961,7 +1961,7 @@
           "data"
         ],
         "summary": "Get Latest Nvidia Smi Metrics",
-        "description": "Get the most recent nvidia_smi measurements for each VM",
+        "description": "Get the most recent nvidia_smi measurements for each machine",
         "operationId": "get_latest_nvidia_smi_metrics",
         "security": [
           {
@@ -2390,7 +2390,7 @@
           "hostname"
         ],
         "title": "MachineInfo",
-        "description": "Information about a VM's current state"
+        "description": "Information about a machine's current state"
       },
       "MachineRegistrationInfo": {
         "properties": {
@@ -2460,7 +2460,7 @@
           "hostname"
         ],
         "title": "MachineRegistrationInfo",
-        "description": "Information about a VM to register with the control plane.\n\nSame as VM heartbeat, but without a few fields that are either set via URL params or\nautomatically set server-side."
+        "description": "Information about a machine to register with the control plane.\n\nSame as machine heartbeat, but without a few fields that are either set via URL params or\nautomatically set server-side."
       },
       "MemoryMeasurement": {
         "properties": {

@@ -12,9 +12,9 @@ class SendCpuMetrics(conclib.ActorMessage):
 
 
 class CpuMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_CPU_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendCpuMetrics: constants.VM_AGENT_METRIC_CPU_INTERVAL_SECS,
+        SendCpuMetrics: constants.MACHINE_AGENT_METRIC_CPU_INTERVAL_SECS,
     }
 
     def __init__(

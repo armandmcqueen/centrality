@@ -13,9 +13,9 @@ class SendNetworkMetrics(conclib.ActorMessage):
 
 
 class NetworkMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_NETWORK_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_NETWORK_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendNetworkMetrics: constants.VM_AGENT_METRIC_NETWORK_INTERVAL_SECS,
+        SendNetworkMetrics: constants.MACHINE_AGENT_METRIC_NETWORK_INTERVAL_SECS,
     }
 
     def __init__(

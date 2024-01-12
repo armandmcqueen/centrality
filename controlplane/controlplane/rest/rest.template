@@ -9,8 +9,8 @@ def get_METRIC_NAME_LOWERCASE_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[METRIC_NAME_CAMELCASEMeasurement]:
     """
-    Get METRIC_NAME_LOWERCASE metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param machine_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get METRIC_NAME_LOWERCASE metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
@@ -28,7 +28,7 @@ def get_latest_METRIC_NAME_LOWERCASE_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
 ) -> list[METRIC_NAME_CAMELCASEMeasurement]:
-    """Get the most recent METRIC_NAME_LOWERCASE measurements for each VM"""
+    """Get the most recent METRIC_NAME_LOWERCASE measurements for each machine"""
     results = datastore_client.get_latest_METRIC_NAME_LOWERCASE_measurements(machine_ids=machine_ids)
     return [result.to_METRIC_NAME_LOWERCASE_measurement() for result in results]
 

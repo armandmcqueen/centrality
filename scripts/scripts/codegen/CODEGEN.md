@@ -1,4 +1,4 @@
-# VM Metric Types
+# machine Metric Types
 
 The code to handle metric streams has a ton of duplication. We use code generation to make this more manageable.
 

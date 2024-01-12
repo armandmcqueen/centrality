@@ -8,7 +8,7 @@ version = "0.0.1"
 authors = [
     {name = "Armand McQueen", email = "armandmcqueen@gmail.com"},
 ]
-description = "Centrality VM Agent"
+description = "Centrality Machine Agent"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

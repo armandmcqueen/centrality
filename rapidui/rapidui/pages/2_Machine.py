@@ -192,7 +192,7 @@ def get_metrics_for_machine(
 
 @st.cache_data
 def get_live_machines(_sdk: DataApi, epoch: int) -> list[str]:
-    live_machines = _sdk.list_live_machines()
+    live_machines = [m.machine_id for m in _sdk.get_live_machines()]
     # TODO: Handle errors?
     return sorted(live_machines)
 
@@ -213,7 +213,7 @@ def main():
     _, select_container, _ = st.columns(3)
     machine_id = select_container.selectbox("Select Machine", live_machines, index=None)
 
-    # If there are no live VMs, don't query for data
+    # If there are no live machines, don't query for data
     if len(live_machines) == 0 or machine_id is None:
         return
 

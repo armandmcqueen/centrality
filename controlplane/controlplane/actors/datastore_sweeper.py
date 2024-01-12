@@ -20,7 +20,7 @@ class DatastoreSweeperConfig(CentralityConfig):
         15  # How often to check for dead machines that need to be reaped
     )
     machine_no_heartbeat_reap_secs: int = (
-        constants.DEFAULT_VM_NO_HEARTBEAT_DEATH_SECS
+        constants.DEFAULT_MACHINE_NO_HEARTBEAT_DEATH_SECS
     )  # Allow this value to be overridden for testing
 
 
@@ -30,7 +30,7 @@ class SweepDatastore(conclib.ActorMessage):
     pass
 
 
-class ReapDisconnectedVms(conclib.ActorMessage):
+class ReapDisconnectedMachines(conclib.ActorMessage):
     """
     Tell the DatastoreSweeper to remove agents that haven't sent a heartbeat in a long time so
     they are officially dead, rather than in disconnect limbo
@@ -46,7 +46,7 @@ class DatastoreSweeper(conclib.PeriodicActor):
 
     URN = constants.CONTROL_PLANE_DATASTORE_SWEEPER_ACTOR
     TICKS: dict[type[conclib.ActorMessage], int] = {
-        # ReapDisconnectedVms interval is set in __init__ below
+        # ReapDisconnectedMachines interval is set in __init__ below
         # SweepDatastore interval is set in __init__ below
     }
 
@@ -60,7 +60,7 @@ class DatastoreSweeper(conclib.PeriodicActor):
         self.datastore_client = DatastoreClient(config=self.datastore_config)
         self.TICKS[SweepDatastore] = self.sweeper_config.sweep_interval_secs
         self.TICKS[
-            ReapDisconnectedVms
+            ReapDisconnectedMachines
         ] = self.sweeper_config.reap_machines_interval_secs
         super().__init__()
 
@@ -101,7 +101,7 @@ class DatastoreSweeper(conclib.PeriodicActor):
             except Exception as e:
                 # TODO: Eventually send an alert/event
                 print(f"🚨 DatastoreSweeper - failed to sweep the datastore: {e}")
-        elif isinstance(message, ReapDisconnectedVms):
+        elif isinstance(message, ReapDisconnectedMachines):
             try:
                 delta = timedelta(
                     seconds=self.sweeper_config.machine_no_heartbeat_reap_secs

@@ -20,9 +20,9 @@ class SendGpuMetrics(conclib.ActorMessage):
 
 
 class GpuMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_GPU_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_GPU_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendGpuMetrics: constants.VM_AGENT_METRIC_GPU_INTERVAL_SECS,
+        SendGpuMetrics: constants.MACHINE_AGENT_METRIC_GPU_INTERVAL_SECS,
     }
 
     def __init__(

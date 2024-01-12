@@ -19,11 +19,11 @@ CONTROL_PLANE_METRIC_MEMORY_ENDPOINT = "/machine/metrics/memory"
 CONTROL_PLANE_METRIC_NETWORK_THROUGHPUT_ENDPOINT = "/machine/metrics/network-throughput"
 CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT = "/machine/metrics/nvidia-smi"
 
-CONTROL_PLANE_GET_LIVE_VMS_ENDPOINT = "/machine/live"
+CONTROL_PLANE_GET_LIVE_MACHINES_ENDPOINT = "/machine/live"
 CONTROL_PLANE_GET_MACHINE_ENDPOINT = "/machine/{machine_id}"
-CONTROL_PLANE_VM_REGISTRATION_ENDPOINT = "/machine/{machine_id}/register"
-CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT = "/machine/{machine_id}/heartbeat"
-CONTROL_PLANE_VM_DEATH_ENDPOINT = "/machine/{machine_id}/report-death"
+CONTROL_PLANE_MACHINE_REGISTRATION_ENDPOINT = "/machine/{machine_id}/register"
+CONTROL_PLANE_MACHINE_HEARTBEAT_ENDPOINT = "/machine/{machine_id}/heartbeat"
+CONTROL_PLANE_MACHINE_DEATH_ENDPOINT = "/machine/{machine_id}/report-death"
 
 # Disallowed machine names to preserve API endpoint structure
 RESERVED_MACHINE_NAMES = ["live", "metrics"]
@@ -40,29 +40,29 @@ def get_control_plane_machine_heartbeat_endpoint(machine_id: str) -> str:
 # Control Plane actors
 CONTROL_PLANE_DATASTORE_SWEEPER_ACTOR = "datastore_sweeper"
 
-# VM Agent actors
-VM_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
+# Machine Agent actors
+MACHINE_AGENT_HEARTBEAT_SENDER_ACTOR = "heartbeat_sender"
 
-VM_AGENT_CPU_METRIC_COLLECTOR_ACTOR = "cpu_metric_collector"
-VM_AGENT_DISK_IO_METRIC_COLLECTOR_ACTOR = "disk_io_metric_collector"
-VM_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR = "disk_mb_metric_collector"
-VM_AGENT_GPU_METRIC_COLLECTOR_ACTOR = "gpu_metric_collector"
-VM_AGENT_MEMORY_METRIC_COLLECTOR_ACTOR = "memory_metric_collector"
-VM_AGENT_NETWORK_METRIC_COLLECTOR_ACTOR = "network_metric_collector"
-VM_AGENT_NVIDIA_SMI_METRIC_COLLECTOR_ACTOR = "nvidia_smi_collector"
+MACHINE_AGENT_CPU_METRIC_COLLECTOR_ACTOR = "cpu_metric_collector"
+MACHINE_AGENT_DISK_IO_METRIC_COLLECTOR_ACTOR = "disk_io_metric_collector"
+MACHINE_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR = "disk_mb_metric_collector"
+MACHINE_AGENT_GPU_METRIC_COLLECTOR_ACTOR = "gpu_metric_collector"
+MACHINE_AGENT_MEMORY_METRIC_COLLECTOR_ACTOR = "memory_metric_collector"
+MACHINE_AGENT_NETWORK_METRIC_COLLECTOR_ACTOR = "network_metric_collector"
+MACHINE_AGENT_NVIDIA_SMI_METRIC_COLLECTOR_ACTOR = "nvidia_smi_collector"
 
 
 #####################################################################
 # Other Constants                                                   #
 #####################################################################
-VM_HEARTBEAT_INTERVAL_SECS = 5  # How often VMs should report heartbeats
+MACHINE_HEARTBEAT_INTERVAL_SECS = 5  # How often machines should report heartbeats
 
 # If no heartbeat for this long, consider it disconnected (limbo, not dead)
-VM_NO_HEARTBEAT_LIMBO_SECS = 10
+MACHINE_NO_HEARTBEAT_LIMBO_SECS = 10
 
 # If no heartbeat for this long, consider it dead. The final value is set through a
 # config, this is just the default value
-DEFAULT_VM_NO_HEARTBEAT_DEATH_SECS = 60 * 20
+DEFAULT_MACHINE_NO_HEARTBEAT_DEATH_SECS = 60 * 20
 
 
 # Control Plane specific constants
@@ -71,17 +71,17 @@ CONTROL_PLANE_DATASTORE_CONFIG_ENVVAR = "CENTRALITY_CONTROL_PLANE_DATASTORE_CONF
 CONTROL_PLANE_SDK_DEV_TOKEN = "dev"
 
 
-# VM Agent specific constants
-VM_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_VM_AGENT_REST_CONFIG"
+# Machine Agent specific constants
+MACHINE_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_MACHINE_AGENT_REST_CONFIG"
 
 
 # TODO: Make metric speed configurable
 # Enable this to make metrics slower for testing other functionality
 METRIC_SPEED = 0.25
 
-VM_AGENT_METRIC_CPU_INTERVAL_SECS = METRIC_SPEED
-VM_AGENT_METRIC_DISK_INTERVAL_SECS = METRIC_SPEED
-VM_AGENT_METRIC_GPU_INTERVAL_SECS = METRIC_SPEED
-VM_AGENT_METRIC_MEMORY_INTERVAL_SECS = METRIC_SPEED
-VM_AGENT_METRIC_NETWORK_INTERVAL_SECS = METRIC_SPEED
-VM_AGENT_METRIC_NVIDIA_SMI_INTERVAL_SECS = 5
+MACHINE_AGENT_METRIC_CPU_INTERVAL_SECS = METRIC_SPEED
+MACHINE_AGENT_METRIC_DISK_INTERVAL_SECS = METRIC_SPEED
+MACHINE_AGENT_METRIC_GPU_INTERVAL_SECS = METRIC_SPEED
+MACHINE_AGENT_METRIC_MEMORY_INTERVAL_SECS = METRIC_SPEED
+MACHINE_AGENT_METRIC_NETWORK_INTERVAL_SECS = METRIC_SPEED
+MACHINE_AGENT_METRIC_NVIDIA_SMI_INTERVAL_SECS = 5

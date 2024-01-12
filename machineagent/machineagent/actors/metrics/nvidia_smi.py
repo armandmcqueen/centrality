@@ -35,9 +35,9 @@ class SendNvidiaSmiMetric(conclib.ActorMessage):
 
 
 class NvidiaSmiMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_NVIDIA_SMI_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_NVIDIA_SMI_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendNvidiaSmiMetric: constants.VM_AGENT_METRIC_NVIDIA_SMI_INTERVAL_SECS,
+        SendNvidiaSmiMetric: constants.MACHINE_AGENT_METRIC_NVIDIA_SMI_INTERVAL_SECS,
     }
 
     def __init__(

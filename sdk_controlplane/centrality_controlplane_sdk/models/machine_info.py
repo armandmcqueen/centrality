@@ -27,7 +27,7 @@ except ImportError:
 
 class MachineInfo(BaseModel):
     """
-    Information about a VM's current state
+    Information about a machine's current state
     """ # noqa: E501
     machine_id: StrictStr
     last_heartbeat_ts: datetime

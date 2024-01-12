@@ -12,7 +12,7 @@ import urllib3.exceptions
 from common import constants
 
 from machineagent.config import MachineAgentConfig
-from machineagent.actorsystem import VmAgentActorSystem
+from machineagent.actorsystem import MachineAgentActorSystem
 from common.sdks.controlplane.sdk import get_sdk
 from typing import Optional
 from centrality_controlplane_sdk import DataApi
@@ -55,7 +55,7 @@ def launch(
     file: Annotated[Optional[str], typer.Option("--file", "-f")] = None,
 ):
     """
-    Launch the VM Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
+    Launch the machine Agent actor system, the REST API, and the REST ↔ Actor bridge (using conclib).
 
     If machine_id == "auto", the hostname will be used as the machine_id.
     """
@@ -81,7 +81,7 @@ def launch(
         print("🌱 Using default configs")
         config = MachineAgentConfig(config_overrides=config_overrides)
 
-    # This is a reserved name for the live VM due to API endpoint structure of /machine/live
+    # This is a reserved name for the live machine due to API endpoint structure of /machine/live
     if config.machine_id == "live":
         raise RuntimeError("machine_id cannot be 'live' - this is a reserved name")
     print("⚙️ Config:")
@@ -99,14 +99,14 @@ def launch(
     wait_for_control_plane_healthy(control_plane_sdk, MAX_CONTROL_PLANE_WAIT_TIMEOUT)
     print("✓ Control plane is ready")
 
-    print("🚀 Launching VM Agent actor system")
-    _ = VmAgentActorSystem(
+    print("🚀 Launching Machine Agent actor system")
+    _ = MachineAgentActorSystem(
         machine_agent_config=config,
         control_plane_sdk=control_plane_sdk,
     ).start()
-    print("✓ VM Agent actor system launched")
+    print("✓ Machine Agent actor system launched")
 
-    print("🚀 Launching VM Agent REST API")
+    print("🚀 Launching Machine Agent REST API")
     # Start FastAPI
     config.rest.save_to_envvar()  # Make the rest_config available to the REST API
     api_daemon_thread = conclib.start_api(
@@ -115,7 +115,7 @@ def launch(
         startup_healthcheck_timeout=config.rest.startup_healthcheck_timeout,
         startup_healthcheck_poll_interval=config.rest.startup_healthcheck_poll_interval,
     )
-    print("✓ VM Agent REST API launched")
+    print("✓ Machine Agent REST API launched")
 
     try:
         # Wait until something fails or the user kills the process

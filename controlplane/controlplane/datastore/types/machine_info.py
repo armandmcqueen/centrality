@@ -29,10 +29,10 @@ class MachineInfoOrm(DatastoreBaseORM):
 
 class MachineInfo(BaseModel):
     """
-    Information about a VM's current state
+    Information about a machine's current state
     """
 
-    # IMPORTANT: If you change this, you must also change the VmRegistration class below
+    # IMPORTANT: If you change this, you must also change the MachineRegistration class below
     machine_id: str
     last_heartbeat_ts: datetime.datetime
     registration_ts: datetime.datetime
@@ -79,9 +79,9 @@ class MachineInfo(BaseModel):
 
 class MachineRegistrationInfo(BaseModel):
     """
-    Information about a VM to register with the control plane.
+    Information about a machine to register with the control plane.
 
-    Same as VM heartbeat, but without a few fields that are either set via URL params or
+    Same as machine heartbeat, but without a few fields that are either set via URL params or
     automatically set server-side.
     """
 

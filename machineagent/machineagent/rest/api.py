@@ -4,7 +4,7 @@ import json
 from fastapi.routing import APIRoute
 from fastapi import FastAPI
 from common import constants
-from machineagent.rest.config import VmAgentRestConfig
+from machineagent.rest.config import MachineAgentRestConfig
 
 
 from pydantic import BaseModel
@@ -26,7 +26,7 @@ app = FastAPI(
 
 
 # Load config values from environment variables and setup connect to datastore
-rest_config = VmAgentRestConfig.from_envvar()
+rest_config = MachineAgentRestConfig.from_envvar()
 
 
 @app.get(constants.HEALTHCHECK_ENDPOINT)

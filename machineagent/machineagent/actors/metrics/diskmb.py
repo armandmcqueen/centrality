@@ -12,9 +12,9 @@ class SendDiskMbMetrics(conclib.ActorMessage):
 
 
 class DiskUsageMetricCollector(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR
+    URN = constants.MACHINE_AGENT_DISK_MB_METRIC_COLLECTOR_ACTOR
     TICKS = {
-        SendDiskMbMetrics: constants.VM_AGENT_METRIC_DISK_INTERVAL_SECS,
+        SendDiskMbMetrics: constants.MACHINE_AGENT_METRIC_DISK_INTERVAL_SECS,
     }
 
     def __init__(

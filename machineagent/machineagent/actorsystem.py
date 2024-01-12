@@ -15,7 +15,7 @@ from machineagent.machineinfo.machineinfo import get_machine_info
 from centrality_controlplane_sdk import DataApi
 
 
-class VmAgentActorSystem:
+class MachineAgentActorSystem:
     """
     Root container for the actor system. Just a container for keeping things organized.
 
@@ -36,9 +36,9 @@ class VmAgentActorSystem:
         )
         self.heartbeat_sender_ref: Optional[pykka.ActorRef] = None
 
-    def start(self) -> "VmAgentActorSystem":
+    def start(self) -> "MachineAgentActorSystem":
         registration_info = get_machine_info(self.machine_agent_config.machine_info)
-        print(f"📋 Registering VM with info: {registration_info}")
+        print(f"📋 Registering machine with info: {registration_info}")
         self.control_plane_sdk.register_machine(
             machine_registration_info=registration_info,
             machine_id=self.machine_agent_config.machine_id,

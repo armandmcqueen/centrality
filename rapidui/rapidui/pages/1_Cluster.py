@@ -19,7 +19,7 @@ from common import constants
 # Use caching with epochs to only refresh data at some interval
 @st.cache_data
 def get_live_machines(_sdk: DataApi, epoch: int) -> list[str]:
-    live_machines = _sdk.list_live_machines()
+    live_machines = [m.machine_id for m in _sdk.get_live_machines()]
     # TODO: Handle errors?
     return sorted(live_machines)
 

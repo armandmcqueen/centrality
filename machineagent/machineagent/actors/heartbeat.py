@@ -10,9 +10,9 @@ class SendHeartbeat(conclib.ActorMessage):
 
 
 class HeartbeatSender(conclib.PeriodicActor):
-    URN = constants.VM_AGENT_HEARTBEAT_SENDER_ACTOR
+    URN = constants.MACHINE_AGENT_HEARTBEAT_SENDER_ACTOR
     TICKS = {
-        SendHeartbeat: constants.VM_HEARTBEAT_INTERVAL_SECS,
+        SendHeartbeat: constants.MACHINE_HEARTBEAT_INTERVAL_SECS,
     }
 
     def __init__(
@@ -26,7 +26,9 @@ class HeartbeatSender(conclib.PeriodicActor):
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
         if isinstance(message, SendHeartbeat):
-            # print("💌 HeartbeatSender - sending heartbeat")  # TODO: Readd this once we have leveled logging
+            print(
+                "💌 HeartbeatSender - sending heartbeat"
+            )  # TODO: Readd this once we have leveled logging
             try:
                 self.control_plane_sdk.report_machine_heartbeat(
                     machine_id=self.machine_agent_config.machine_id

@@ -24,23 +24,32 @@ def test_sdk_basics(docker_compose, sdk):
 
 
 def test_machine_liveness(docker_compose, sdk: DataApi):
-    """Test listing machines, adding live machines via heartbeats, and removing VMs via reporting death"""
+    """Test listing machines, adding live machines via heartbeats, and removing machines via reporting death"""
     print_test_function_name()
 
     # Confirm that we start with test_constants.EXPECTED_NUM_AGENTS
-    asserts.list_size(sdk.list_live_machines(), test_constants.EXPECTED_NUM_AGENTS)
+    asserts.list_size(
+        [m.machine_id for m in sdk.get_live_machines()],
+        test_constants.EXPECTED_NUM_AGENTS,
+    )
 
-    # Register a new VM and confirm there are now test_constants.EXPECTED_NUM_AGENTS + 1
+    # Register a new machine and confirm there are now test_constants.EXPECTED_NUM_AGENTS + 1
     machine_info_config = MachineInfoConfig(use_fake=True)
     sdk.register_machine(
         machine_id=machine_id,
         machine_registration_info=get_machine_info(machine_info_config),
     )
-    asserts.list_size(sdk.list_live_machines(), test_constants.EXPECTED_NUM_AGENTS + 1)
+    asserts.list_size(
+        [m.machine_id for m in sdk.get_live_machines()],
+        test_constants.EXPECTED_NUM_AGENTS + 1,
+    )
 
     # Remove one via death and confirm we go back to test_constants.EXPECTED_NUM_AGENTS
     sdk.report_machine_death(machine_id=machine_id)
-    asserts.list_size(sdk.list_live_machines(), test_constants.EXPECTED_NUM_AGENTS)
+    asserts.list_size(
+        [m.machine_id for m in sdk.get_live_machines()],
+        test_constants.EXPECTED_NUM_AGENTS,
+    )
 
 
 # TODO: Test other metrics via parametrization

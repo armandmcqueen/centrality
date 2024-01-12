@@ -76,7 +76,7 @@ def test_sweeper(
         sweeper.stop()
         raise e
 
-    # Test VM reaping
+    # Test machine reaping
     try:
         client.add_or_update_machine_info(
             machine_id=machine_id, registration_info=machine_registration_info
@@ -85,6 +85,6 @@ def test_sweeper(
         time.sleep(5)
         asserts.list_size(client.get_machines(), 0)
 
-        print("Sweeper VM reaping test passed")
+        print("Sweeper machine reaping test passed")
     finally:
         sweeper.stop()
