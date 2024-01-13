@@ -7,6 +7,7 @@ services:
       replicas: 2
     environment:
       - PYTHONUNBUFFERED=1
+      - CENTRALITY_DEVELOPMENT_METRIC_SPEED
     working_dir: /centrality
     command: "python3.11 machineagent/machineagent/cli.py launch -f tests/configs/dockercompose/machineagent-auto.yaml --machine-id auto"
     depends_on:
@@ -16,6 +17,7 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
+      - CENTRALITY_DEVELOPMENT_METRIC_SPEED
     working_dir: /centrality
     command: "python3.11 machineagent/machineagent/cli.py launch -f tests/configs/dockercompose/machineagent-real.yaml"
     depends_on:
@@ -25,6 +27,7 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
+      - CENTRALITY_DEVELOPMENT_METRIC_SPEED
     working_dir: /centrality
     command: "python3.11 machineagent/machineagent/cli.py launch -f tests/configs/dockercompose/machineagent-fake.yaml"
     depends_on:
@@ -34,6 +37,7 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
+      - CENTRALITY_DEVELOPMENT_METRIC_SPEED
     working_dir: /centrality
     command: "python3.11 machineagent/machineagent/cli.py launch -f tests/configs/dockercompose/machineagent-gpus.yaml"
     depends_on:
@@ -45,6 +49,7 @@ services:
       - "0.0.0.0:8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - CENTRALITY_DEVELOPMENT_METRIC_SPEED
     working_dir: /centrality/controlplane
     command: "python3.11 controlplane/cli.py launch --postgres-host postgres"
     depends_on:

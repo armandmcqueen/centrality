@@ -119,7 +119,7 @@ This endpoint does not need any parameter.
 
 Get Cpu Metrics
 
-Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
 ### Example
 
@@ -201,7 +201,7 @@ Name | Type | Description  | Notes
 
 Get Disk Iops Metrics
 
-Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
 ### Example
 
@@ -283,7 +283,7 @@ Name | Type | Description  | Notes
 
 Get Disk Throughput Metrics
 
-Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
 ### Example
 
@@ -365,7 +365,7 @@ Name | Type | Description  | Notes
 
 Get Disk Usage Metrics
 
-Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
 ### Example
 
@@ -447,7 +447,7 @@ Name | Type | Description  | Notes
 
 Get Gpu Memory Metrics
 
-Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
 ### Example
 
@@ -529,7 +529,7 @@ Name | Type | Description  | Notes
 
 Get Gpu Utilization Metrics
 
-Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
 ### Example
 
@@ -1590,7 +1590,7 @@ Name | Type | Description  | Notes
 
 Get Memory Metrics
 
-Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+Get memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
 ### Example
 
@@ -1672,7 +1672,7 @@ Name | Type | Description  | Notes
 
 Get Network Throughput Metrics
 
-Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
 ### Example
 
@@ -1754,7 +1754,7 @@ Name | Type | Description  | Notes
 
 Get Nvidia Smi Metrics
 
-Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
 ### Example
 

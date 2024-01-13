@@ -40,3 +40,7 @@ hr {
     text-align: center;
 }
 
+thead {
+    visibility: hidden;
+}
+

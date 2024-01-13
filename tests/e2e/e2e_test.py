@@ -46,8 +46,27 @@ def test_live_machines(docker_compose, sdk: DataApi):
     """
     print_test_function_name()
 
-    live_machines = [m.machine_id for m in sdk.get_live_machines()]
+    live_machines = sdk.get_live_machines()
     asserts.list_size(live_machines, test_constants.EXPECTED_NUM_AGENTS)
+
+    # Find the machine info with id = constants.FAKE_AGENT_ID
+    fake_machine = [
+        m for m in live_machines if m.machine_id == test_constants.FAKE_AGENT_ID
+    ]
+    asserts.list_size(fake_machine, 1)
+    fake_machine = fake_machine[0]
+
+    # Check that the machine info is correct
+    asserts.matches(fake_machine.machine_id, test_constants.FAKE_AGENT_ID)
+    asserts.matches(fake_machine.num_cpus, 8)
+    asserts.matches(
+        fake_machine.cpu_description, "Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz"
+    )
+    asserts.matches(fake_machine.host_memory_mb, 16000)
+    asserts.matches(fake_machine.num_gpus, 8)
+    asserts.matches(fake_machine.gpu_type, "NVIDIA A100")
+    asserts.matches(fake_machine.gpu_memory_mb, 60000)
+    asserts.matches(fake_machine.nvidia_driver_version, "535.129.03")
 
 
 @pytest.mark.parametrize("metric_type", MetricType)

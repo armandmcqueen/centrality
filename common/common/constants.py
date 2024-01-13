@@ -1,3 +1,4 @@
+import os
 #####################################################################
 # Endpoints                                                         #
 #####################################################################
@@ -74,9 +75,9 @@ CONTROL_PLANE_SDK_DEV_TOKEN = "dev"
 MACHINE_AGENT_REST_CONFIG_ENVVAR = "CENTRALITY_MACHINE_AGENT_REST_CONFIG"
 
 
-# TODO: Make metric speed configurable
-# Enable this to make metrics slower for testing other functionality
 METRIC_SPEED = 0.25
+if os.environ.get("CENTRALITY_DEVELOPMENT_METRIC_SPEED"):
+    METRIC_SPEED = float(os.environ.get("CENTRALITY_DEVELOPMENT_METRIC_SPEED"))
 
 MACHINE_AGENT_METRIC_CPU_INTERVAL_SECS = METRIC_SPEED
 MACHINE_AGENT_METRIC_DISK_INTERVAL_SECS = METRIC_SPEED
