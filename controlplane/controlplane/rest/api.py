@@ -243,7 +243,7 @@ def get_cpu_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[CpuMeasurement]:
     """
-    Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get cpu metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -291,7 +291,7 @@ def get_disk_iops_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskIopsMeasurement]:
     """
-    Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -341,7 +341,7 @@ def get_disk_usage_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskUsageMeasurement]:
     """
-    Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -393,7 +393,7 @@ def get_disk_throughput_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskThroughputMeasurement]:
     """
-    Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -445,7 +445,7 @@ def get_gpu_memory_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[GpuMemoryMeasurement]:
     """
-    Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -497,7 +497,7 @@ def get_gpu_utilization_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[GpuUtilizationMeasurement]:
     """
-    Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -549,7 +549,7 @@ def get_memory_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[MemoryMeasurement]:
     """
-    Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get memory metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -597,7 +597,7 @@ def get_network_throughput_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[NetworkThroughputMeasurement]:
     """
-    Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
@@ -650,7 +650,7 @@ def get_nvidia_smi_metrics(
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[NvidiaSmiMeasurement]:
     """
-    Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an

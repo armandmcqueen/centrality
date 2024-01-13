@@ -13,7 +13,8 @@ RUN apt-get update  \
     gcc \
     sudo \
     make \
-    git
+    git \
+    dmidecode
 
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11

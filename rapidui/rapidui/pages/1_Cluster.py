@@ -2,7 +2,7 @@ import time
 
 import streamlit as st
 from common.sdks.controlplane.sdk import get_sdk
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import DataApi, MachineInfo
 
 from rapidui.library.flexbox import UniformFlexbox
 from rapidui.library.cluster_view import (
@@ -18,10 +18,10 @@ from common import constants
 
 # Use caching with epochs to only refresh data at some interval
 @st.cache_data
-def get_live_machines(_sdk: DataApi, epoch: int) -> list[str]:
-    live_machines = [m.machine_id for m in _sdk.get_live_machines()]
+def get_live_machines(_sdk: DataApi, epoch: int) -> list[MachineInfo]:
+    live_machines = _sdk.get_live_machines()
     # TODO: Handle errors?
-    return sorted(live_machines)
+    return sorted(live_machines, key=lambda m: m.machine_id)
 
 
 # Use caching with epochs to only refresh data at some interval
@@ -40,9 +40,9 @@ def get_cpu_metrics(
     ]
 
 
-def gen_data(
+def get_data(
     _sdk: DataApi, config: StreamlitUiConfig
-) -> tuple[list[str], list[MachineOverviewCardContents]]:
+) -> tuple[list[MachineInfo], list[MachineOverviewCardContents]]:
     live_machines = get_live_machines(
         _sdk=_sdk,
         epoch=calculate_epoch(interval_ms=config.live_machine_interval_ms),
@@ -51,7 +51,7 @@ def gen_data(
         return [], []
     cpu_metrics = get_cpu_metrics(
         _sdk=_sdk,
-        live_machines=live_machines,
+        live_machines=[m.machine_id for m in live_machines],
         epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
     )
     return live_machines, cpu_metrics
@@ -63,26 +63,25 @@ def main():
     control_plane_sdk = get_sdk(
         config=config.control_plane_sdk, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
     )
-
-    live_machines, cpu_metrics = gen_data(control_plane_sdk, config)
-
-    num_machines = len(live_machines)
+    live_machines, cpu_metrics = get_data(control_plane_sdk, config)
+    cpu_machine = [m for m in live_machines if m.num_gpus == 0]
+    gpu_machine = [m for m in live_machines if m.num_gpus > 0]
     _, col2, _, col4, _ = st.columns(5)
 
-    gpu_count = LiveMachineCount(col2, "GPU", 0)  # noqa
-    cpu_count = LiveMachineCount(col4, "CPU", num_machines)
+    gpu_count = LiveMachineCount(col2, "GPU", len(gpu_machine))
+    cpu_count = LiveMachineCount(col4, "CPU", len(cpu_machine))
 
     flexbox = UniformFlexbox(3, MachineOverviewCard, border=True)
     flexbox.set_initial_cards(contents=cpu_metrics)
 
     while True:
-        new_live_machines, cpu_metrics = gen_data(control_plane_sdk, config)
-        flexbox.update_cards(cpu_metrics)
+        new_live_machines, cpu_metrics = get_data(control_plane_sdk, config)
+        cpu_machine = [m for m in new_live_machines if m.num_gpus == 0]
+        gpu_machine = [m for m in new_live_machines if m.num_gpus > 0]
 
-        # Update the count if it has changed
-        if num_machines != len(new_live_machines):
-            num_machines = len(new_live_machines)
-            cpu_count.update(num_machines)
+        flexbox.update_cards(cpu_metrics)
+        cpu_count.update(len(cpu_machine))
+        gpu_count.update(len(gpu_machine))
 
         time.sleep(0.1)
 

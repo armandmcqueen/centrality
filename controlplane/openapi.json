@@ -315,7 +315,7 @@
           "data"
         ],
         "summary": "Get Cpu Metrics",
-        "description": "Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
+        "description": "Get cpu metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
         "operationId": "get_cpu_metrics",
         "security": [
           {
@@ -504,7 +504,7 @@
           "data"
         ],
         "summary": "Get Disk Iops Metrics",
-        "description": "Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
+        "description": "Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
         "operationId": "get_disk_iops_metrics",
         "security": [
           {
@@ -693,7 +693,7 @@
           "data"
         ],
         "summary": "Get Disk Usage Metrics",
-        "description": "Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
+        "description": "Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
         "operationId": "get_disk_usage_metrics",
         "security": [
           {
@@ -882,7 +882,7 @@
           "data"
         ],
         "summary": "Get Disk Throughput Metrics",
-        "description": "Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
+        "description": "Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
         "operationId": "get_disk_throughput_metrics",
         "security": [
           {
@@ -1071,7 +1071,7 @@
           "data"
         ],
         "summary": "Get Gpu Memory Metrics",
-        "description": "Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
+        "description": "Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
         "operationId": "get_gpu_memory_metrics",
         "security": [
           {
@@ -1260,7 +1260,7 @@
           "data"
         ],
         "summary": "Get Gpu Utilization Metrics",
-        "description": "Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
+        "description": "Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
         "operationId": "get_gpu_utilization_metrics",
         "security": [
           {
@@ -1449,7 +1449,7 @@
           "data"
         ],
         "summary": "Get Memory Metrics",
-        "description": "Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
+        "description": "Get memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
         "operationId": "get_memory_metrics",
         "security": [
           {
@@ -1638,7 +1638,7 @@
           "data"
         ],
         "summary": "Get Network Throughput Metrics",
-        "description": "Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
+        "description": "Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
         "operationId": "get_network_throughput_metrics",
         "security": [
           {
@@ -1827,7 +1827,7 @@
           "data"
         ],
         "summary": "Get Nvidia Smi Metrics",
-        "description": "Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
+        "description": "Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
         "operationId": "get_nvidia_smi_metrics",
         "security": [
           {

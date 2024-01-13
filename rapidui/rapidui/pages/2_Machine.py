@@ -1,6 +1,7 @@
 import time
 import streamlit as st
 
+
 from rapidui.library.flexbox import UniformFlexbox
 from rapidui.header import header
 from rapidui.library.utils import load_config, calculate_epoch
@@ -16,6 +17,7 @@ from rapidui.library.disk_usage_view import DiskUsageCardContents, DiskUsageCard
 from rapidui.library.disk_io_view import DiskIoCardContents, DiskIoCard
 from rapidui.library.net_view import NetThroughputCardContents, NetThroughputCard
 from rapidui.library.nvidia_smi_view import NvidiaSmiCardContents, NvidiaSmiCard
+from rapidui.library.machine_info_view import MachineInfoCardContents, MachineInfoCard
 from enum import Enum
 
 
@@ -28,6 +30,7 @@ class MetricType(Enum):
     GPU_MEMORY = "gpu_memory"
     GPU_UTILIZATION = "gpu_utilization"
     NVIDIA_SMI = "nvidia_smi"
+    MACHINE_INFO = "machine_info"
 
 
 UseBorder = bool
@@ -186,6 +189,26 @@ def get_metrics_for_machine(
             )
         ]
         return NvidiaSmiCard, card, True
+    elif metric_type == MetricType.MACHINE_INFO:
+        machine_info = _sdk.get_machine(machine_id=machine_id)
+        if machine_info is None:
+            return MachineInfoCard, [], True
+        card = [
+            MachineInfoCardContents(
+                machine_id=machine_info.machine_id,
+                last_heartbeat_ts_dt=machine_info.last_heartbeat_ts,
+                registration_ts_dt=machine_info.registration_ts,
+                num_cpus=machine_info.num_cpus,
+                cpu_description=machine_info.cpu_description,
+                host_memory_mb=machine_info.host_memory_mb,
+                num_gpus=machine_info.num_gpus,
+                gpu_type=machine_info.gpu_type,
+                gpu_memory_mb=machine_info.gpu_memory_mb,
+                nvidia_driver_version=machine_info.nvidia_driver_version,
+                hostname=machine_info.hostname,
+            )
+        ]
+        return MachineInfoCard, card, False
     else:
         raise NotImplementedError(f"Metric type {metric_type} not implemented")
 
@@ -235,7 +258,7 @@ def main():
     if len(cards) > 64:
         num_cols = 8
 
-    if card_type == NvidiaSmiCard:
+    if card_type in [NvidiaSmiCard, MachineInfoCard]:
         num_cols = 1
 
     flexbox = UniformFlexbox(num_cols=num_cols, card_type=card_type, border=use_border)
