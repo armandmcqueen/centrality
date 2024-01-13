@@ -16,11 +16,11 @@ class DatastoreSweeperConfig(CentralityConfig):
 
     sweep_interval_secs: int = 60 * 60 * 12  # 12 hours
     data_retention_secs: int = 60 * 60 * 24 * 7  # 7 days
-    reap_vms_interval_secs: int = (
-        15  # How often to check for dead vms that need to be reaped
+    reap_machines_interval_secs: int = (
+        15  # How often to check for dead machines that need to be reaped
     )
-    vm_no_heartbeat_reap_secs: int = (
-        constants.DEFAULT_VM_NO_HEARTBEAT_DEATH_SECS
+    machine_no_heartbeat_reap_secs: int = (
+        constants.DEFAULT_MACHINE_NO_HEARTBEAT_DEATH_SECS
     )  # Allow this value to be overridden for testing
 
 
@@ -30,7 +30,7 @@ class SweepDatastore(conclib.ActorMessage):
     pass
 
 
-class ReapDisconnectedVms(conclib.ActorMessage):
+class ReapDisconnectedMachines(conclib.ActorMessage):
     """
     Tell the DatastoreSweeper to remove agents that haven't sent a heartbeat in a long time so
     they are officially dead, rather than in disconnect limbo
@@ -46,7 +46,7 @@ class DatastoreSweeper(conclib.PeriodicActor):
 
     URN = constants.CONTROL_PLANE_DATASTORE_SWEEPER_ACTOR
     TICKS: dict[type[conclib.ActorMessage], int] = {
-        # ReapDisconnectedVms interval is set in __init__ below
+        # ReapDisconnectedMachines interval is set in __init__ below
         # SweepDatastore interval is set in __init__ below
     }
 
@@ -59,7 +59,9 @@ class DatastoreSweeper(conclib.PeriodicActor):
         self.datastore_config = datastore_config
         self.datastore_client = DatastoreClient(config=self.datastore_config)
         self.TICKS[SweepDatastore] = self.sweeper_config.sweep_interval_secs
-        self.TICKS[ReapDisconnectedVms] = self.sweeper_config.reap_vms_interval_secs
+        self.TICKS[
+            ReapDisconnectedMachines
+        ] = self.sweeper_config.reap_machines_interval_secs
         super().__init__()
 
     def on_receive(self, message: conclib.ActorMessage) -> None:
@@ -99,15 +101,17 @@ class DatastoreSweeper(conclib.PeriodicActor):
             except Exception as e:
                 # TODO: Eventually send an alert/event
                 print(f"🚨 DatastoreSweeper - failed to sweep the datastore: {e}")
-        elif isinstance(message, ReapDisconnectedVms):
+        elif isinstance(message, ReapDisconnectedMachines):
             try:
-                delta = timedelta(seconds=self.sweeper_config.vm_no_heartbeat_reap_secs)
-                self.datastore_client.remove_vms_without_recent_healthcheck(
+                delta = timedelta(
+                    seconds=self.sweeper_config.machine_no_heartbeat_reap_secs
+                )
+                self.datastore_client.remove_machines_without_recent_healthcheck(
                     oldest_ts_to_keep=now - delta
                 )
             except Exception as e:
                 # TODO: Eventually send an alert/event
-                print(f"🚨 DatastoreSweeper - failed to reap dead vms: {e}")
+                print(f"🚨 DatastoreSweeper - failed to reap dead machines: {e}")
 
         else:
             raise conclib.errors.UnexpectedMessageError(message)

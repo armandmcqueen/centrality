@@ -5,7 +5,7 @@ A measurement of DiskUsage
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **usage** | [**List[DiskUsage]**](DiskUsage.md) |  | 
 

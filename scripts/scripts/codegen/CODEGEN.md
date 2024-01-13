@@ -1,4 +1,4 @@
-# VM Metric Types
+# Machine Metric Types
 
 The code to handle metric streams has a ton of duplication. We use code generation to make this more manageable.
 
@@ -15,8 +15,8 @@ needed to hydrate templates for each metric type.
 The templates are in `.template` files. The template files are:
 - `controlplane/controlplane/datastore/client.template`: The datastore client methods. There methods are added to
   `controlplane/datastore/client.py`
-- `controlplane/controlplane/datastore/types/vmmetrics/types.template`: The ORM and pydantic models. Each metric generates 
-   a complete file in `controlplane/datastore/types/vmmetrics/generated/`
+- `controlplane/controlplane/datastore/types/metrics/types.template`: The ORM and pydantic models. Each metric generates 
+   a complete file in `controlplane/datastore/types/metrics/generated/`
 - `controlplane/controlplane/rest/rest.template`: The REST API endpoints. These are added to `controlplane/controlplane/rest/api.py`
 
 For the datastore client and REST API endpoints, we the code is generated an inserted into the existing files 

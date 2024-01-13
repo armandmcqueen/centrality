@@ -4,37 +4,43 @@ import json
 
 from fastapi.routing import APIRoute
 from fastapi import FastAPI, Query, Depends
-from controlplane.datastore.types.vmmetrics.generated.cpu import (
+from controlplane.datastore.types.metrics.generated.cpu import (
     CpuMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_iops import (
+from controlplane.datastore.types.metrics.generated.disk_iops import (
     DiskIopsMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_usage import (
+from controlplane.datastore.types.metrics.generated.disk_usage import (
     DiskUsageMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_throughput import (
+from controlplane.datastore.types.metrics.generated.disk_throughput import (
     DiskThroughputMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.gpu_memory import (
+from controlplane.datastore.types.metrics.generated.gpu_memory import (
     GpuMemoryMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.gpu_utilization import (
+from controlplane.datastore.types.metrics.generated.gpu_utilization import (
     GpuUtilizationMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.memory import (
+from controlplane.datastore.types.metrics.generated.memory import (
     MemoryMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.network_throughput import (
+from controlplane.datastore.types.metrics.generated.network_throughput import (
     NetworkThroughputMeasurement,
 )
-from controlplane.datastore.types.vmmetrics.generated.nvidia_smi import (
+from controlplane.datastore.types.metrics.generated.nvidia_smi import (
     NvidiaSmiMeasurement,
 )
 
-from controlplane.datastore.types.vmliveness import VmRegistrationInfo
+from controlplane.datastore.types.machine_info import (
+    MachineRegistrationInfo,
+    MachineInfo,
+)
 from common import constants
-from controlplane.datastore.client import DatastoreClient, VmRegistrationConflictError
+from controlplane.datastore.client import (
+    DatastoreClient,
+    MachineRegistrationConflictError,
+)
 from controlplane.datastore.config import DatastoreConfig
 from controlplane.rest.config import ControlPlaneRestConfig
 from controlplane.rest.utils.auth import auth, security
@@ -146,67 +152,83 @@ def get_info() -> InfoResponse:
     )
 
 
-@app.post(constants.CONTROL_PLANE_VM_REGISTRATION_ENDPOINT, tags=[MAIN_TAG])
+@app.post(constants.CONTROL_PLANE_MACHINE_REGISTRATION_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def register_vm(
+def register_machine(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_id: str,
-    registration_info: VmRegistrationInfo,
+    machine_id: str,
+    registration_info: MachineRegistrationInfo,
 ) -> OkResponse:
-    """Register a VM"""
-    try:
-        datastore_client.add_or_update_vm_info(
-            vm_id=vm_id, registration_info=registration_info
+    """Register a machine"""
+    if machine_id in constants.RESERVED_MACHINE_NAMES:
+        raise ValueError(
+            f"machine_id cannot be '{machine_id}' - these are reserved names: {constants.RESERVED_MACHINE_NAMES}"
         )
-    except VmRegistrationConflictError as err:
+    try:
+        datastore_client.add_or_update_machine_info(
+            machine_id=machine_id, registration_info=registration_info
+        )
+    except MachineRegistrationConflictError as err:
         err_msg = (
-            f"{err}\nThis may be caused by trying to run a new VM with the same VM ID ({vm_id}) "
-            f"as an existing VM. If you can see that another VM with this name is active, "
+            f"{err}\nThis may be caused by trying to run a new machine with the same machine ID ({machine_id}) "
+            f"as an existing machine. If you can see that another machine with this name is active, "
             "pick a different name. If this is intentional (e.g. you shut down one machine,"
             "booted up a new one and want it to have the same name), you can immediately "
-            "remove the old VM from the DB (see API docs until the CLI supports it). "
+            "remove the old machine from the DB (see API docs until the CLI supports it). "
         )
-        raise VmRegistrationConflictError(err_msg)
+        raise MachineRegistrationConflictError(err_msg)
     return OkResponse()
 
 
-@app.post(constants.CONTROL_PLANE_VM_HEARTBEAT_ENDPOINT, tags=[MAIN_TAG])
+@app.post(constants.CONTROL_PLANE_MACHINE_HEARTBEAT_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def report_vm_heartbeat(
+def report_machine_heartbeat(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_id: str,
+    machine_id: str,
 ) -> OkResponse:
-    """Report a heartbeat for a VM"""
-    datastore_client.update_vm_info_heartbeat_ts(vm_id=vm_id)
+    """Report a heartbeat for a machine"""
+    datastore_client.update_machine_info_heartbeat_ts(machine_id=machine_id)
     return OkResponse()
 
 
-@app.post(constants.CONTROL_PLANE_VM_DEATH_ENDPOINT, tags=[MAIN_TAG])
+@app.post(constants.CONTROL_PLANE_MACHINE_DEATH_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def report_vm_death(
+def report_machine_death(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_id: str,
+    machine_id: str,
 ) -> OkResponse:
     """
-    Report that a VM is dead, so that it is removed immediately.
+    Report that a machine is dead, so that it is removed immediately.
 
     This can be useful when you need the live list to update faster than the timeout.
     """
-    datastore_client.delete_vm_info(vm_id=vm_id)
+    datastore_client.delete_machine_info(machine_id=machine_id)
     return OkResponse()
 
 
-@app.get(constants.CONTROL_PLANE_LIVE_VM_ENDPOINT, tags=[MAIN_TAG])
+@app.get(constants.CONTROL_PLANE_GET_LIVE_MACHINES_ENDPOINT, tags=[MAIN_TAG])
 @auth(datastore_client)
-def list_live_vms(
+def get_live_machines(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-) -> list[str]:
-    """Return a list of the active VMs"""
-    # TODO: Convert to return machine info
-    live_vms = datastore_client.get_live_vms(
-        liveness_threshold_secs=constants.VM_NO_HEARTBEAT_LIMBO_SECS
+) -> list[MachineInfo]:
+    """Return a list of the active machines"""
+    live_machines = datastore_client.get_live_machines(
+        liveness_threshold_secs=constants.MACHINE_NO_HEARTBEAT_LIMBO_SECS
     )
-    return live_vms
+    return live_machines
+
+
+@app.get(constants.CONTROL_PLANE_GET_MACHINE_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def get_machine(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    machine_id: str,
+) -> MachineInfo:
+    """Return"""
+    live_machines = datastore_client.get_machines(machine_ids=[machine_id])
+    if len(live_machines) == 0:
+        raise ValueError(f"Machine {machine_id} not found")  # TODO: Better error type?
+    return live_machines[0]
 
 
 # BEGIN GENERATED CODE
@@ -216,20 +238,20 @@ def list_live_vms(
 @auth(datastore_client)
 def get_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[CpuMeasurement]:
     """
-    Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of CpuMeasurement objects
     """
     results = datastore_client.get_cpu_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_cpu_measurement() for result in results]
 
@@ -238,10 +260,10 @@ def get_cpu_metrics(
 @auth(datastore_client)
 def get_latest_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[CpuMeasurement]:
-    """Get the most recent cpu measurements for each VM"""
-    results = datastore_client.get_latest_cpu_measurements(vm_ids=vm_ids)
+    """Get the most recent cpu measurements for each machine"""
+    results = datastore_client.get_latest_cpu_measurements(machine_ids=machine_ids)
     return [result.to_cpu_measurement() for result in results]
 
 
@@ -253,7 +275,7 @@ def put_cpu_metric(
 ) -> OkResponse:
     """Put a cpu metric measurement into the datastore"""
     datastore_client.add_cpu_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -264,20 +286,20 @@ def put_cpu_metric(
 @auth(datastore_client)
 def get_disk_iops_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskIopsMeasurement]:
     """
-    Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of DiskIopsMeasurement objects
     """
     results = datastore_client.get_disk_iops_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_disk_iops_measurement() for result in results]
 
@@ -286,10 +308,12 @@ def get_disk_iops_metrics(
 @auth(datastore_client)
 def get_latest_disk_iops_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[DiskIopsMeasurement]:
-    """Get the most recent disk_iops measurements for each VM"""
-    results = datastore_client.get_latest_disk_iops_measurements(vm_ids=vm_ids)
+    """Get the most recent disk_iops measurements for each machine"""
+    results = datastore_client.get_latest_disk_iops_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_disk_iops_measurement() for result in results]
 
 
@@ -301,7 +325,7 @@ def put_disk_iops_metric(
 ) -> OkResponse:
     """Put a disk_iops metric measurement into the datastore"""
     datastore_client.add_disk_iops_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -312,20 +336,20 @@ def put_disk_iops_metric(
 @auth(datastore_client)
 def get_disk_usage_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskUsageMeasurement]:
     """
-    Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of DiskUsageMeasurement objects
     """
     results = datastore_client.get_disk_usage_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_disk_usage_measurement() for result in results]
 
@@ -336,10 +360,12 @@ def get_disk_usage_metrics(
 @auth(datastore_client)
 def get_latest_disk_usage_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[DiskUsageMeasurement]:
-    """Get the most recent disk_usage measurements for each VM"""
-    results = datastore_client.get_latest_disk_usage_measurements(vm_ids=vm_ids)
+    """Get the most recent disk_usage measurements for each machine"""
+    results = datastore_client.get_latest_disk_usage_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_disk_usage_measurement() for result in results]
 
 
@@ -351,7 +377,7 @@ def put_disk_usage_metric(
 ) -> OkResponse:
     """Put a disk_usage metric measurement into the datastore"""
     datastore_client.add_disk_usage_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -362,20 +388,20 @@ def put_disk_usage_metric(
 @auth(datastore_client)
 def get_disk_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[DiskThroughputMeasurement]:
     """
-    Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of DiskThroughputMeasurement objects
     """
     results = datastore_client.get_disk_throughput_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_disk_throughput_measurement() for result in results]
 
@@ -386,10 +412,12 @@ def get_disk_throughput_metrics(
 @auth(datastore_client)
 def get_latest_disk_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[DiskThroughputMeasurement]:
-    """Get the most recent disk_throughput measurements for each VM"""
-    results = datastore_client.get_latest_disk_throughput_measurements(vm_ids=vm_ids)
+    """Get the most recent disk_throughput measurements for each machine"""
+    results = datastore_client.get_latest_disk_throughput_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_disk_throughput_measurement() for result in results]
 
 
@@ -401,7 +429,7 @@ def put_disk_throughput_metric(
 ) -> OkResponse:
     """Put a disk_throughput metric measurement into the datastore"""
     datastore_client.add_disk_throughput_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -412,20 +440,20 @@ def put_disk_throughput_metric(
 @auth(datastore_client)
 def get_gpu_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[GpuMemoryMeasurement]:
     """
-    Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of GpuMemoryMeasurement objects
     """
     results = datastore_client.get_gpu_memory_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_gpu_memory_measurement() for result in results]
 
@@ -436,10 +464,12 @@ def get_gpu_memory_metrics(
 @auth(datastore_client)
 def get_latest_gpu_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[GpuMemoryMeasurement]:
-    """Get the most recent gpu_memory measurements for each VM"""
-    results = datastore_client.get_latest_gpu_memory_measurements(vm_ids=vm_ids)
+    """Get the most recent gpu_memory measurements for each machine"""
+    results = datastore_client.get_latest_gpu_memory_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_gpu_memory_measurement() for result in results]
 
 
@@ -451,7 +481,7 @@ def put_gpu_memory_metric(
 ) -> OkResponse:
     """Put a gpu_memory metric measurement into the datastore"""
     datastore_client.add_gpu_memory_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -462,20 +492,20 @@ def put_gpu_memory_metric(
 @auth(datastore_client)
 def get_gpu_utilization_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[GpuUtilizationMeasurement]:
     """
-    Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of GpuUtilizationMeasurement objects
     """
     results = datastore_client.get_gpu_utilization_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_gpu_utilization_measurement() for result in results]
 
@@ -486,10 +516,12 @@ def get_gpu_utilization_metrics(
 @auth(datastore_client)
 def get_latest_gpu_utilization_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[GpuUtilizationMeasurement]:
-    """Get the most recent gpu_utilization measurements for each VM"""
-    results = datastore_client.get_latest_gpu_utilization_measurements(vm_ids=vm_ids)
+    """Get the most recent gpu_utilization measurements for each machine"""
+    results = datastore_client.get_latest_gpu_utilization_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_gpu_utilization_measurement() for result in results]
 
 
@@ -501,7 +533,7 @@ def put_gpu_utilization_metric(
 ) -> OkResponse:
     """Put a gpu_utilization metric measurement into the datastore"""
     datastore_client.add_gpu_utilization_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -512,20 +544,20 @@ def put_gpu_utilization_metric(
 @auth(datastore_client)
 def get_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[MemoryMeasurement]:
     """
-    Get memory metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of MemoryMeasurement objects
     """
     results = datastore_client.get_memory_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_memory_measurement() for result in results]
 
@@ -534,10 +566,10 @@ def get_memory_metrics(
 @auth(datastore_client)
 def get_latest_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[MemoryMeasurement]:
-    """Get the most recent memory measurements for each VM"""
-    results = datastore_client.get_latest_memory_measurements(vm_ids=vm_ids)
+    """Get the most recent memory measurements for each machine"""
+    results = datastore_client.get_latest_memory_measurements(machine_ids=machine_ids)
     return [result.to_memory_measurement() for result in results]
 
 
@@ -549,7 +581,7 @@ def put_memory_metric(
 ) -> OkResponse:
     """Put a memory metric measurement into the datastore"""
     datastore_client.add_memory_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -560,20 +592,20 @@ def put_memory_metric(
 @auth(datastore_client)
 def get_network_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[NetworkThroughputMeasurement]:
     """
-    Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of NetworkThroughputMeasurement objects
     """
     results = datastore_client.get_network_throughput_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_network_throughput_measurement() for result in results]
 
@@ -585,10 +617,12 @@ def get_network_throughput_metrics(
 @auth(datastore_client)
 def get_latest_network_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[NetworkThroughputMeasurement]:
-    """Get the most recent network_throughput measurements for each VM"""
-    results = datastore_client.get_latest_network_throughput_measurements(vm_ids=vm_ids)
+    """Get the most recent network_throughput measurements for each machine"""
+    results = datastore_client.get_latest_network_throughput_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_network_throughput_measurement() for result in results]
 
 
@@ -600,7 +634,7 @@ def put_network_throughput_metric(
 ) -> OkResponse:
     """Put a network_throughput metric measurement into the datastore"""
     datastore_client.add_network_throughput_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )
@@ -611,20 +645,20 @@ def put_network_throughput_metric(
 @auth(datastore_client)
 def get_nvidia_smi_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
 ) -> list[NvidiaSmiMeasurement]:
     """
-    Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive.
-    :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).
+    Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive.
+    :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
     :return: List of NvidiaSmiMeasurement objects
     """
     results = datastore_client.get_nvidia_smi_measurements(
-        vm_ids=vm_ids, start_ts=from_ts, end_ts=to_ts
+        machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
     return [result.to_nvidia_smi_measurement() for result in results]
 
@@ -635,10 +669,12 @@ def get_nvidia_smi_metrics(
 @auth(datastore_client)
 def get_latest_nvidia_smi_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
-    vm_ids: Annotated[list[str], Query()],
+    machine_ids: Annotated[list[str], Query()],
 ) -> list[NvidiaSmiMeasurement]:
-    """Get the most recent nvidia_smi measurements for each VM"""
-    results = datastore_client.get_latest_nvidia_smi_measurements(vm_ids=vm_ids)
+    """Get the most recent nvidia_smi measurements for each machine"""
+    results = datastore_client.get_latest_nvidia_smi_measurements(
+        machine_ids=machine_ids
+    )
     return [result.to_nvidia_smi_measurement() for result in results]
 
 
@@ -650,7 +686,7 @@ def put_nvidia_smi_metric(
 ) -> OkResponse:
     """Put a nvidia_smi metric measurement into the datastore"""
     datastore_client.add_nvidia_smi_measurement(
-        vm_id=measurement.vm_id,
+        machine_id=measurement.machine_id,
         metrics=measurement.to_metrics(),
         ts=measurement.ts,
     )

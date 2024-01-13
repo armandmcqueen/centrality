@@ -30,10 +30,10 @@ class GpuMemoryMeasurement(BaseModel):
     """
     A measurement of GpuMemory
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     memory: List[GpuMemory]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "memory"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "memory"]
 
     model_config = {
         "populate_by_name": True,
@@ -90,7 +90,7 @@ class GpuMemoryMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "memory": [GpuMemory.from_dict(_item) for _item in obj.get("memory")] if obj.get("memory") is not None else None
         })

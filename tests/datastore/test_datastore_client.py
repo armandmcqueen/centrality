@@ -2,7 +2,7 @@ from controlplane.datastore.config import DatastoreConfig
 from controlplane.datastore.client import DatastoreClient
 from ..utils.utils import print_test_function_name
 from ..utils import asserts
-from controlplane.datastore.types.vmliveness import VmRegistrationInfo
+from controlplane.datastore.types.machine_info import MachineRegistrationInfo
 
 from common import constants
 import datetime
@@ -17,10 +17,10 @@ from .metric_utils import (
     check_expected_measurement_value,
 )
 
-VM_ID = "testvm"
+machine_id = "testmachine"
 
 # Short names to make the tests more readable
-LIVETHRESH = constants.VM_NO_HEARTBEAT_LIMBO_SECS
+LIVETHRESH = constants.MACHINE_NO_HEARTBEAT_LIMBO_SECS
 TOKEN = constants.CONTROL_PLANE_SDK_DEV_TOKEN
 
 
@@ -45,53 +45,61 @@ def test_tokens(datastore: tuple[DatastoreConfig, DatastoreClient]):
     # TODO: Add code to delete tokens and test it
 
 
-def test_vm_addition_and_removal(
+def test_machine_addition_and_removal(
     datastore: tuple[DatastoreConfig, DatastoreClient],
-    vm_registration_info: VmRegistrationInfo,
+    machine_registration_info: MachineRegistrationInfo,
 ):
-    """Test VM addition and removal"""
+    """Test machine addition and removal"""
     print_test_function_name()
     config, client = datastore
 
     # Test that initial state is correct
-    asserts.list_size(client.get_live_vms(LIVETHRESH), 0)
+    asserts.list_size(client.get_live_machines(LIVETHRESH), 0)
 
     # Test addition
-    client.add_or_update_vm_info(vm_id=VM_ID, registration_info=vm_registration_info)
-    asserts.set_equality(client.get_live_vms(LIVETHRESH), [VM_ID])
+    client.add_or_update_machine_info(
+        machine_id=machine_id, registration_info=machine_registration_info
+    )
+    asserts.set_equality(
+        [m.machine_id for m in client.get_live_machines(LIVETHRESH)], [machine_id]
+    )
 
     # Test removal
-    client.delete_vm_info(VM_ID)
-    asserts.list_size(client.get_live_vms(LIVETHRESH), 0)
+    client.delete_machine_info(machine_id)
+    asserts.list_size(client.get_live_machines(LIVETHRESH), 0)
 
 
-def test_vm_heartbeat_lifecycle(
+def test_machine_heartbeat_lifecycle(
     datastore: tuple[DatastoreConfig, DatastoreClient],
-    vm_registration_info: VmRegistrationInfo,
+    machine_registration_info: MachineRegistrationInfo,
 ):
-    """Test the addition, liveness timeout removal, and heartbeat-based refresh of VMs"""
+    """Test the addition, liveness timeout removal, and heartbeat-based refresh of machines"""
     print_test_function_name()
     config, client = datastore
 
-    client.add_or_update_vm_info(vm_id=VM_ID, registration_info=vm_registration_info)
-    asserts.set_equality(client.get_live_vms(LIVETHRESH), [VM_ID])
+    client.add_or_update_machine_info(
+        machine_id=machine_id, registration_info=machine_registration_info
+    )
+    asserts.set_equality(
+        [m.machine_id for m in client.get_live_machines(LIVETHRESH)], [machine_id]
+    )
 
-    # Wait so that the VM is considered dead with a small liveness_threshold_secs but not
+    # Wait so that the machine is considered dead with a small liveness_threshold_secs but not
     # with a larger one
     time.sleep(3)
-    asserts.list_size(client.get_live_vms(liveness_threshold_secs=2), 0)
-    asserts.list_size(client.get_live_vms(liveness_threshold_secs=LIVETHRESH), 1)
+    asserts.list_size(client.get_live_machines(liveness_threshold_secs=2), 0)
+    asserts.list_size(client.get_live_machines(liveness_threshold_secs=LIVETHRESH), 1)
 
     # Test heartbeat adds it back to the live list
-    client.update_vm_info_heartbeat_ts(VM_ID)
-    asserts.list_size(client.get_live_vms(liveness_threshold_secs=2), 1)
+    client.update_machine_info_heartbeat_ts(machine_id)
+    asserts.list_size(client.get_live_machines(liveness_threshold_secs=2), 1)
 
 
 @pytest.mark.parametrize("metric_type", MetricType)
 def test_metric_measurements(
     datastore: tuple[DatastoreConfig, DatastoreClient], metric_type: MetricType
 ):
-    # TODO: Test with multiple VM IDs in the db
+    # TODO: Test with multiple machine IDs in the db
     # TODO: Test filtering by timestamp
 
     print_test_function_name()
@@ -103,17 +111,17 @@ def test_metric_measurements(
 
     # Add a CPU measurement for each timestamp and validate that it was added correctly
     for ind, ts in enumerate(timestamps):
-        add_measurement(metric_type, client, VM_ID, ts, ind)
+        add_measurement(metric_type, client, machine_id, ts, ind)
 
         # Check that the latest CPU measurement was updated correctly
-        measurements = get_latest_measurement(metric_type, client, VM_ID)
+        measurements = get_latest_measurement(metric_type, client, machine_id)
         asserts.list_size(measurements, 1)
-        assert measurements[0].vm_id == VM_ID, "VM ID mismatch"
+        assert measurements[0].machine_id == machine_id, "Machine ID mismatch"
         assert measurements[0].ts == ts, "Timestamp mismatch"
         check_expected_measurement_value(metric_type, measurements[0], ind)
 
         # Check the entire timeseries
-        measurements = get_measurements(metric_type, client, VM_ID)
+        measurements = get_measurements(metric_type, client, machine_id)
         asserts.list_size(measurements, ind + 1)
         asserts.set_equality([m.ts for m in measurements], timestamps[: ind + 1])
 
@@ -131,16 +139,16 @@ def test_measurement_deletion(
     num_metrics = 10
     timestamps = [now - datetime.timedelta(seconds=i) for i in range(num_metrics)]
     for ind, ts in enumerate(timestamps):
-        add_measurement(metric_type, client, VM_ID, ts, ind)
+        add_measurement(metric_type, client, machine_id, ts, ind)
 
     # Check the entire timeseries
-    measurements = get_measurements(metric_type, client, VM_ID)
+    measurements = get_measurements(metric_type, client, machine_id)
     asserts.list_size(measurements, num_metrics)
     asserts.set_equality([m.ts for m in measurements], timestamps)
 
     # Delete all but the last 5 measurements
     cutoff_ts = timestamps[5] + datetime.timedelta(seconds=0.01)
-    delete_old_measurements(metric_type, client, VM_ID, cutoff_ts)
-    measurements = get_measurements(metric_type, client, VM_ID)
+    delete_old_measurements(metric_type, client, machine_id, cutoff_ts)
+    measurements = get_measurements(metric_type, client, machine_id)
     asserts.list_size(measurements, 5)
     asserts.set_equality([m.ts for m in measurements], timestamps[:5])

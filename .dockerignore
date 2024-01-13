@@ -187,6 +187,6 @@ common/.ruff_cache/**/*
 # flyctl launch added from controlplane/.ruff_cache/.gitignore
 controlplane/.ruff_cache/**/*
 
-# flyctl launch added from vmagent/.ruff_cache/.gitignore
-vmagent/.ruff_cache/**/*
+# flyctl launch added from machineagent/.ruff_cache/.gitignore
+machineagent/.ruff_cache/**/*
 fly.toml

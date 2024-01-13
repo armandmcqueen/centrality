@@ -29,10 +29,10 @@ class GpuUtilizationMeasurement(BaseModel):
     """
     A measurement of GpuUtilization
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     gpu_percents: List[Union[StrictFloat, StrictInt]]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "gpu_percents"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "gpu_percents"]
 
     model_config = {
         "populate_by_name": True,
@@ -82,7 +82,7 @@ class GpuUtilizationMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "gpu_percents": obj.get("gpu_percents")
         })

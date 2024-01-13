@@ -5,7 +5,7 @@ A measurement of GpuMemory
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **memory** | [**List[GpuMemory]**](GpuMemory.md) |  | 
 

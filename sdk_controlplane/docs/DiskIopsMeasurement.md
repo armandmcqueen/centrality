@@ -5,7 +5,7 @@ A measurement of DiskIops
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **iops** | [**List[DiskIops]**](DiskIops.md) |  | 
 

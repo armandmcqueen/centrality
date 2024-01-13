@@ -1,4 +1,0 @@
-# Config that generates completely real data
-vm_id: real-data
-controlplane_sdk:
-  host: controlplane

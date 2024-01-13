@@ -24,23 +24,25 @@ class MetricType(Enum):
     GPU_UTILIZATION = "gpu_utilization"
 
 
-def get_latest_metric_sdk(metric_type: MetricType, sdk: DataApi, vm_ids: list[str]):
+def get_latest_metric_sdk(
+    metric_type: MetricType, sdk: DataApi, machine_ids: list[str]
+):
     if metric_type == MetricType.CPU:
-        return sdk.get_latest_cpu_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_cpu_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.MEMORY:
-        return sdk.get_latest_memory_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_memory_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.NETWORK:
-        return sdk.get_latest_network_throughput_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_network_throughput_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.DISK_USAGE:
-        return sdk.get_latest_disk_usage_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_disk_usage_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.DISK_IOPS:
-        return sdk.get_latest_disk_iops_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_disk_iops_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.DISK_THROUGHPUT:
-        return sdk.get_latest_disk_throughput_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_disk_throughput_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.GPU_MEMORY:
-        return sdk.get_latest_gpu_memory_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_gpu_memory_metrics(machine_ids=machine_ids)
     elif metric_type == MetricType.GPU_UTILIZATION:
-        return sdk.get_latest_gpu_utilization_metrics(vm_ids=vm_ids)
+        return sdk.get_latest_gpu_utilization_metrics(machine_ids=machine_ids)
     else:
         raise Exception("Unknown metric type")
 

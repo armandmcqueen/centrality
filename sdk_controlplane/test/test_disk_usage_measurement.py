@@ -36,7 +36,7 @@ class TestDiskUsageMeasurement(unittest.TestCase):
         model = DiskUsageMeasurement()
         if include_optional:
             return DiskUsageMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 usage = [
                     centrality_controlplane_sdk.models.disk_usage.DiskUsage(
@@ -47,7 +47,7 @@ class TestDiskUsageMeasurement(unittest.TestCase):
             )
         else:
             return DiskUsageMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 usage = [
                     centrality_controlplane_sdk.models.disk_usage.DiskUsage(

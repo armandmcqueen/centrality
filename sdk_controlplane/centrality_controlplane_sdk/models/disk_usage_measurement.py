@@ -30,10 +30,10 @@ class DiskUsageMeasurement(BaseModel):
     """
     A measurement of DiskUsage
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     usage: List[DiskUsage]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "usage"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "usage"]
 
     model_config = {
         "populate_by_name": True,
@@ -90,7 +90,7 @@ class DiskUsageMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "usage": [DiskUsage.from_dict(_item) for _item in obj.get("usage")] if obj.get("usage") is not None else None
         })

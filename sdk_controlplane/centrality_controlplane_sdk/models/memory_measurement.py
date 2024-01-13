@@ -29,11 +29,11 @@ class MemoryMeasurement(BaseModel):
     """
     A measurement of Memory
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     free_memory_mb: Union[StrictFloat, StrictInt]
     total_memory_mb: Union[StrictFloat, StrictInt]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "free_memory_mb", "total_memory_mb"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "free_memory_mb", "total_memory_mb"]
 
     model_config = {
         "populate_by_name": True,
@@ -83,7 +83,7 @@ class MemoryMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "free_memory_mb": obj.get("free_memory_mb"),
             "total_memory_mb": obj.get("total_memory_mb")

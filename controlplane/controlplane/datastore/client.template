@@ -18,10 +18,10 @@ class TemplateDatastoreClient(DatastoreClient):
 
     # METRIC_NAME_CAMELCASE
     def add_METRIC_NAME_LOWERCASE_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: METRIC_SHAPE_DB
+        self, machine_id: str, ts: datetime.datetime, metrics: METRIC_SHAPE_DB
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=METRIC_NAME_CAMELCASEMetricORM,
@@ -30,21 +30,21 @@ class TemplateDatastoreClient(DatastoreClient):
 
     def get_METRIC_NAME_LOWERCASE_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[METRIC_NAME_CAMELCASEMetric]:
         return self._get_measurements(
             metric_orm=METRIC_NAME_CAMELCASEMetricORM,
             metric=METRIC_NAME_CAMELCASEMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
-    def get_latest_METRIC_NAME_LOWERCASE_measurements(self, vm_ids: list[str]) -> list[METRIC_NAME_CAMELCASEMetricLatest]:
+    def get_latest_METRIC_NAME_LOWERCASE_measurements(self, machine_ids: list[str]) -> list[METRIC_NAME_CAMELCASEMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=METRIC_NAME_CAMELCASEMetricLatestORM,
             latest_metric=METRIC_NAME_CAMELCASEMetricLatest,
         )
@@ -52,10 +52,10 @@ class TemplateDatastoreClient(DatastoreClient):
     def delete_old_METRIC_NAME_LOWERCASE_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=METRIC_NAME_CAMELCASEMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )

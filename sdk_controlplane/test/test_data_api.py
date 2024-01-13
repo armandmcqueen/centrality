@@ -152,6 +152,20 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
+    def test_get_live_machines(self) -> None:
+        """Test case for get_live_machines
+
+        Get Live Machines
+        """
+        pass
+
+    def test_get_machine(self) -> None:
+        """Test case for get_machine
+
+        Get Machine
+        """
+        pass
+
     def test_get_memory_metrics(self) -> None:
         """Test case for get_memory_metrics
 
@@ -170,13 +184,6 @@ class TestDataApi(unittest.TestCase):
         """Test case for get_nvidia_smi_metrics
 
         Get Nvidia Smi Metrics
-        """
-        pass
-
-    def test_list_live_vms(self) -> None:
-        """Test case for list_live_vms
-
-        List Live Vms
         """
         pass
 
@@ -243,24 +250,24 @@ class TestDataApi(unittest.TestCase):
         """
         pass
 
-    def test_register_vm(self) -> None:
-        """Test case for register_vm
+    def test_register_machine(self) -> None:
+        """Test case for register_machine
 
-        Register Vm
+        Register Machine
         """
         pass
 
-    def test_report_vm_death(self) -> None:
-        """Test case for report_vm_death
+    def test_report_machine_death(self) -> None:
+        """Test case for report_machine_death
 
-        Report Vm Death
+        Report Machine Death
         """
         pass
 
-    def test_report_vm_heartbeat(self) -> None:
-        """Test case for report_vm_heartbeat
+    def test_report_machine_heartbeat(self) -> None:
+        """Test case for report_machine_heartbeat
 
-        Report Vm Heartbeat
+        Report Machine Heartbeat
         """
         pass
 

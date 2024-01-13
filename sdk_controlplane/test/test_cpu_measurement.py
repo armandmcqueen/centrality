@@ -36,7 +36,7 @@ class TestCpuMeasurement(unittest.TestCase):
         model = CpuMeasurement()
         if include_optional:
             return CpuMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 cpu_percents = [
                     1.337
@@ -44,7 +44,7 @@ class TestCpuMeasurement(unittest.TestCase):
             )
         else:
             return CpuMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 cpu_percents = [
                     1.337

@@ -28,7 +28,7 @@ data to the control plane REST endpoints.
 
 Early
 
-Currently the control plane exists and there is a VMAgent (technically a bad name because it works just as well on bare metal)
+Currently the control plane exists and there is a MachineAgent (technically a bad name because it works just as well on bare metal)
 that sends data to the control plane. Check out https://centrality-dev.fly.dev/Cluster for a rough UI that displays some of the
 data being collected.
 
@@ -102,7 +102,7 @@ docker compose logs -f
 To quickly run a test outside of a container, you can use the `quicktest` config.
 
 ```bash
-python vmagent/vmagent/cli.py launch -f tests/configs/quicktest/vmagent.yaml
+python machineagent/machineagent/cli.py launch -f tests/configs/quicktest/machineagent.yaml
 ```
 
 ## Fly
@@ -123,10 +123,10 @@ To scale the agent cluster.
 fly --config fly-agent-cluster.toml scale count --process-group agent 5
 ```
 
-To run a local VM Agent that talks to the Fly control plane:
+To run a local Machine Agent that talks to the Fly control plane:
 
 ```bash
-python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-local.yaml
+python machineagent/machineagent/cli.py launch -f tests/configs/fly/machineagent-local.yaml
 ```
 
 To access the DB locally on port 5433:
@@ -137,7 +137,7 @@ fly proxy 5433 -a centrality-datastore-dev
 
 ## Monorepo
 
-Each of `common`, `controlplane`, `vmagent`, `cli`, `rapidui` and `deploy` are developed as independent Python 
+Each of `common`, `controlplane`, `machineagent`, `cli`, `rapidui` and `deploy` are developed as independent Python 
 packages, with many of them having a dependency on `common`. They are versioned together, so the monorepo 
 essentially has a single version number.
 

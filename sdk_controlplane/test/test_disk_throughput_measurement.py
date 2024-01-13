@@ -36,7 +36,7 @@ class TestDiskThroughputMeasurement(unittest.TestCase):
         model = DiskThroughputMeasurement()
         if include_optional:
             return DiskThroughputMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 throughput = [
                     centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(
@@ -47,7 +47,7 @@ class TestDiskThroughputMeasurement(unittest.TestCase):
             )
         else:
             return DiskThroughputMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 throughput = [
                     centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(

@@ -1,0 +1,4 @@
+# Config that generates completely real data
+machine_id: real-data
+controlplane_sdk:
+  host: controlplane

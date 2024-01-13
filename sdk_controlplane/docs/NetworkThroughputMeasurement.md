@@ -5,7 +5,7 @@ A measurement of NetworkThroughput
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **per_interface** | [**List[Throughput]**](Throughput.md) |  | 
 **total** | [**Throughput**](Throughput.md) |  | 

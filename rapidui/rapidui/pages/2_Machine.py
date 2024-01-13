@@ -34,12 +34,12 @@ UseBorder = bool
 
 
 @st.cache_data
-def get_metrics_for_vm(
-    _sdk: DataApi, vm_id: str, metric_type: MetricType, epoch: int
+def get_metrics_for_machine(
+    _sdk: DataApi, machine_id: str, metric_type: MetricType, epoch: int
 ) -> tuple[type[BaseCard], list[CardContents], UseBorder]:
     """Use epoch as a cache key to force a refresh at some interval"""
     if metric_type == MetricType.CPU:
-        measurements = _sdk.get_latest_cpu_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_cpu_metrics(machine_ids=[machine_id])
         # TODO: Handle errors?
         assert (
             len(measurements) == 1
@@ -54,7 +54,7 @@ def get_metrics_for_vm(
             False,
         )
     elif metric_type == MetricType.GPU_UTILIZATION:
-        measurements = _sdk.get_latest_gpu_utilization_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_gpu_utilization_metrics(machine_ids=[machine_id])
         if len(measurements) == 0:
             return GpuUtilCard, [], False
         assert (
@@ -70,7 +70,7 @@ def get_metrics_for_vm(
             False,
         )
     elif metric_type == MetricType.GPU_MEMORY:
-        measurements = _sdk.get_latest_gpu_memory_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_gpu_memory_metrics(machine_ids=[machine_id])
         if len(measurements) == 0:
             return GpuMemCard, [], True
         assert (
@@ -88,7 +88,7 @@ def get_metrics_for_vm(
             True,
         )
     elif metric_type == MetricType.MEMORY:
-        measurements = _sdk.get_latest_memory_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_memory_metrics(machine_ids=[machine_id])
         if len(measurements) == 0:
             return MemCard, [], True
         assert (
@@ -98,7 +98,7 @@ def get_metrics_for_vm(
         total_mb = measurements[0].total_memory_mb
         return MemCard, [MemCardContents(free_mem=free_mb, total_mem=total_mb)], True
     elif metric_type == MetricType.DISK_USAGE:
-        measurements = _sdk.get_latest_disk_usage_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_disk_usage_metrics(machine_ids=[machine_id])
         if len(measurements) == 0:
             return DiskUsageCard, [], True
         assert (
@@ -117,9 +117,9 @@ def get_metrics_for_vm(
             True,
         )
     elif metric_type == MetricType.DISK_IO:
-        iops_measurements = _sdk.get_latest_disk_iops_metrics(vm_ids=[vm_id])
+        iops_measurements = _sdk.get_latest_disk_iops_metrics(machine_ids=[machine_id])
         throughput_measurements = _sdk.get_latest_disk_throughput_metrics(
-            vm_ids=[vm_id]
+            machine_ids=[machine_id]
         )
         assert len(iops_measurements) == len(
             throughput_measurements
@@ -144,7 +144,9 @@ def get_metrics_for_vm(
             )
         return DiskIoCard, card_contents, True
     elif metric_type == MetricType.NETWORK:
-        measurements = _sdk.get_latest_network_throughput_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_network_throughput_metrics(
+            machine_ids=[machine_id]
+        )
         if len(measurements) == 0:
             return NetThroughputCard, [], True
         assert (
@@ -170,7 +172,7 @@ def get_metrics_for_vm(
         cards.insert(0, total_card)
         return NetThroughputCard, cards, True
     elif metric_type == MetricType.NVIDIA_SMI:
-        measurements = _sdk.get_latest_nvidia_smi_metrics(vm_ids=[vm_id])
+        measurements = _sdk.get_latest_nvidia_smi_metrics(machine_ids=[machine_id])
         if len(measurements) == 0:
             return NvidiaSmiCard, [], True
         assert (
@@ -189,10 +191,10 @@ def get_metrics_for_vm(
 
 
 @st.cache_data
-def get_live_vms(_sdk: DataApi, epoch: int) -> list[str]:
-    live_vms = _sdk.list_live_vms()
+def get_live_machines(_sdk: DataApi, epoch: int) -> list[str]:
+    live_machines = [m.machine_id for m in _sdk.get_live_machines()]
     # TODO: Handle errors?
-    return sorted(live_vms)
+    return sorted(live_machines)
 
 
 def main():
@@ -203,21 +205,21 @@ def main():
     header("Machine Metrics", disable_card_fill=True)
     metric_type = st.sidebar.selectbox("Metric Type", list(MetricType))
 
-    live_vms = get_live_vms(
+    live_machines = get_live_machines(
         _sdk=control_plane_sdk,
-        epoch=calculate_epoch(interval_ms=config.live_vm_interval_ms),
+        epoch=calculate_epoch(interval_ms=config.live_machine_interval_ms),
     )
 
     _, select_container, _ = st.columns(3)
-    vm_id = select_container.selectbox("Select Machine", live_vms, index=None)
+    machine_id = select_container.selectbox("Select Machine", live_machines, index=None)
 
-    # If there are no live VMs, don't query for data
-    if len(live_vms) == 0 or vm_id is None:
+    # If there are no live machines, don't query for data
+    if len(live_machines) == 0 or machine_id is None:
         return
 
-    card_type, cards, use_border = get_metrics_for_vm(
+    card_type, cards, use_border = get_metrics_for_machine(
         _sdk=control_plane_sdk,
-        vm_id=vm_id,
+        machine_id=machine_id,
         metric_type=metric_type,
         epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
     )
@@ -240,9 +242,9 @@ def main():
     flexbox.set_initial_cards(cards)
 
     while True:
-        _, cards, _ = get_metrics_for_vm(
+        _, cards, _ = get_metrics_for_machine(
             _sdk=control_plane_sdk,
-            vm_id=vm_id,
+            machine_id=machine_id,
             metric_type=metric_type,
             epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
         )

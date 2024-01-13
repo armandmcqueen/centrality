@@ -38,6 +38,9 @@ class PostgresContainer:
             self.container.stop()
 
 
-def print_test_function_name():
+def print_test_function_name(additional_info=None):
     fname = inspect.stack()[1][3]
-    print(f"\nLogs for: [magenta]{fname}")
+    s = f"\nLogs for: [magenta]{fname}"
+    if additional_info:
+        s += f"({additional_info})"
+    print(s)

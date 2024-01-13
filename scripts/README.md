@@ -18,7 +18,7 @@ if desired.
 
 ## `dev sync`
 
-Watches a directory and syncs it to a VM when the contents change. Edit code on your local machine,
+Watches a directory and syncs it to a machine when the contents change. Edit code on your local machine,
 test in on a GPU one. Hardcoded to ubuntu.
 
 Has dependency on `rsync`.

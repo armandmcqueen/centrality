@@ -36,7 +36,7 @@ class TestGpuMemoryMeasurement(unittest.TestCase):
         model = GpuMemoryMeasurement()
         if include_optional:
             return GpuMemoryMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 memory = [
                     centrality_controlplane_sdk.models.gpu_memory.GpuMemory(
@@ -46,7 +46,7 @@ class TestGpuMemoryMeasurement(unittest.TestCase):
             )
         else:
             return GpuMemoryMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 memory = [
                     centrality_controlplane_sdk.models.gpu_memory.GpuMemory(

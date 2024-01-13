@@ -5,7 +5,7 @@ A measurement of Memory
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**vm_id** | **str** |  | 
+**machine_id** | **str** |  | 
 **ts** | **datetime** |  | 
 **free_memory_mb** | **float** |  | 
 **total_memory_mb** | **float** |  | 

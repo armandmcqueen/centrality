@@ -28,7 +28,7 @@ WORKDIR /centrality
 # Install the monorepo
 RUN make install-dev
 
-# VM agent port
+# Machine agent port
 EXPOSE 7777
 # Control plane port
 EXPOSE 8000

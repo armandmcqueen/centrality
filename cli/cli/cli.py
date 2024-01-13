@@ -14,7 +14,7 @@ app = typer.Typer()
 
 
 @app.command()
-def watch_vms() -> None:
+def watch_machines() -> None:
     control_plane_sdk_config = ControlPlaneSdkConfig()
     sdk = get_sdk(
         config=control_plane_sdk_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN
@@ -28,9 +28,10 @@ def watch_vms() -> None:
             loop_interval_ticks = 100
             while True:
                 if tick_count % 200 == 0:
-                    # Update the list of VMs we track
-                    live_vms = sdk.list_live_vms()
-                    text = Text("\n".join(live_vms))
+                    # Update the list of machines we track
+                    live_machines = sdk.get_live_machines()
+                    live_machines = [m.machine_id for m in live_machines]
+                    text = Text("\n".join(live_machines))
                     live.update(text)
 
                 if tick_count % 100 == 0:
@@ -50,8 +51,8 @@ def watch_cpu() -> None:
 
     console = rich.console.Console()
 
-    def get_progress_descriptions(vm_id: str) -> str:
-        return f"[cyan]VM {vm_id}"
+    def get_progress_descriptions(machine_id: str) -> str:
+        return f"[cyan]Machine {machine_id}"
 
     with CliContextManager():
         console.print("[bold underline cyan]Active Machines CPU")
@@ -61,12 +62,12 @@ def watch_cpu() -> None:
             TaskProgressColumn(),
             refresh_per_second=10,
         ) as progress:
-            vm_bars = {}
-            live_vms = sdk.list_live_vms()
+            machine_bars = {}
+            live_machines = [m.machine_id for m in sdk.get_live_machines()]
             # TODO: Handle errors?
-            for vm_id in live_vms:
-                vm_bars[vm_id] = progress.add_task(
-                    get_progress_descriptions(vm_id), total=100
+            for machine_id in live_machines:
+                machine_bars[machine_id] = progress.add_task(
+                    get_progress_descriptions(machine_id), total=100
                 )
 
             tick_count = 0  # ticks are 1/1000 of a second
@@ -74,27 +75,27 @@ def watch_cpu() -> None:
 
             while True:
                 if tick_count % 10_000 == 0:
-                    # Update the list of VMs we track
-                    live_vms = sdk.list_live_vms()
+                    # Update the list of machines we track
+                    live_machines = [m.machine_id for m in sdk.get_live_machines()]
                     # TODO: Handle errors?
-                    new_set = set(live_vms)
-                    old_set = set(vm_bars.keys())
-                    vms_to_add = new_set - old_set
-                    vms_to_remove = old_set - new_set
-                    for vm_id in vms_to_add:
-                        vm_bars[vm_id] = progress.add_task(
-                            get_progress_descriptions(vm_id), total=100
+                    new_set = set(live_machines)
+                    old_set = set(machine_bars.keys())
+                    machines_to_add = new_set - old_set
+                    machines_to_remove = old_set - new_set
+                    for machine_id in machines_to_add:
+                        machine_bars[machine_id] = progress.add_task(
+                            get_progress_descriptions(machine_id), total=100
                         )
-                    for vm_id in vms_to_remove:
-                        progress.remove_task(vm_bars[vm_id])
-                        del vm_bars[vm_id]
+                    for machine_id in machines_to_remove:
+                        progress.remove_task(machine_bars[machine_id])
+                        del machine_bars[machine_id]
 
                 if tick_count % 200 == 0:
-                    # Update the CPU metrics for all VMs current tracked
-                    live_vms = list(vm_bars.keys())
-                    if len(live_vms) != 0:
+                    # Update the CPU metrics for all machines current tracked
+                    live_machines = list(machine_bars.keys())
+                    if len(live_machines) != 0:
                         latest_cpu_measurements = sdk.get_latest_cpu_metrics(
-                            vm_ids=live_vms
+                            machine_ids=live_machines
                         )
                         # TODO: Handle errors?
 
@@ -103,7 +104,8 @@ def watch_cpu() -> None:
                                 measurement.cpu_percents
                             )
                             progress.update(
-                                vm_bars[measurement.vm_id], completed=avg_cpu_percent
+                                machine_bars[measurement.machine_id],
+                                completed=avg_cpu_percent,
                             )
 
                 time.sleep(loop_interval_ticks / 1000)

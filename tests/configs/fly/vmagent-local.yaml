@@ -1,6 +1,0 @@
-vm_id: test-machine-local
-controlplane_sdk:
-  host: centrality-dev.fly.dev
-  https: true
-  port: 8000
-

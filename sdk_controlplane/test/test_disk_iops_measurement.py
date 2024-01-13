@@ -36,7 +36,7 @@ class TestDiskIopsMeasurement(unittest.TestCase):
         model = DiskIopsMeasurement()
         if include_optional:
             return DiskIopsMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 iops = [
                     centrality_controlplane_sdk.models.disk_iops.DiskIops(
@@ -46,7 +46,7 @@ class TestDiskIopsMeasurement(unittest.TestCase):
             )
         else:
             return DiskIopsMeasurement(
-                vm_id = '',
+                machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 iops = [
                     centrality_controlplane_sdk.models.disk_iops.DiskIops(

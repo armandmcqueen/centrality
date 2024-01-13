@@ -36,11 +36,12 @@ from centrality_controlplane_sdk.models.disk_usage_measurement import DiskUsageM
 from centrality_controlplane_sdk.models.gpu_memory_measurement import GpuMemoryMeasurement
 from centrality_controlplane_sdk.models.gpu_utilization_measurement import GpuUtilizationMeasurement
 from centrality_controlplane_sdk.models.info_response import InfoResponse
+from centrality_controlplane_sdk.models.machine_info import MachineInfo
+from centrality_controlplane_sdk.models.machine_registration_info import MachineRegistrationInfo
 from centrality_controlplane_sdk.models.memory_measurement import MemoryMeasurement
 from centrality_controlplane_sdk.models.network_throughput_measurement import NetworkThroughputMeasurement
 from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
 from centrality_controlplane_sdk.models.ok_response import OkResponse
-from centrality_controlplane_sdk.models.vm_registration_info import VmRegistrationInfo
 
 from centrality_controlplane_sdk.api_client import ApiClient
 from centrality_controlplane_sdk.api_response import ApiResponse
@@ -310,7 +311,7 @@ class DataApi:
     @validate_call
     def get_cpu_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -328,10 +329,10 @@ class DataApi:
     ) -> List[CpuMeasurement]:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -359,7 +360,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -387,7 +388,7 @@ class DataApi:
     @validate_call
     def get_cpu_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -405,10 +406,10 @@ class DataApi:
     ) -> ApiResponse[List[CpuMeasurement]]:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -436,7 +437,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -464,7 +465,7 @@ class DataApi:
     @validate_call
     def get_cpu_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -482,10 +483,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Cpu Metrics
 
-        Get cpu metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+        Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -513,7 +514,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -536,7 +537,7 @@ class DataApi:
 
     def _get_cpu_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -549,7 +550,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -561,9 +562,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -611,7 +612,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/cpu',
+            resource_path='/machine/metrics/cpu',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -630,7 +631,7 @@ class DataApi:
     @validate_call
     def get_disk_iops_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -648,10 +649,10 @@ class DataApi:
     ) -> List[DiskIopsMeasurement]:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -679,7 +680,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -707,7 +708,7 @@ class DataApi:
     @validate_call
     def get_disk_iops_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -725,10 +726,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskIopsMeasurement]]:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -756,7 +757,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -784,7 +785,7 @@ class DataApi:
     @validate_call
     def get_disk_iops_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -802,10 +803,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Iops Metrics
 
-        Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+        Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -833,7 +834,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -856,7 +857,7 @@ class DataApi:
 
     def _get_disk_iops_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -869,7 +870,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -881,9 +882,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -931,7 +932,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-iops',
+            resource_path='/machine/metrics/disk-iops',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -950,7 +951,7 @@ class DataApi:
     @validate_call
     def get_disk_throughput_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -968,10 +969,10 @@ class DataApi:
     ) -> List[DiskThroughputMeasurement]:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -999,7 +1000,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1027,7 +1028,7 @@ class DataApi:
     @validate_call
     def get_disk_throughput_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1045,10 +1046,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskThroughputMeasurement]]:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1076,7 +1077,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1104,7 +1105,7 @@ class DataApi:
     @validate_call
     def get_disk_throughput_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1122,10 +1123,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Throughput Metrics
 
-        Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+        Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1153,7 +1154,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1176,7 +1177,7 @@ class DataApi:
 
     def _get_disk_throughput_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -1189,7 +1190,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -1201,9 +1202,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -1251,7 +1252,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-throughput',
+            resource_path='/machine/metrics/disk-throughput',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1270,7 +1271,7 @@ class DataApi:
     @validate_call
     def get_disk_usage_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1288,10 +1289,10 @@ class DataApi:
     ) -> List[DiskUsageMeasurement]:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1319,7 +1320,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1347,7 +1348,7 @@ class DataApi:
     @validate_call
     def get_disk_usage_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1365,10 +1366,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskUsageMeasurement]]:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1396,7 +1397,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1424,7 +1425,7 @@ class DataApi:
     @validate_call
     def get_disk_usage_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1442,10 +1443,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Disk Usage Metrics
 
-        Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+        Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1473,7 +1474,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1496,7 +1497,7 @@ class DataApi:
 
     def _get_disk_usage_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -1509,7 +1510,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -1521,9 +1522,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -1571,7 +1572,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-usage',
+            resource_path='/machine/metrics/disk-usage',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1590,7 +1591,7 @@ class DataApi:
     @validate_call
     def get_gpu_memory_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1608,10 +1609,10 @@ class DataApi:
     ) -> List[GpuMemoryMeasurement]:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1639,7 +1640,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1667,7 +1668,7 @@ class DataApi:
     @validate_call
     def get_gpu_memory_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1685,10 +1686,10 @@ class DataApi:
     ) -> ApiResponse[List[GpuMemoryMeasurement]]:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1716,7 +1717,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1744,7 +1745,7 @@ class DataApi:
     @validate_call
     def get_gpu_memory_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1762,10 +1763,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Gpu Memory Metrics
 
-        Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+        Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1793,7 +1794,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1816,7 +1817,7 @@ class DataApi:
 
     def _get_gpu_memory_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -1829,7 +1830,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -1841,9 +1842,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -1891,7 +1892,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/gpu-memory',
+            resource_path='/machine/metrics/gpu-memory',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1910,7 +1911,7 @@ class DataApi:
     @validate_call
     def get_gpu_utilization_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -1928,10 +1929,10 @@ class DataApi:
     ) -> List[GpuUtilizationMeasurement]:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -1959,7 +1960,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -1987,7 +1988,7 @@ class DataApi:
     @validate_call
     def get_gpu_utilization_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -2005,10 +2006,10 @@ class DataApi:
     ) -> ApiResponse[List[GpuUtilizationMeasurement]]:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -2036,7 +2037,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -2064,7 +2065,7 @@ class DataApi:
     @validate_call
     def get_gpu_utilization_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -2082,10 +2083,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Gpu Utilization Metrics
 
-        Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+        Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -2113,7 +2114,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -2136,7 +2137,7 @@ class DataApi:
 
     def _get_gpu_utilization_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -2149,7 +2150,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -2161,9 +2162,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -2211,7 +2212,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/gpu-utilization',
+            resource_path='/machine/metrics/gpu-utilization',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2722,7 +2723,7 @@ class DataApi:
     @validate_call
     def get_latest_cpu_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2738,10 +2739,10 @@ class DataApi:
     ) -> List[CpuMeasurement]:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2765,7 +2766,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2791,7 +2792,7 @@ class DataApi:
     @validate_call
     def get_latest_cpu_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2807,10 +2808,10 @@ class DataApi:
     ) -> ApiResponse[List[CpuMeasurement]]:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2834,7 +2835,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2860,7 +2861,7 @@ class DataApi:
     @validate_call
     def get_latest_cpu_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2876,10 +2877,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Cpu Metrics
 
-        Get the most recent cpu measurements for each VM
+        Get the most recent cpu measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2903,7 +2904,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_cpu_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2924,7 +2925,7 @@ class DataApi:
 
     def _get_latest_cpu_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -2935,7 +2936,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -2947,9 +2948,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -2971,7 +2972,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/cpu/latest',
+            resource_path='/machine/metrics/cpu/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2990,7 +2991,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_iops_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3006,10 +3007,10 @@ class DataApi:
     ) -> List[DiskIopsMeasurement]:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3033,7 +3034,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3059,7 +3060,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_iops_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3075,10 +3076,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskIopsMeasurement]]:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3102,7 +3103,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3128,7 +3129,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_iops_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3144,10 +3145,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Iops Metrics
 
-        Get the most recent disk_iops measurements for each VM
+        Get the most recent disk_iops measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3171,7 +3172,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_iops_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3192,7 +3193,7 @@ class DataApi:
 
     def _get_latest_disk_iops_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -3203,7 +3204,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -3215,9 +3216,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -3239,7 +3240,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-iops/latest',
+            resource_path='/machine/metrics/disk-iops/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3258,7 +3259,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_throughput_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3274,10 +3275,10 @@ class DataApi:
     ) -> List[DiskThroughputMeasurement]:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3301,7 +3302,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3327,7 +3328,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_throughput_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3343,10 +3344,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskThroughputMeasurement]]:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3370,7 +3371,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3396,7 +3397,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_throughput_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3412,10 +3413,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Throughput Metrics
 
-        Get the most recent disk_throughput measurements for each VM
+        Get the most recent disk_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3439,7 +3440,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3460,7 +3461,7 @@ class DataApi:
 
     def _get_latest_disk_throughput_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -3471,7 +3472,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -3483,9 +3484,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -3507,7 +3508,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-throughput/latest',
+            resource_path='/machine/metrics/disk-throughput/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3526,7 +3527,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_usage_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3542,10 +3543,10 @@ class DataApi:
     ) -> List[DiskUsageMeasurement]:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3569,7 +3570,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3595,7 +3596,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_usage_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3611,10 +3612,10 @@ class DataApi:
     ) -> ApiResponse[List[DiskUsageMeasurement]]:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3638,7 +3639,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3664,7 +3665,7 @@ class DataApi:
     @validate_call
     def get_latest_disk_usage_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3680,10 +3681,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Disk Usage Metrics
 
-        Get the most recent disk_usage measurements for each VM
+        Get the most recent disk_usage measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3707,7 +3708,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_disk_usage_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3728,7 +3729,7 @@ class DataApi:
 
     def _get_latest_disk_usage_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -3739,7 +3740,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -3751,9 +3752,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -3775,7 +3776,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/disk-usage/latest',
+            resource_path='/machine/metrics/disk-usage/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3794,7 +3795,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_memory_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3810,10 +3811,10 @@ class DataApi:
     ) -> List[GpuMemoryMeasurement]:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3837,7 +3838,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3863,7 +3864,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_memory_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3879,10 +3880,10 @@ class DataApi:
     ) -> ApiResponse[List[GpuMemoryMeasurement]]:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3906,7 +3907,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3932,7 +3933,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_memory_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -3948,10 +3949,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Gpu Memory Metrics
 
-        Get the most recent gpu_memory measurements for each VM
+        Get the most recent gpu_memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -3975,7 +3976,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -3996,7 +3997,7 @@ class DataApi:
 
     def _get_latest_gpu_memory_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -4007,7 +4008,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -4019,9 +4020,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -4043,7 +4044,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/gpu-memory/latest',
+            resource_path='/machine/metrics/gpu-memory/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4062,7 +4063,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_utilization_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4078,10 +4079,10 @@ class DataApi:
     ) -> List[GpuUtilizationMeasurement]:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4105,7 +4106,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4131,7 +4132,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_utilization_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4147,10 +4148,10 @@ class DataApi:
     ) -> ApiResponse[List[GpuUtilizationMeasurement]]:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4174,7 +4175,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4200,7 +4201,7 @@ class DataApi:
     @validate_call
     def get_latest_gpu_utilization_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4216,10 +4217,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Gpu Utilization Metrics
 
-        Get the most recent gpu_utilization measurements for each VM
+        Get the most recent gpu_utilization measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4243,7 +4244,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_gpu_utilization_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4264,7 +4265,7 @@ class DataApi:
 
     def _get_latest_gpu_utilization_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -4275,7 +4276,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -4287,9 +4288,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -4311,7 +4312,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/gpu-utilization/latest',
+            resource_path='/machine/metrics/gpu-utilization/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4330,7 +4331,7 @@ class DataApi:
     @validate_call
     def get_latest_memory_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4346,10 +4347,10 @@ class DataApi:
     ) -> List[MemoryMeasurement]:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4373,7 +4374,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4399,7 +4400,7 @@ class DataApi:
     @validate_call
     def get_latest_memory_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4415,10 +4416,10 @@ class DataApi:
     ) -> ApiResponse[List[MemoryMeasurement]]:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4442,7 +4443,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4468,7 +4469,7 @@ class DataApi:
     @validate_call
     def get_latest_memory_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4484,10 +4485,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Memory Metrics
 
-        Get the most recent memory measurements for each VM
+        Get the most recent memory measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4511,7 +4512,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4532,7 +4533,7 @@ class DataApi:
 
     def _get_latest_memory_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -4543,7 +4544,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -4555,9 +4556,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -4579,7 +4580,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/memory/latest',
+            resource_path='/machine/metrics/memory/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4598,7 +4599,7 @@ class DataApi:
     @validate_call
     def get_latest_network_throughput_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4614,10 +4615,10 @@ class DataApi:
     ) -> List[NetworkThroughputMeasurement]:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4641,7 +4642,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4667,7 +4668,7 @@ class DataApi:
     @validate_call
     def get_latest_network_throughput_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4683,10 +4684,10 @@ class DataApi:
     ) -> ApiResponse[List[NetworkThroughputMeasurement]]:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4710,7 +4711,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4736,7 +4737,7 @@ class DataApi:
     @validate_call
     def get_latest_network_throughput_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4752,10 +4753,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Network Throughput Metrics
 
-        Get the most recent network_throughput measurements for each VM
+        Get the most recent network_throughput measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4779,7 +4780,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4800,7 +4801,7 @@ class DataApi:
 
     def _get_latest_network_throughput_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -4811,7 +4812,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -4823,9 +4824,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -4847,7 +4848,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/network-throughput/latest',
+            resource_path='/machine/metrics/network-throughput/latest',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -4866,7 +4867,7 @@ class DataApi:
     @validate_call
     def get_latest_nvidia_smi_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4882,10 +4883,10 @@ class DataApi:
     ) -> List[NvidiaSmiMeasurement]:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4909,7 +4910,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -4935,7 +4936,7 @@ class DataApi:
     @validate_call
     def get_latest_nvidia_smi_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -4951,10 +4952,10 @@ class DataApi:
     ) -> ApiResponse[List[NvidiaSmiMeasurement]]:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -4978,7 +4979,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5004,7 +5005,7 @@ class DataApi:
     @validate_call
     def get_latest_nvidia_smi_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5020,10 +5021,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Latest Nvidia Smi Metrics
 
-        Get the most recent nvidia_smi measurements for each VM
+        Get the most recent nvidia_smi measurements for each machine
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5047,7 +5048,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_latest_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5068,7 +5069,7 @@ class DataApi:
 
     def _get_latest_nvidia_smi_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         _request_auth,
         _content_type,
         _headers,
@@ -5079,7 +5080,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -5091,9 +5092,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         # process the header parameters
         # process the form parameters
@@ -5115,7 +5116,519 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/nvidia-smi/latest',
+            resource_path='/machine/metrics/nvidia-smi/latest',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def get_live_machines(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[MachineInfo]:
+        """Get Live Machines
+
+        Return a list of the active machines
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_live_machines_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[MachineInfo]"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def get_live_machines_with_http_info(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[MachineInfo]]:
+        """Get Live Machines
+
+        Return a list of the active machines
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_live_machines_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[MachineInfo]"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def get_live_machines_without_preload_content(
+        self,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Get Live Machines
+
+        Return a list of the active machines
+
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_live_machines_serialize(
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[MachineInfo]"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _get_live_machines_serialize(
+        self,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> Tuple:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+            
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'HTTPBearer'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/machine/live',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def get_machine(
+        self,
+        machine_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> MachineInfo:
+        """Get Machine
+
+        Return
+
+        :param machine_id: (required)
+        :type machine_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_machine_serialize(
+            machine_id=machine_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MachineInfo",
+            '422': "HTTPValidationError"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def get_machine_with_http_info(
+        self,
+        machine_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[MachineInfo]:
+        """Get Machine
+
+        Return
+
+        :param machine_id: (required)
+        :type machine_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_machine_serialize(
+            machine_id=machine_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MachineInfo",
+            '422': "HTTPValidationError"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def get_machine_without_preload_content(
+        self,
+        machine_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Get Machine
+
+        Return
+
+        :param machine_id: (required)
+        :type machine_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._get_machine_serialize(
+            machine_id=machine_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "MachineInfo",
+            '422': "HTTPValidationError"
+            
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _get_machine_serialize(
+        self,
+        machine_id,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> Tuple:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+            
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if machine_id is not None:
+            _path_params['machine_id'] = machine_id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'HTTPBearer'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/machine/{machine_id}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5134,7 +5647,7 @@ class DataApi:
     @validate_call
     def get_memory_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5152,10 +5665,10 @@ class DataApi:
     ) -> List[MemoryMeasurement]:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5183,7 +5696,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5211,7 +5724,7 @@ class DataApi:
     @validate_call
     def get_memory_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5229,10 +5742,10 @@ class DataApi:
     ) -> ApiResponse[List[MemoryMeasurement]]:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5260,7 +5773,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5288,7 +5801,7 @@ class DataApi:
     @validate_call
     def get_memory_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5306,10 +5819,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Memory Metrics
 
-        Get memory metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+        Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5337,7 +5850,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_memory_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5360,7 +5873,7 @@ class DataApi:
 
     def _get_memory_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -5373,7 +5886,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -5385,9 +5898,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -5435,7 +5948,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/memory',
+            resource_path='/machine/metrics/memory',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5454,7 +5967,7 @@ class DataApi:
     @validate_call
     def get_network_throughput_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5472,10 +5985,10 @@ class DataApi:
     ) -> List[NetworkThroughputMeasurement]:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5503,7 +6016,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5531,7 +6044,7 @@ class DataApi:
     @validate_call
     def get_network_throughput_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5549,10 +6062,10 @@ class DataApi:
     ) -> ApiResponse[List[NetworkThroughputMeasurement]]:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5580,7 +6093,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5608,7 +6121,7 @@ class DataApi:
     @validate_call
     def get_network_throughput_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5626,10 +6139,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Network Throughput Metrics
 
-        Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+        Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5657,7 +6170,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_network_throughput_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5680,7 +6193,7 @@ class DataApi:
 
     def _get_network_throughput_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -5693,7 +6206,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -5705,9 +6218,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -5755,7 +6268,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/network-throughput',
+            resource_path='/machine/metrics/network-throughput',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -5774,7 +6287,7 @@ class DataApi:
     @validate_call
     def get_nvidia_smi_metrics(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5792,10 +6305,10 @@ class DataApi:
     ) -> List[NvidiaSmiMeasurement]:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5823,7 +6336,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5851,7 +6364,7 @@ class DataApi:
     @validate_call
     def get_nvidia_smi_metrics_with_http_info(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5869,10 +6382,10 @@ class DataApi:
     ) -> ApiResponse[List[NvidiaSmiMeasurement]]:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5900,7 +6413,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -5928,7 +6441,7 @@ class DataApi:
     @validate_call
     def get_nvidia_smi_metrics_without_preload_content(
         self,
-        vm_ids: List[StrictStr],
+        machine_ids: List[StrictStr],
         from_ts: Optional[datetime] = None,
         to_ts: Optional[datetime] = None,
         _request_timeout: Union[
@@ -5946,10 +6459,10 @@ class DataApi:
     ) -> RESTResponseType:
         """Get Nvidia Smi Metrics
 
-        Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive. :param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+        Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
 
-        :param vm_ids: (required)
-        :type vm_ids: List[str]
+        :param machine_ids: (required)
+        :type machine_ids: List[str]
         :param from_ts:
         :type from_ts: datetime
         :param to_ts:
@@ -5977,7 +6490,7 @@ class DataApi:
         """ # noqa: E501
 
         _param = self._get_nvidia_smi_metrics_serialize(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             from_ts=from_ts,
             to_ts=to_ts,
             _request_auth=_request_auth,
@@ -6000,7 +6513,7 @@ class DataApi:
 
     def _get_nvidia_smi_metrics_serialize(
         self,
-        vm_ids,
+        machine_ids,
         from_ts,
         to_ts,
         _request_auth,
@@ -6013,7 +6526,7 @@ class DataApi:
 
         _collection_formats: Dict[str, str] = {
             
-            'vm_ids': 'multi',
+            'machine_ids': 'multi',
         }
 
         _path_params: Dict[str, str] = {}
@@ -6025,9 +6538,9 @@ class DataApi:
 
         # process the path parameters
         # process the query parameters
-        if vm_ids is not None:
+        if machine_ids is not None:
             
-            _query_params.append(('vm_ids', vm_ids))
+            _query_params.append(('machine_ids', machine_ids))
             
         if from_ts is not None:
             if isinstance(from_ts, datetime):
@@ -6075,254 +6588,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='GET',
-            resource_path='/metrics/nvidia-smi',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def list_live_vms(
-        self,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[str]:
-        """List Live Vms
-
-        Return a list of the active VMs
-
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_live_vms_serialize(
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]"
-            
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def list_live_vms_with_http_info(
-        self,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[str]]:
-        """List Live Vms
-
-        Return a list of the active VMs
-
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_live_vms_serialize(
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]"
-            
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def list_live_vms_without_preload_content(
-        self,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """List Live Vms
-
-        Return a list of the active VMs
-
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_live_vms_serialize(
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[str]"
-            
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _list_live_vms_serialize(
-        self,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> Tuple:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-            
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        # process the query parameters
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'HTTPBearer'
-        ]
-
-        return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/vm/live',
+            resource_path='/machine/metrics/nvidia-smi',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -6600,7 +6866,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/cpu',
+            resource_path='/machine/metrics/cpu',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -6878,7 +7144,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/disk-iops',
+            resource_path='/machine/metrics/disk-iops',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -7156,7 +7422,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/disk-throughput',
+            resource_path='/machine/metrics/disk-throughput',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -7434,7 +7700,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/disk-usage',
+            resource_path='/machine/metrics/disk-usage',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -7712,7 +7978,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/gpu-memory',
+            resource_path='/machine/metrics/gpu-memory',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -7990,7 +8256,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/gpu-utilization',
+            resource_path='/machine/metrics/gpu-utilization',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -8268,7 +8534,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/memory',
+            resource_path='/machine/metrics/memory',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -8546,7 +8812,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/network-throughput',
+            resource_path='/machine/metrics/network-throughput',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -8824,7 +9090,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/metrics/nvidia-smi',
+            resource_path='/machine/metrics/nvidia-smi',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -8841,10 +9107,10 @@ class DataApi:
 
 
     @validate_call
-    def register_vm(
+    def register_machine(
         self,
-        vm_id: StrictStr,
-        vm_registration_info: VmRegistrationInfo,
+        machine_id: StrictStr,
+        machine_registration_info: MachineRegistrationInfo,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -8858,14 +9124,14 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> OkResponse:
-        """Register Vm
+        """Register Machine
 
-        Register a VM
+        Register a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
-        :param vm_registration_info: (required)
-        :type vm_registration_info: VmRegistrationInfo
+        :param machine_id: (required)
+        :type machine_id: str
+        :param machine_registration_info: (required)
+        :type machine_registration_info: MachineRegistrationInfo
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -8888,9 +9154,9 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._register_vm_serialize(
-            vm_id=vm_id,
-            vm_registration_info=vm_registration_info,
+        _param = self._register_machine_serialize(
+            machine_id=machine_id,
+            machine_registration_info=machine_registration_info,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -8914,10 +9180,10 @@ class DataApi:
 
 
     @validate_call
-    def register_vm_with_http_info(
+    def register_machine_with_http_info(
         self,
-        vm_id: StrictStr,
-        vm_registration_info: VmRegistrationInfo,
+        machine_id: StrictStr,
+        machine_registration_info: MachineRegistrationInfo,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -8931,14 +9197,14 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[OkResponse]:
-        """Register Vm
+        """Register Machine
 
-        Register a VM
+        Register a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
-        :param vm_registration_info: (required)
-        :type vm_registration_info: VmRegistrationInfo
+        :param machine_id: (required)
+        :type machine_id: str
+        :param machine_registration_info: (required)
+        :type machine_registration_info: MachineRegistrationInfo
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -8961,9 +9227,9 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._register_vm_serialize(
-            vm_id=vm_id,
-            vm_registration_info=vm_registration_info,
+        _param = self._register_machine_serialize(
+            machine_id=machine_id,
+            machine_registration_info=machine_registration_info,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -8987,10 +9253,10 @@ class DataApi:
 
 
     @validate_call
-    def register_vm_without_preload_content(
+    def register_machine_without_preload_content(
         self,
-        vm_id: StrictStr,
-        vm_registration_info: VmRegistrationInfo,
+        machine_id: StrictStr,
+        machine_registration_info: MachineRegistrationInfo,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9004,14 +9270,14 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """Register Vm
+        """Register Machine
 
-        Register a VM
+        Register a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
-        :param vm_registration_info: (required)
-        :type vm_registration_info: VmRegistrationInfo
+        :param machine_id: (required)
+        :type machine_id: str
+        :param machine_registration_info: (required)
+        :type machine_registration_info: MachineRegistrationInfo
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9034,9 +9300,9 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._register_vm_serialize(
-            vm_id=vm_id,
-            vm_registration_info=vm_registration_info,
+        _param = self._register_machine_serialize(
+            machine_id=machine_id,
+            machine_registration_info=machine_registration_info,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9055,10 +9321,10 @@ class DataApi:
         return response_data.response
 
 
-    def _register_vm_serialize(
+    def _register_machine_serialize(
         self,
-        vm_id,
-        vm_registration_info,
+        machine_id,
+        machine_registration_info,
         _request_auth,
         _content_type,
         _headers,
@@ -9079,14 +9345,14 @@ class DataApi:
         _body_params: Optional[bytes] = None
 
         # process the path parameters
-        if vm_id is not None:
-            _path_params['vm_id'] = vm_id
+        if machine_id is not None:
+            _path_params['machine_id'] = machine_id
         # process the query parameters
         # process the header parameters
         # process the form parameters
         # process the body parameter
-        if vm_registration_info is not None:
-            _body_params = vm_registration_info
+        if machine_registration_info is not None:
+            _body_params = machine_registration_info
 
 
         # set the HTTP header `Accept`
@@ -9117,7 +9383,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/vm/{vm_id}/register',
+            resource_path='/machine/{machine_id}/register',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -9134,9 +9400,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_death(
+    def report_machine_death(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9150,12 +9416,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> OkResponse:
-        """Report Vm Death
+        """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9178,8 +9444,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_death_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_death_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9203,9 +9469,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_death_with_http_info(
+    def report_machine_death_with_http_info(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9219,12 +9485,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[OkResponse]:
-        """Report Vm Death
+        """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9247,8 +9513,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_death_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_death_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9272,9 +9538,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_death_without_preload_content(
+    def report_machine_death_without_preload_content(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9288,12 +9554,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """Report Vm Death
+        """Report Machine Death
 
-        Report that a VM is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
+        Report that a machine is dead, so that it is removed immediately.  This can be useful when you need the live list to update faster than the timeout.
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9316,8 +9582,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_death_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_death_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9336,9 +9602,9 @@ class DataApi:
         return response_data.response
 
 
-    def _report_vm_death_serialize(
+    def _report_machine_death_serialize(
         self,
-        vm_id,
+        machine_id,
         _request_auth,
         _content_type,
         _headers,
@@ -9359,8 +9625,8 @@ class DataApi:
         _body_params: Optional[bytes] = None
 
         # process the path parameters
-        if vm_id is not None:
-            _path_params['vm_id'] = vm_id
+        if machine_id is not None:
+            _path_params['machine_id'] = machine_id
         # process the query parameters
         # process the header parameters
         # process the form parameters
@@ -9382,7 +9648,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/vm/{vm_id}/death',
+            resource_path='/machine/{machine_id}/report-death',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -9399,9 +9665,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_heartbeat(
+    def report_machine_heartbeat(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9415,12 +9681,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> OkResponse:
-        """Report Vm Heartbeat
+        """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9443,8 +9709,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_heartbeat_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_heartbeat_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9468,9 +9734,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_heartbeat_with_http_info(
+    def report_machine_heartbeat_with_http_info(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9484,12 +9750,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[OkResponse]:
-        """Report Vm Heartbeat
+        """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9512,8 +9778,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_heartbeat_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_heartbeat_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9537,9 +9803,9 @@ class DataApi:
 
 
     @validate_call
-    def report_vm_heartbeat_without_preload_content(
+    def report_machine_heartbeat_without_preload_content(
         self,
-        vm_id: StrictStr,
+        machine_id: StrictStr,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9553,12 +9819,12 @@ class DataApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """Report Vm Heartbeat
+        """Report Machine Heartbeat
 
-        Report a heartbeat for a VM
+        Report a heartbeat for a machine
 
-        :param vm_id: (required)
-        :type vm_id: str
+        :param machine_id: (required)
+        :type machine_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -9581,8 +9847,8 @@ class DataApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._report_vm_heartbeat_serialize(
-            vm_id=vm_id,
+        _param = self._report_machine_heartbeat_serialize(
+            machine_id=machine_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -9601,9 +9867,9 @@ class DataApi:
         return response_data.response
 
 
-    def _report_vm_heartbeat_serialize(
+    def _report_machine_heartbeat_serialize(
         self,
-        vm_id,
+        machine_id,
         _request_auth,
         _content_type,
         _headers,
@@ -9624,8 +9890,8 @@ class DataApi:
         _body_params: Optional[bytes] = None
 
         # process the path parameters
-        if vm_id is not None:
-            _path_params['vm_id'] = vm_id
+        if machine_id is not None:
+            _path_params['machine_id'] = machine_id
         # process the query parameters
         # process the header parameters
         # process the form parameters
@@ -9647,7 +9913,7 @@ class DataApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/vm/{vm_id}/heartbeat',
+            resource_path='/machine/{machine_id}/heartbeat',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

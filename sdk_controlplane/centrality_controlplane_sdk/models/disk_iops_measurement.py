@@ -30,10 +30,10 @@ class DiskIopsMeasurement(BaseModel):
     """
     A measurement of DiskIops
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     iops: List[DiskIops]
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "iops"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "iops"]
 
     model_config = {
         "populate_by_name": True,
@@ -90,7 +90,7 @@ class DiskIopsMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "iops": [DiskIops.from_dict(_item) for _item in obj.get("iops")] if obj.get("iops") is not None else None
         })

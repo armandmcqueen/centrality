@@ -4,7 +4,7 @@ from pydantic import model_validator
 
 class AwsDeployConfig(CentralityConfig):
     """
-    Configuration for deploying a VM to AWS. The first set of fields must be set manually by the user.
+    Configuration for deploying a machine to AWS. The first set of fields must be set manually by the user.
 
     The second set of fields are automatically updated and saved by the creation scripts. CentralityConfig
     doesn't support optional fields, so we use an empty string to represent an unset value and then have

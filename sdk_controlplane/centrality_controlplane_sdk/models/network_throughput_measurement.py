@@ -30,11 +30,11 @@ class NetworkThroughputMeasurement(BaseModel):
     """
     A measurement of NetworkThroughput
     """ # noqa: E501
-    vm_id: StrictStr
+    machine_id: StrictStr
     ts: datetime
     per_interface: List[Throughput]
     total: Throughput
-    __properties: ClassVar[List[str]] = ["vm_id", "ts", "per_interface", "total"]
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "per_interface", "total"]
 
     model_config = {
         "populate_by_name": True,
@@ -94,7 +94,7 @@ class NetworkThroughputMeasurement(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "vm_id": obj.get("vm_id"),
+            "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
             "per_interface": [Throughput.from_dict(_item) for _item in obj.get("per_interface")] if obj.get("per_interface") is not None else None,
             "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None

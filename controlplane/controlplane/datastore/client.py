@@ -1,9 +1,10 @@
+from common import constants
 from controlplane.datastore.types.base import DatastoreBaseORM
 from controlplane.datastore.types.auth import UserTokenORM, UserToken
-from controlplane.datastore.types.vmliveness import (
-    VmInfoOrm,
-    VmInfo,
-    VmRegistrationInfo,
+from controlplane.datastore.types.machine_info import (
+    MachineInfoOrm,
+    MachineInfo,
+    MachineRegistrationInfo,
 )
 import datetime
 from typing import (
@@ -18,61 +19,61 @@ from typing import (
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
-from controlplane.datastore.types.vmmetrics.metric import (
+from controlplane.datastore.types.metrics.metric import (
     MetricBaseORM,
     MetricLatestBaseORM,
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from controlplane.datastore.types.vmmetrics.generated.cpu import (
+from controlplane.datastore.types.metrics.generated.cpu import (
     CpuMetricORM,
     CpuMetricLatestORM,
     CpuMetric,
     CpuMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_iops import (
+from controlplane.datastore.types.metrics.generated.disk_iops import (
     DiskIopsMetricORM,
     DiskIopsMetricLatestORM,
     DiskIopsMetric,
     DiskIopsMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_throughput import (
+from controlplane.datastore.types.metrics.generated.disk_throughput import (
     DiskThroughputMetricORM,
     DiskThroughputMetricLatestORM,
     DiskThroughputMetric,
     DiskThroughputMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.disk_usage import (
+from controlplane.datastore.types.metrics.generated.disk_usage import (
     DiskUsageMetricORM,
     DiskUsageMetricLatestORM,
     DiskUsageMetric,
     DiskUsageMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.gpu_memory import (
+from controlplane.datastore.types.metrics.generated.gpu_memory import (
     GpuMemoryMetricORM,
     GpuMemoryMetricLatestORM,
     GpuMemoryMetric,
     GpuMemoryMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.gpu_utilization import (
+from controlplane.datastore.types.metrics.generated.gpu_utilization import (
     GpuUtilizationMetricORM,
     GpuUtilizationMetricLatestORM,
     GpuUtilizationMetric,
     GpuUtilizationMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.memory import (
+from controlplane.datastore.types.metrics.generated.memory import (
     MemoryMetricORM,
     MemoryMetricLatestORM,
     MemoryMetric,
     MemoryMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.network_throughput import (
+from controlplane.datastore.types.metrics.generated.network_throughput import (
     NetworkThroughputMetricORM,
     NetworkThroughputMetricLatestORM,
     NetworkThroughputMetric,
     NetworkThroughputMetricLatest,
 )
-from controlplane.datastore.types.vmmetrics.generated.nvidia_smi import (
+from controlplane.datastore.types.metrics.generated.nvidia_smi import (
     NvidiaSmiMetricORM,
     NvidiaSmiMetricLatestORM,
     NvidiaSmiMetric,
@@ -85,27 +86,27 @@ from controlplane.datastore.config import DatastoreConfig
 from sqlalchemy.dialects.postgresql import insert
 
 
-def get_metric_id(vm_id: str, ts: datetime.datetime) -> str:
+def get_metric_id(machine_id: str, ts: datetime.datetime) -> str:
     epoch_millis = int(ts.timestamp() * 1000)
-    return f"{vm_id}-{epoch_millis}-{gen_random_uuid()}"
+    return f"{machine_id}-{epoch_millis}-{gen_random_uuid()}"
 
 
 TMetricBaseModel = TypeVar("TMetricBaseModel", bound=MetricBaseModel)
 TMetricLatestBaseModel = TypeVar("TMetricLatestBaseModel", bound=MetricLatestBaseModel)
 
 
-class VmRegistrationConflictError(Exception):
+class MachineRegistrationConflictError(Exception):
     """
-    Raised when a VM tries to register with a different machine spec than what is
+    Raised when a machine tries to register with a different machine spec than what is
     already in the database
     """
 
     pass
 
 
-class VmHeartbeatBeforeRegistrationError(Exception):
+class MachineHeartbeatBeforeRegistrationError(Exception):
     """
-    Raised when a VM tries to heartbeat before registering
+    Raised when a machine tries to heartbeat before registering
     """
 
     pass
@@ -172,27 +173,35 @@ class DatastoreClient:
                 return False
             return True
 
-    def add_or_update_vm_info(
+    def add_or_update_machine_info(
         self,
-        vm_id: str,
-        registration_info: VmRegistrationInfo,
+        machine_id: str,
+        registration_info: MachineRegistrationInfo,
     ) -> None:
         """
-        Register a VM with information about the machine.
+        Register a machine with information about the machine.
 
-        Will raise an exception if the VM is already registered with different machine specs. If the machine
+        Will raise an exception if the machine is already registered with different machine specs. If the machine
         spec is the same, it will update the registration timestamp and last heartbeat timestamp.
 
         nvidia-driver-version is not checked for equality because it can be upgraded without changing
-        VMs.
+        machines.
         """
-        with Session(bind=self.engine) as session:
-            existing_vm = (
-                session.query(VmInfoOrm).filter(VmInfoOrm.vm_id == vm_id).first()
+        if machine_id in constants.RESERVED_MACHINE_NAMES:
+            raise ValueError(
+                f"machine_id cannot be '{machine_id}' - these are reserved names: {constants.RESERVED_MACHINE_NAMES}"
             )
-            # If the VM is not already registered, add it
-            if existing_vm is None:
-                registration = registration_info.to_vm_info_orm(vm_id=vm_id)
+        with Session(bind=self.engine) as session:
+            existing_machine = (
+                session.query(MachineInfoOrm)
+                .filter(MachineInfoOrm.machine_id == machine_id)
+                .first()
+            )
+            # If the machine is not already registered, add it
+            if existing_machine is None:
+                registration = registration_info.to_machine_info_orm(
+                    machine_id=machine_id
+                )
                 session.add(registration)
                 session.commit()
 
@@ -200,96 +209,109 @@ class DatastoreClient:
             # except for nvidia-driver-version, which is a software version that can change.
             else:
                 skipped_fields = ["nvidia_driver_version"]
-                existing_vm = cast(VmInfoOrm, existing_vm)
-                previous_registration_info = VmInfo.from_orm(existing_vm)
-                for field in VmRegistrationInfo.model_fields.keys():
+                existing_machine = cast(MachineInfoOrm, existing_machine)
+                previous_registration_info = MachineInfo.from_orm(existing_machine)
+                for field in MachineRegistrationInfo.model_fields.keys():
                     if field in skipped_fields:
                         continue
                     if getattr(previous_registration_info, field) != getattr(
                         registration_info, field
                     ):
-                        raise VmRegistrationConflictError(
-                            f"VM registration info does not match what is already in the database. "
-                            f"Field: {field}, existing: {getattr(existing_vm, field)}, "
+                        raise MachineRegistrationConflictError(
+                            f"Machine registration info does not match what is already in the database. "
+                            f"Field: {field}, existing: {getattr(existing_machine, field)}, "
                             f"new: {getattr(registration_info, field)}."
                         )
 
                 # Update the registration timestamp and last heartbeat timestamp in the DB
-                existing_vm.registration_ts = datetime.datetime.now(
+                existing_machine.registration_ts = datetime.datetime.now(
                     datetime.timezone.utc
                 )
-                existing_vm.last_heartbeat_ts = datetime.datetime.now(
+                existing_machine.last_heartbeat_ts = datetime.datetime.now(
                     datetime.timezone.utc
                 )
                 session.commit()
 
-    def update_vm_info_heartbeat_ts(
+    def update_machine_info_heartbeat_ts(
         self,
-        vm_id: str,
+        machine_id: str,
     ) -> None:
-        """Set the last heartbeat for a VM to be the current time"""
+        """Set the last heartbeat for a machine to be the current time"""
         with Session(bind=self.engine) as session:
-            existing_vm = (
-                session.query(VmInfoOrm).filter(VmInfoOrm.vm_id == vm_id).first()
+            existing_machine = (
+                session.query(MachineInfoOrm)
+                .filter(MachineInfoOrm.machine_id == machine_id)
+                .first()
             )
-            if existing_vm is None:
-                raise VmHeartbeatBeforeRegistrationError(
-                    f"VM {vm_id} is reporting heartbeat, but has not registered yet"
+            if existing_machine is None:
+                raise MachineHeartbeatBeforeRegistrationError(
+                    f"Machine {machine_id} is reporting heartbeat, but has not registered yet"
                 )
-            existing_vm = cast(VmInfoOrm, existing_vm)
-            existing_vm.last_heartbeat_ts = datetime.datetime.utcnow()
+            existing_machine = cast(MachineInfoOrm, existing_machine)
+            existing_machine.last_heartbeat_ts = datetime.datetime.utcnow()
             session.commit()
 
-    def delete_vm_info(
+    def delete_machine_info(
         self,
-        vm_id: str,
+        machine_id: str,
     ) -> None:
-        """Remove the VM from the list of active VMs."""
+        """Remove the machine from the list of active machines."""
         with Session(bind=self.engine) as session:
-            delete_stmt = delete(VmInfoOrm).where(VmInfoOrm.vm_id == vm_id)
+            delete_stmt = delete(MachineInfoOrm).where(
+                MachineInfoOrm.machine_id == machine_id
+            )
             session.execute(delete_stmt)
             session.commit()
 
-    def remove_vms_without_recent_healthcheck(
+    def remove_machines_without_recent_healthcheck(
         self,
         oldest_ts_to_keep: datetime.datetime,
     ) -> None:
-        """Delete all VMs that have not reported a heartbeat since oldest_ts_to_keep"""
+        """Delete all machines that have not reported a heartbeat since oldest_ts_to_keep"""
         with Session(bind=self.engine) as session:
-            delete_stmt = delete(VmInfoOrm).where(
-                VmInfoOrm.last_heartbeat_ts < oldest_ts_to_keep
+            delete_stmt = delete(MachineInfoOrm).where(
+                MachineInfoOrm.last_heartbeat_ts < oldest_ts_to_keep
             )
             session.execute(delete_stmt)
             session.commit()
 
-    def get_live_vms(
+    def get_live_machines(
         self,
         liveness_threshold_secs: int,
-    ) -> list[str]:
+    ) -> list[MachineInfo]:
         """
-        Get a list of VMs that have sent a heartbeat in the last liveness_threshold_secs seconds
+        Get a list of Machines that have sent a heartbeat in the last liveness_threshold_secs seconds
         """
-        # TODO: Convert to return machine info
         min_ts = datetime.datetime.utcnow() - datetime.timedelta(
             seconds=liveness_threshold_secs
         )
-        with Session(bind=self.engine) as session:
-            rows = (
-                session.query(VmInfoOrm)
-                .filter(VmInfoOrm.last_heartbeat_ts >= min_ts)
-                .all()
-            )
-            return [row.vm_id for row in rows]
+        return self.get_machines(oldest_heartbeat_ts=min_ts)
 
-    def get_all_vms(
+    def get_machines(
         self,
-    ) -> list[str]:
+        machine_ids: Optional[list[str]] = None,
+        oldest_heartbeat_ts: Optional[datetime.datetime] = None,
+    ) -> list[MachineInfo]:
         """
-        Return the list of all VMs that are live or in limbo
+        Return a list of Machines filtered by machine_ids if provided,
+        otherwise return all Machines. Optionally filter out machines
+        that don't have a heartbeat more recent than oldest_heartbeat_ts.
         """
         with Session(bind=self.engine) as session:
-            rows = session.query(VmInfoOrm).all()
-            return [row.vm_id for row in rows]
+            query = session.query(MachineInfoOrm)
+
+            # Apply the filter if machine_ids is provided
+            if machine_ids is not None:
+                query = query.filter(MachineInfoOrm.machine_id.in_(machine_ids))
+
+            if oldest_heartbeat_ts is not None:
+                query = query.filter(
+                    MachineInfoOrm.last_heartbeat_ts >= oldest_heartbeat_ts
+                )
+
+            rows = query.all()
+            rows = [cast(MachineInfoOrm, row) for row in rows]
+            return [MachineInfo.from_orm(row) for row in rows]
 
     ############################################################
     # Generic methods for adding, getting, and deleting metrics
@@ -298,15 +320,15 @@ class DatastoreClient:
     # Generic method for adding measurements
     def _add_measurement(
         self,
-        vm_id: str,
+        machine_id: str,
         ts: datetime.datetime,
         metrics: Any,
         metric_orm: type[MetricBaseORM],
         latest_metric_orm: type[MetricLatestBaseORM],
     ) -> None:
         metric = metric_orm(
-            metric_id=get_metric_id(vm_id, ts),
-            vm_id=vm_id,
+            metric_id=get_metric_id(machine_id, ts),
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
         )
@@ -317,12 +339,12 @@ class DatastoreClient:
             upsert_stmt = (
                 insert(latest_metric_orm)
                 .values(
-                    vm_id=vm_id,
+                    machine_id=machine_id,
                     ts=ts,
                     metrics=metrics,
                 )
                 .on_conflict_do_update(
-                    index_elements=["vm_id"],
+                    index_elements=["machine_id"],
                     set_=dict(
                         ts=ts,
                         metrics=metrics,
@@ -337,15 +359,15 @@ class DatastoreClient:
         self,
         metric_orm: type[MetricBaseORM],
         metric: type[TMetricBaseModel],
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[TMetricBaseModel]:
         results: list[TMetricBaseModel] = []
         with Session(bind=self.engine) as session:
-            if len(vm_ids) == 0:
+            if len(machine_ids) == 0:
                 return []
-            filter_args: list[Any] = [metric_orm.vm_id.in_(vm_ids)]
+            filter_args: list[Any] = [metric_orm.machine_id.in_(machine_ids)]
             if start_ts is not None:
                 filter_args.append(metric_orm.ts >= start_ts)
             if end_ts is not None:
@@ -366,18 +388,18 @@ class DatastoreClient:
     # Generic method for getting latest measurements
     def _get_latest_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         latest_metric_orm: type[MetricLatestBaseORM],
         latest_metric: type[TMetricLatestBaseModel],
     ) -> list[TMetricLatestBaseModel]:
-        if len(vm_ids) == 0:
+        if len(machine_ids) == 0:
             return []
         results: list[TMetricLatestBaseModel] = []
 
         with Session(bind=self.engine) as session:
             rows = (
                 session.query(latest_metric_orm)
-                .filter(latest_metric_orm.vm_id.in_(vm_ids))
+                .filter(latest_metric_orm.machine_id.in_(machine_ids))
                 .all()
             )
             for row in rows:
@@ -391,11 +413,11 @@ class DatastoreClient:
         self,
         metric_orm: type[MetricBaseORM],
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         filters = [metric_orm.ts < oldest_ts_to_keep]
-        if vm_ids is not None:
-            filters.append(metric_orm.vm_id.in_(vm_ids))
+        if machine_ids is not None:
+            filters.append(metric_orm.machine_id.in_(machine_ids))
         with Session(bind=self.engine) as session:
             session.query(metric_orm).filter(*filters).delete()
             session.commit()
@@ -407,10 +429,10 @@ class DatastoreClient:
 
     # Cpu
     def add_cpu_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+        self, machine_id: str, ts: datetime.datetime, metrics: list[float]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=CpuMetricORM,
@@ -419,21 +441,23 @@ class DatastoreClient:
 
     def get_cpu_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[CpuMetric]:
         return self._get_measurements(
             metric_orm=CpuMetricORM,
             metric=CpuMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
-    def get_latest_cpu_measurements(self, vm_ids: list[str]) -> list[CpuMetricLatest]:
+    def get_latest_cpu_measurements(
+        self, machine_ids: list[str]
+    ) -> list[CpuMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=CpuMetricLatestORM,
             latest_metric=CpuMetricLatest,
         )
@@ -441,20 +465,20 @@ class DatastoreClient:
     def delete_old_cpu_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=CpuMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # DiskIops
     def add_disk_iops_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, float]
+        self, machine_id: str, ts: datetime.datetime, metrics: dict[str, float]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=DiskIopsMetricORM,
@@ -463,23 +487,23 @@ class DatastoreClient:
 
     def get_disk_iops_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[DiskIopsMetric]:
         return self._get_measurements(
             metric_orm=DiskIopsMetricORM,
             metric=DiskIopsMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_disk_iops_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[DiskIopsMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=DiskIopsMetricLatestORM,
             latest_metric=DiskIopsMetricLatest,
         )
@@ -487,20 +511,20 @@ class DatastoreClient:
     def delete_old_disk_iops_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=DiskIopsMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # DiskUsage
     def add_disk_usage_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+        self, machine_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=DiskUsageMetricORM,
@@ -509,23 +533,23 @@ class DatastoreClient:
 
     def get_disk_usage_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[DiskUsageMetric]:
         return self._get_measurements(
             metric_orm=DiskUsageMetricORM,
             metric=DiskUsageMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_disk_usage_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[DiskUsageMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=DiskUsageMetricLatestORM,
             latest_metric=DiskUsageMetricLatest,
         )
@@ -533,20 +557,20 @@ class DatastoreClient:
     def delete_old_disk_usage_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=DiskUsageMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # DiskThroughput
     def add_disk_throughput_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+        self, machine_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=DiskThroughputMetricORM,
@@ -555,23 +579,23 @@ class DatastoreClient:
 
     def get_disk_throughput_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[DiskThroughputMetric]:
         return self._get_measurements(
             metric_orm=DiskThroughputMetricORM,
             metric=DiskThroughputMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_disk_throughput_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[DiskThroughputMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=DiskThroughputMetricLatestORM,
             latest_metric=DiskThroughputMetricLatest,
         )
@@ -579,20 +603,20 @@ class DatastoreClient:
     def delete_old_disk_throughput_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=DiskThroughputMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # GpuMemory
     def add_gpu_memory_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: list[list[float]]
+        self, machine_id: str, ts: datetime.datetime, metrics: list[list[float]]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=GpuMemoryMetricORM,
@@ -601,23 +625,23 @@ class DatastoreClient:
 
     def get_gpu_memory_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[GpuMemoryMetric]:
         return self._get_measurements(
             metric_orm=GpuMemoryMetricORM,
             metric=GpuMemoryMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_gpu_memory_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[GpuMemoryMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=GpuMemoryMetricLatestORM,
             latest_metric=GpuMemoryMetricLatest,
         )
@@ -625,20 +649,20 @@ class DatastoreClient:
     def delete_old_gpu_memory_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=GpuMemoryMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # GpuUtilization
     def add_gpu_utilization_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+        self, machine_id: str, ts: datetime.datetime, metrics: list[float]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=GpuUtilizationMetricORM,
@@ -647,23 +671,23 @@ class DatastoreClient:
 
     def get_gpu_utilization_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[GpuUtilizationMetric]:
         return self._get_measurements(
             metric_orm=GpuUtilizationMetricORM,
             metric=GpuUtilizationMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_gpu_utilization_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[GpuUtilizationMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=GpuUtilizationMetricLatestORM,
             latest_metric=GpuUtilizationMetricLatest,
         )
@@ -671,20 +695,20 @@ class DatastoreClient:
     def delete_old_gpu_utilization_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=GpuUtilizationMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # Memory
     def add_memory_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: list[float]
+        self, machine_id: str, ts: datetime.datetime, metrics: list[float]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=MemoryMetricORM,
@@ -693,23 +717,23 @@ class DatastoreClient:
 
     def get_memory_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[MemoryMetric]:
         return self._get_measurements(
             metric_orm=MemoryMetricORM,
             metric=MemoryMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_memory_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[MemoryMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=MemoryMetricLatestORM,
             latest_metric=MemoryMetricLatest,
         )
@@ -717,20 +741,20 @@ class DatastoreClient:
     def delete_old_memory_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=MemoryMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # NetworkThroughput
     def add_network_throughput_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
+        self, machine_id: str, ts: datetime.datetime, metrics: dict[str, list[float]]
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=NetworkThroughputMetricORM,
@@ -739,23 +763,23 @@ class DatastoreClient:
 
     def get_network_throughput_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[NetworkThroughputMetric]:
         return self._get_measurements(
             metric_orm=NetworkThroughputMetricORM,
             metric=NetworkThroughputMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_network_throughput_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[NetworkThroughputMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=NetworkThroughputMetricLatestORM,
             latest_metric=NetworkThroughputMetricLatest,
         )
@@ -763,20 +787,20 @@ class DatastoreClient:
     def delete_old_network_throughput_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=NetworkThroughputMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # NvidiaSmi
     def add_nvidia_smi_measurement(
-        self, vm_id: str, ts: datetime.datetime, metrics: str
+        self, machine_id: str, ts: datetime.datetime, metrics: str
     ) -> None:
         self._add_measurement(
-            vm_id=vm_id,
+            machine_id=machine_id,
             ts=ts,
             metrics=metrics,
             metric_orm=NvidiaSmiMetricORM,
@@ -785,23 +809,23 @@ class DatastoreClient:
 
     def get_nvidia_smi_measurements(
         self,
-        vm_ids: list[str],
+        machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
     ) -> list[NvidiaSmiMetric]:
         return self._get_measurements(
             metric_orm=NvidiaSmiMetricORM,
             metric=NvidiaSmiMetric,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
 
     def get_latest_nvidia_smi_measurements(
-        self, vm_ids: list[str]
+        self, machine_ids: list[str]
     ) -> list[NvidiaSmiMetricLatest]:
         return self._get_latest_measurements(
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
             latest_metric_orm=NvidiaSmiMetricLatestORM,
             latest_metric=NvidiaSmiMetricLatest,
         )
@@ -809,12 +833,12 @@ class DatastoreClient:
     def delete_old_nvidia_smi_measurements(
         self,
         oldest_ts_to_keep: datetime.datetime,
-        vm_ids: Optional[list[str]] = None,
+        machine_ids: Optional[list[str]] = None,
     ) -> None:
         self._delete_old_measurements(
             metric_orm=NvidiaSmiMetricORM,
             oldest_ts_to_keep=oldest_ts_to_keep,
-            vm_ids=vm_ids,
+            machine_ids=machine_ids,
         )
 
     # END GENERATED CODE

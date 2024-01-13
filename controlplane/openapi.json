@@ -76,14 +76,14 @@
         }
       }
     },
-    "/vm/{vm_id}/register": {
+    "/machine/{machine_id}/register": {
       "post": {
         "tags": [
           "data"
         ],
-        "summary": "Register Vm",
-        "description": "Register a VM",
-        "operationId": "register_vm",
+        "summary": "Register Machine",
+        "description": "Register a machine",
+        "operationId": "register_machine",
         "security": [
           {
             "HTTPBearer": []
@@ -91,12 +91,12 @@
         ],
         "parameters": [
           {
-            "name": "vm_id",
+            "name": "machine_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Vm Id"
+              "title": "Machine Id"
             }
           }
         ],
@@ -105,7 +105,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/VmRegistrationInfo"
+                "$ref": "#/components/schemas/MachineRegistrationInfo"
               }
             }
           }
@@ -134,14 +134,14 @@
         }
       }
     },
-    "/vm/{vm_id}/heartbeat": {
+    "/machine/{machine_id}/heartbeat": {
       "post": {
         "tags": [
           "data"
         ],
-        "summary": "Report Vm Heartbeat",
-        "description": "Report a heartbeat for a VM",
-        "operationId": "report_vm_heartbeat",
+        "summary": "Report Machine Heartbeat",
+        "description": "Report a heartbeat for a machine",
+        "operationId": "report_machine_heartbeat",
         "security": [
           {
             "HTTPBearer": []
@@ -149,12 +149,12 @@
         ],
         "parameters": [
           {
-            "name": "vm_id",
+            "name": "machine_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Vm Id"
+              "title": "Machine Id"
             }
           }
         ],
@@ -182,14 +182,14 @@
         }
       }
     },
-    "/vm/{vm_id}/death": {
+    "/machine/{machine_id}/report-death": {
       "post": {
         "tags": [
           "data"
         ],
-        "summary": "Report Vm Death",
-        "description": "Report that a VM is dead, so that it is removed immediately.\n\nThis can be useful when you need the live list to update faster than the timeout.",
-        "operationId": "report_vm_death",
+        "summary": "Report Machine Death",
+        "description": "Report that a machine is dead, so that it is removed immediately.\n\nThis can be useful when you need the live list to update faster than the timeout.",
+        "operationId": "report_machine_death",
         "security": [
           {
             "HTTPBearer": []
@@ -197,12 +197,12 @@
         ],
         "parameters": [
           {
-            "name": "vm_id",
+            "name": "machine_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Vm Id"
+              "title": "Machine Id"
             }
           }
         ],
@@ -230,14 +230,14 @@
         }
       }
     },
-    "/vm/live": {
+    "/machine/live": {
       "get": {
         "tags": [
           "data"
         ],
-        "summary": "List Live Vms",
-        "description": "Return a list of the active VMs",
-        "operationId": "list_live_vms",
+        "summary": "Get Live Machines",
+        "description": "Return a list of the active machines",
+        "operationId": "get_live_machines",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -245,10 +245,10 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/MachineInfo"
                   },
                   "type": "array",
-                  "title": "Response List Live Vms Vm Live Get"
+                  "title": "Response Get Live Machines Machine Live Get"
                 }
               }
             }
@@ -261,13 +261,61 @@
         ]
       }
     },
-    "/metrics/cpu": {
+    "/machine/{machine_id}": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get Machine",
+        "description": "Return",
+        "operationId": "get_machine",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "machine_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Machine Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MachineInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/machine/metrics/cpu": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Cpu Metrics",
-        "description": "Get cpu metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
+        "description": "Get cpu metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
         "operationId": "get_cpu_metrics",
         "security": [
           {
@@ -276,7 +324,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -284,7 +332,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -332,7 +380,7 @@
                   "items": {
                     "$ref": "#/components/schemas/CpuMeasurement"
                   },
-                  "title": "Response Get Cpu Metrics Metrics Cpu Get"
+                  "title": "Response Get Cpu Metrics Machine Metrics Cpu Get"
                 }
               }
             }
@@ -395,13 +443,13 @@
         }
       }
     },
-    "/metrics/cpu/latest": {
+    "/machine/metrics/cpu/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Cpu Metrics",
-        "description": "Get the most recent cpu measurements for each VM",
+        "description": "Get the most recent cpu measurements for each machine",
         "operationId": "get_latest_cpu_metrics",
         "security": [
           {
@@ -410,7 +458,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -418,7 +466,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -432,7 +480,7 @@
                   "items": {
                     "$ref": "#/components/schemas/CpuMeasurement"
                   },
-                  "title": "Response Get Latest Cpu Metrics Metrics Cpu Latest Get"
+                  "title": "Response Get Latest Cpu Metrics Machine Metrics Cpu Latest Get"
                 }
               }
             }
@@ -450,13 +498,13 @@
         }
       }
     },
-    "/metrics/disk-iops": {
+    "/machine/metrics/disk-iops": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Disk Iops Metrics",
-        "description": "Get disk_iops metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
+        "description": "Get disk_iops metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
         "operationId": "get_disk_iops_metrics",
         "security": [
           {
@@ -465,7 +513,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -473,7 +521,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -521,7 +569,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskIopsMeasurement"
                   },
-                  "title": "Response Get Disk Iops Metrics Metrics Disk Iops Get"
+                  "title": "Response Get Disk Iops Metrics Machine Metrics Disk Iops Get"
                 }
               }
             }
@@ -584,13 +632,13 @@
         }
       }
     },
-    "/metrics/disk-iops/latest": {
+    "/machine/metrics/disk-iops/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Disk Iops Metrics",
-        "description": "Get the most recent disk_iops measurements for each VM",
+        "description": "Get the most recent disk_iops measurements for each machine",
         "operationId": "get_latest_disk_iops_metrics",
         "security": [
           {
@@ -599,7 +647,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -607,7 +655,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -621,7 +669,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskIopsMeasurement"
                   },
-                  "title": "Response Get Latest Disk Iops Metrics Metrics Disk Iops Latest Get"
+                  "title": "Response Get Latest Disk Iops Metrics Machine Metrics Disk Iops Latest Get"
                 }
               }
             }
@@ -639,13 +687,13 @@
         }
       }
     },
-    "/metrics/disk-usage": {
+    "/machine/metrics/disk-usage": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Disk Usage Metrics",
-        "description": "Get disk_usage metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
+        "description": "Get disk_usage metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
         "operationId": "get_disk_usage_metrics",
         "security": [
           {
@@ -654,7 +702,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -662,7 +710,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -710,7 +758,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskUsageMeasurement"
                   },
-                  "title": "Response Get Disk Usage Metrics Metrics Disk Usage Get"
+                  "title": "Response Get Disk Usage Metrics Machine Metrics Disk Usage Get"
                 }
               }
             }
@@ -773,13 +821,13 @@
         }
       }
     },
-    "/metrics/disk-usage/latest": {
+    "/machine/metrics/disk-usage/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Disk Usage Metrics",
-        "description": "Get the most recent disk_usage measurements for each VM",
+        "description": "Get the most recent disk_usage measurements for each machine",
         "operationId": "get_latest_disk_usage_metrics",
         "security": [
           {
@@ -788,7 +836,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -796,7 +844,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -810,7 +858,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskUsageMeasurement"
                   },
-                  "title": "Response Get Latest Disk Usage Metrics Metrics Disk Usage Latest Get"
+                  "title": "Response Get Latest Disk Usage Metrics Machine Metrics Disk Usage Latest Get"
                 }
               }
             }
@@ -828,13 +876,13 @@
         }
       }
     },
-    "/metrics/disk-throughput": {
+    "/machine/metrics/disk-throughput": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Disk Throughput Metrics",
-        "description": "Get disk_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
+        "description": "Get disk_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
         "operationId": "get_disk_throughput_metrics",
         "security": [
           {
@@ -843,7 +891,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -851,7 +899,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -899,7 +947,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskThroughputMeasurement"
                   },
-                  "title": "Response Get Disk Throughput Metrics Metrics Disk Throughput Get"
+                  "title": "Response Get Disk Throughput Metrics Machine Metrics Disk Throughput Get"
                 }
               }
             }
@@ -962,13 +1010,13 @@
         }
       }
     },
-    "/metrics/disk-throughput/latest": {
+    "/machine/metrics/disk-throughput/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Disk Throughput Metrics",
-        "description": "Get the most recent disk_throughput measurements for each VM",
+        "description": "Get the most recent disk_throughput measurements for each machine",
         "operationId": "get_latest_disk_throughput_metrics",
         "security": [
           {
@@ -977,7 +1025,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -985,7 +1033,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -999,7 +1047,7 @@
                   "items": {
                     "$ref": "#/components/schemas/DiskThroughputMeasurement"
                   },
-                  "title": "Response Get Latest Disk Throughput Metrics Metrics Disk Throughput Latest Get"
+                  "title": "Response Get Latest Disk Throughput Metrics Machine Metrics Disk Throughput Latest Get"
                 }
               }
             }
@@ -1017,13 +1065,13 @@
         }
       }
     },
-    "/metrics/gpu-memory": {
+    "/machine/metrics/gpu-memory": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Gpu Memory Metrics",
-        "description": "Get gpu_memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
+        "description": "Get gpu_memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
         "operationId": "get_gpu_memory_metrics",
         "security": [
           {
@@ -1032,7 +1080,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1040,7 +1088,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -1088,7 +1136,7 @@
                   "items": {
                     "$ref": "#/components/schemas/GpuMemoryMeasurement"
                   },
-                  "title": "Response Get Gpu Memory Metrics Metrics Gpu Memory Get"
+                  "title": "Response Get Gpu Memory Metrics Machine Metrics Gpu Memory Get"
                 }
               }
             }
@@ -1151,13 +1199,13 @@
         }
       }
     },
-    "/metrics/gpu-memory/latest": {
+    "/machine/metrics/gpu-memory/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Gpu Memory Metrics",
-        "description": "Get the most recent gpu_memory measurements for each VM",
+        "description": "Get the most recent gpu_memory measurements for each machine",
         "operationId": "get_latest_gpu_memory_metrics",
         "security": [
           {
@@ -1166,7 +1214,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1174,7 +1222,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -1188,7 +1236,7 @@
                   "items": {
                     "$ref": "#/components/schemas/GpuMemoryMeasurement"
                   },
-                  "title": "Response Get Latest Gpu Memory Metrics Metrics Gpu Memory Latest Get"
+                  "title": "Response Get Latest Gpu Memory Metrics Machine Metrics Gpu Memory Latest Get"
                 }
               }
             }
@@ -1206,13 +1254,13 @@
         }
       }
     },
-    "/metrics/gpu-utilization": {
+    "/machine/metrics/gpu-utilization": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Gpu Utilization Metrics",
-        "description": "Get gpu_utilization metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
+        "description": "Get gpu_utilization metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
         "operationId": "get_gpu_utilization_metrics",
         "security": [
           {
@@ -1221,7 +1269,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1229,7 +1277,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -1277,7 +1325,7 @@
                   "items": {
                     "$ref": "#/components/schemas/GpuUtilizationMeasurement"
                   },
-                  "title": "Response Get Gpu Utilization Metrics Metrics Gpu Utilization Get"
+                  "title": "Response Get Gpu Utilization Metrics Machine Metrics Gpu Utilization Get"
                 }
               }
             }
@@ -1340,13 +1388,13 @@
         }
       }
     },
-    "/metrics/gpu-utilization/latest": {
+    "/machine/metrics/gpu-utilization/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Gpu Utilization Metrics",
-        "description": "Get the most recent gpu_utilization measurements for each VM",
+        "description": "Get the most recent gpu_utilization measurements for each machine",
         "operationId": "get_latest_gpu_utilization_metrics",
         "security": [
           {
@@ -1355,7 +1403,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1363,7 +1411,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -1377,7 +1425,7 @@
                   "items": {
                     "$ref": "#/components/schemas/GpuUtilizationMeasurement"
                   },
-                  "title": "Response Get Latest Gpu Utilization Metrics Metrics Gpu Utilization Latest Get"
+                  "title": "Response Get Latest Gpu Utilization Metrics Machine Metrics Gpu Utilization Latest Get"
                 }
               }
             }
@@ -1395,13 +1443,13 @@
         }
       }
     },
-    "/metrics/memory": {
+    "/machine/metrics/memory": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Memory Metrics",
-        "description": "Get memory metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
+        "description": "Get memory metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
         "operationId": "get_memory_metrics",
         "security": [
           {
@@ -1410,7 +1458,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1418,7 +1466,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -1466,7 +1514,7 @@
                   "items": {
                     "$ref": "#/components/schemas/MemoryMeasurement"
                   },
-                  "title": "Response Get Memory Metrics Metrics Memory Get"
+                  "title": "Response Get Memory Metrics Machine Metrics Memory Get"
                 }
               }
             }
@@ -1529,13 +1577,13 @@
         }
       }
     },
-    "/metrics/memory/latest": {
+    "/machine/metrics/memory/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Memory Metrics",
-        "description": "Get the most recent memory measurements for each VM",
+        "description": "Get the most recent memory measurements for each machine",
         "operationId": "get_latest_memory_metrics",
         "security": [
           {
@@ -1544,7 +1592,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1552,7 +1600,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -1566,7 +1614,7 @@
                   "items": {
                     "$ref": "#/components/schemas/MemoryMeasurement"
                   },
-                  "title": "Response Get Latest Memory Metrics Metrics Memory Latest Get"
+                  "title": "Response Get Latest Memory Metrics Machine Metrics Memory Latest Get"
                 }
               }
             }
@@ -1584,13 +1632,13 @@
         }
       }
     },
-    "/metrics/network-throughput": {
+    "/machine/metrics/network-throughput": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Network Throughput Metrics",
-        "description": "Get network_throughput metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
+        "description": "Get network_throughput metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
         "operationId": "get_network_throughput_metrics",
         "security": [
           {
@@ -1599,7 +1647,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1607,7 +1655,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -1655,7 +1703,7 @@
                   "items": {
                     "$ref": "#/components/schemas/NetworkThroughputMeasurement"
                   },
-                  "title": "Response Get Network Throughput Metrics Metrics Network Throughput Get"
+                  "title": "Response Get Network Throughput Metrics Machine Metrics Network Throughput Get"
                 }
               }
             }
@@ -1718,13 +1766,13 @@
         }
       }
     },
-    "/metrics/network-throughput/latest": {
+    "/machine/metrics/network-throughput/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Network Throughput Metrics",
-        "description": "Get the most recent network_throughput measurements for each VM",
+        "description": "Get the most recent network_throughput measurements for each machine",
         "operationId": "get_latest_network_throughput_metrics",
         "security": [
           {
@@ -1733,7 +1781,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1741,7 +1789,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -1755,7 +1803,7 @@
                   "items": {
                     "$ref": "#/components/schemas/NetworkThroughputMeasurement"
                   },
-                  "title": "Response Get Latest Network Throughput Metrics Metrics Network Throughput Latest Get"
+                  "title": "Response Get Latest Network Throughput Metrics Machine Metrics Network Throughput Latest Get"
                 }
               }
             }
@@ -1773,13 +1821,13 @@
         }
       }
     },
-    "/metrics/nvidia-smi": {
+    "/machine/metrics/nvidia-smi": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Nvidia Smi Metrics",
-        "description": "Get nvidia_smi metrics for certain VMs between from_ts to to_ts, inclusive.\n:param vm_ids: A list of VM ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
+        "description": "Get nvidia_smi metrics for certain MACHINEs between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
         "operationId": "get_nvidia_smi_metrics",
         "security": [
           {
@@ -1788,7 +1836,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1796,7 +1844,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           },
           {
@@ -1844,7 +1892,7 @@
                   "items": {
                     "$ref": "#/components/schemas/NvidiaSmiMeasurement"
                   },
-                  "title": "Response Get Nvidia Smi Metrics Metrics Nvidia Smi Get"
+                  "title": "Response Get Nvidia Smi Metrics Machine Metrics Nvidia Smi Get"
                 }
               }
             }
@@ -1907,13 +1955,13 @@
         }
       }
     },
-    "/metrics/nvidia-smi/latest": {
+    "/machine/metrics/nvidia-smi/latest": {
       "get": {
         "tags": [
           "data"
         ],
         "summary": "Get Latest Nvidia Smi Metrics",
-        "description": "Get the most recent nvidia_smi measurements for each VM",
+        "description": "Get the most recent nvidia_smi measurements for each machine",
         "operationId": "get_latest_nvidia_smi_metrics",
         "security": [
           {
@@ -1922,7 +1970,7 @@
         ],
         "parameters": [
           {
-            "name": "vm_ids",
+            "name": "machine_ids",
             "in": "query",
             "required": true,
             "schema": {
@@ -1930,7 +1978,7 @@
               "items": {
                 "type": "string"
               },
-              "title": "Vm Ids"
+              "title": "Machine Ids"
             }
           }
         ],
@@ -1944,7 +1992,7 @@
                   "items": {
                     "$ref": "#/components/schemas/NvidiaSmiMeasurement"
                   },
-                  "title": "Response Get Latest Nvidia Smi Metrics Metrics Nvidia Smi Latest Get"
+                  "title": "Response Get Latest Nvidia Smi Metrics Machine Metrics Nvidia Smi Latest Get"
                 }
               }
             }
@@ -1967,9 +2015,9 @@
     "schemas": {
       "CpuMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -1986,7 +2034,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "cpu_percents"
         ],
@@ -2013,9 +2061,9 @@
       },
       "DiskIopsMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2032,7 +2080,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "iops"
         ],
@@ -2064,9 +2112,9 @@
       },
       "DiskThroughputMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2083,7 +2131,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "throughput"
         ],
@@ -2115,9 +2163,9 @@
       },
       "DiskUsageMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2134,7 +2182,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "usage"
         ],
@@ -2161,9 +2209,9 @@
       },
       "GpuMemoryMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2180,7 +2228,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "memory"
         ],
@@ -2189,9 +2237,9 @@
       },
       "GpuUtilizationMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2208,7 +2256,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "gpu_percents"
         ],
@@ -2257,11 +2305,168 @@
         ],
         "title": "InfoResponse"
       },
+      "MachineInfo": {
+        "properties": {
+          "machine_id": {
+            "type": "string",
+            "title": "Machine Id"
+          },
+          "last_heartbeat_ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Heartbeat Ts"
+          },
+          "registration_ts": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Registration Ts"
+          },
+          "num_cpus": {
+            "type": "integer",
+            "title": "Num Cpus"
+          },
+          "cpu_description": {
+            "type": "string",
+            "title": "Cpu Description"
+          },
+          "host_memory_mb": {
+            "type": "integer",
+            "title": "Host Memory Mb"
+          },
+          "num_gpus": {
+            "type": "integer",
+            "title": "Num Gpus"
+          },
+          "gpu_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Type"
+          },
+          "gpu_memory_mb": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Memory Mb"
+          },
+          "nvidia_driver_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nvidia Driver Version"
+          },
+          "hostname": {
+            "type": "string",
+            "title": "Hostname"
+          }
+        },
+        "type": "object",
+        "required": [
+          "machine_id",
+          "last_heartbeat_ts",
+          "registration_ts",
+          "num_cpus",
+          "cpu_description",
+          "host_memory_mb",
+          "num_gpus",
+          "gpu_type",
+          "gpu_memory_mb",
+          "nvidia_driver_version",
+          "hostname"
+        ],
+        "title": "MachineInfo",
+        "description": "Information about a machine's current state"
+      },
+      "MachineRegistrationInfo": {
+        "properties": {
+          "num_cpus": {
+            "type": "integer",
+            "title": "Num Cpus"
+          },
+          "cpu_description": {
+            "type": "string",
+            "title": "Cpu Description"
+          },
+          "host_memory_mb": {
+            "type": "integer",
+            "title": "Host Memory Mb"
+          },
+          "num_gpus": {
+            "type": "integer",
+            "title": "Num Gpus"
+          },
+          "gpu_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Type"
+          },
+          "gpu_memory_mb": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gpu Memory Mb"
+          },
+          "nvidia_driver_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nvidia Driver Version"
+          },
+          "hostname": {
+            "type": "string",
+            "title": "Hostname"
+          }
+        },
+        "type": "object",
+        "required": [
+          "num_cpus",
+          "cpu_description",
+          "host_memory_mb",
+          "num_gpus",
+          "gpu_type",
+          "gpu_memory_mb",
+          "nvidia_driver_version",
+          "hostname"
+        ],
+        "title": "MachineRegistrationInfo",
+        "description": "Information about a machine to register with the control plane.\n\nSame as machine heartbeat, but without a few fields that are either set via URL params or\nautomatically set server-side."
+      },
       "MemoryMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2279,7 +2484,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "free_memory_mb",
           "total_memory_mb"
@@ -2289,9 +2494,9 @@
       },
       "NetworkThroughputMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2311,7 +2516,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "per_interface",
           "total"
@@ -2321,9 +2526,9 @@
       },
       "NvidiaSmiMeasurement": {
         "properties": {
-          "vm_id": {
+          "machine_id": {
             "type": "string",
-            "title": "Vm Id"
+            "title": "Machine Id"
           },
           "ts": {
             "type": "string",
@@ -2337,7 +2542,7 @@
         },
         "type": "object",
         "required": [
-          "vm_id",
+          "machine_id",
           "ts",
           "output"
         ],
@@ -2410,76 +2615,6 @@
           "type"
         ],
         "title": "ValidationError"
-      },
-      "VmRegistrationInfo": {
-        "properties": {
-          "num_cpus": {
-            "type": "integer",
-            "title": "Num Cpus"
-          },
-          "cpu_description": {
-            "type": "string",
-            "title": "Cpu Description"
-          },
-          "host_memory_mb": {
-            "type": "integer",
-            "title": "Host Memory Mb"
-          },
-          "num_gpus": {
-            "type": "integer",
-            "title": "Num Gpus"
-          },
-          "gpu_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Gpu Type"
-          },
-          "gpu_memory_mb": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Gpu Memory Mb"
-          },
-          "nvidia_driver_version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Nvidia Driver Version"
-          },
-          "hostname": {
-            "type": "string",
-            "title": "Hostname"
-          }
-        },
-        "type": "object",
-        "required": [
-          "num_cpus",
-          "cpu_description",
-          "host_memory_mb",
-          "num_gpus",
-          "gpu_type",
-          "gpu_memory_mb",
-          "nvidia_driver_version",
-          "hostname"
-        ],
-        "title": "VmRegistrationInfo",
-        "description": "Information about a VM to register with the control plane.\n\nSame as VM heartbeat, but without a few fields that are either set via URL params or\nautomatically set server-side."
       }
     },
     "securitySchemes": {

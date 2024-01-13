@@ -15,7 +15,7 @@ primary_region = "iad"
   processes = ["agent"]
 
 [processes]
-  agent = "python vmagent/vmagent/cli.py launch -f tests/configs/fly/vmagent-auto.yaml --vm-id auto"
+  agent = "python machineagent/machineagent/cli.py launch -f tests/configs/fly/machineagent-auto.yaml --machine-id auto"
 
 [[vm]]
   cpu_kind = "shared"
