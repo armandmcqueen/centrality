@@ -14,6 +14,7 @@ from typing import (
     cast,
 )
 
+
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
