@@ -37,7 +37,8 @@ class StreamlitConfig(BaseModel):
 def run_control_plane_healthcheck(sdk: DataApi):
     try:
         sdk.get_healthcheck()
-        assert len(sdk.get_live_machines()) > 0
+        if len(sdk.get_live_machines()) <= 0:
+            raise FailedHealthcheckError("no live machines")
         console.log("✅  Control plane is healthy")
     except Exception as e:
         raise FailedHealthcheckError(f"Control plane healthcheck failed: {e}")
@@ -46,7 +47,8 @@ def run_control_plane_healthcheck(sdk: DataApi):
 def run_streamlit_healthcheck(config: StreamlitConfig):
     try:
         response = requests.get(f"{config.host_str}/healthz")
-        assert response.status_code == 200
+        if response.status_code != 200:
+            raise FailedHealthcheckError(f"Response code not 200: {response}")
         console.log("✅  Streamlit is healthy")
     except Exception as e:
         raise FailedHealthcheckError(f"Streamlit healthcheck failed: {e}")
