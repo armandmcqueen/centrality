@@ -9,6 +9,16 @@ import time
 console = Console()
 
 
+class Alerter:
+    def alert(self, msg: str):
+        raise NotImplementedError()
+
+
+class PrintAlerter:
+    def alert(self, msg: str):
+        console.log(f"❌ {msg}")
+
+
 class PagerDutyAlerter:
     def __init__(self):
         # TODO: Validate that the environment variables are set correctly
@@ -58,19 +68,17 @@ def main(
     control_plane_config: ControlPlaneSdkConfig,
     streamlit_config: StreamlitConfig,
     healthcheck_interval: int,
+    alerter: Alerter,
 ):
     sdk = get_sdk(control_plane_config, token=constants.CONTROL_PLANE_SDK_DEV_TOKEN)
-    alerter = PagerDutyAlerter()
 
     while True:
         try:
             run_control_plane_healthcheck(sdk)
         except FailedHealthcheckError as e:
-            alerter.alert(f"❌️ {e}")
+            alerter.alert(f"{e}")
         except Exception as e:
-            alerter.alert(
-                f"❌️ Unexpected error while healthchecking control plane: {e}"
-            )
+            alerter.alert(f"Unexpected error while healthchecking control plane: {e}")
 
         try:
             run_streamlit_healthcheck(streamlit_config)
@@ -93,5 +101,6 @@ if __name__ == "__main__":
         port=8501,
         https=False,
     )
+    alerter = PagerDutyAlerter()
 
-    main(config, streamlit_config, healthcheck_interval=5)
+    main(config, streamlit_config, healthcheck_interval=5, alerter=alerter)
