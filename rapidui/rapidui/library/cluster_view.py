@@ -4,6 +4,7 @@ from rapidui.library.flexbox import CardContents, BaseCard
 class MachineOverviewCardContents(CardContents):
     machine_id: str
     avg_cpu: float
+    is_gpu: bool
 
 
 class MachineOverviewCard(BaseCard):
@@ -12,9 +13,11 @@ class MachineOverviewCard(BaseCard):
         self.contents = contents
 
         self.title = self.parent.empty()
-        self.title.write(f"{self.contents.machine_id}")
+        identifier = "GPU" if self.contents.is_gpu else "CPU"
+        self.title.markdown(f"`{identifier}` {self.contents.machine_id}")
+
         self.progress = self.parent.progress(
-            self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
+            self.contents.avg_cpu / 100, text=f"CPU {int(self.contents.avg_cpu)}%"
         )
 
     def empty(self):
@@ -24,9 +27,10 @@ class MachineOverviewCard(BaseCard):
 
     def update(self, contents: MachineOverviewCardContents):
         self.contents = contents
-        self.title.write(f"{self.contents.machine_id}")
+        identifier = "GPU" if self.contents.is_gpu else "CPU"
+        self.title.markdown(f"`{identifier}` {self.contents.machine_id}")
         self.progress.progress(
-            self.contents.avg_cpu / 100, text=f"{int(self.contents.avg_cpu)}%"
+            self.contents.avg_cpu / 100, text=f"CPU {int(self.contents.avg_cpu)}%"
         )
 
 

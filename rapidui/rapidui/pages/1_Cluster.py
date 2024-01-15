@@ -28,14 +28,12 @@ def get_live_machines(_sdk: DataApi, epoch: int) -> list[MachineInfo]:
 @st.cache_data
 def get_cpu_metrics(
     _sdk: DataApi, live_machines: list[str], epoch: int
-) -> list[MachineOverviewCardContents]:
+) -> list[tuple[str, float]]:
     """Use epoch as a cache key to force a refresh at some interval"""
     measurements = _sdk.get_latest_cpu_metrics(machine_ids=live_machines)
     # TODO: Handle errors?
     return [
-        MachineOverviewCardContents(
-            machine_id=m.machine_id, avg_cpu=sum(m.cpu_percents) / len(m.cpu_percents)
-        )
+        (m.machine_id, sum(m.cpu_percents) / len(m.cpu_percents))
         for m in sorted(measurements, key=lambda m: m.machine_id)
     ]
 
@@ -54,7 +52,16 @@ def get_data(
         live_machines=[m.machine_id for m in live_machines],
         epoch=calculate_epoch(interval_ms=config.metric_interval_ms),
     )
-    return live_machines, cpu_metrics
+    avg_cpu_map = {machine_id: avg_cpu for machine_id, avg_cpu in cpu_metrics}
+    card_contents = [
+        MachineOverviewCardContents(
+            machine_id=machine.machine_id,
+            avg_cpu=avg_cpu_map[machine.machine_id],
+            is_gpu=machine.num_gpus > 0,
+        )
+        for machine in live_machines
+    ]
+    return live_machines, card_contents
 
 
 def main():

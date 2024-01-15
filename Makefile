@@ -12,15 +12,16 @@ docker-push:
 
 .PHONY: docker-compose-mount-up
 docker-compose-mount-up:
+	docker rm -f centrality-postgres-1
 	docker compose -f compose.yaml -f compose-override-mountcode.yaml up $(ARGS)
 
 .PHONY: docker-compose-mount-up-controlplane
 docker-compose-mount-up-controlplane:
-	make docker-compose-mount-up ARGS="postgres controlplane"
+	make docker-compose-mount-up ARGS="postgres controlplane rapidui"
 
 .PHONY: docker-compose-mount-up-solo
 docker-compose-mount-up-solo:
-	make docker-compose-mount-up ARGS="postgres controlplane machineagent-gpu"
+	make docker-compose-mount-up ARGS="postgres controlplane rapidui machineagent-gpu"
 
 
 .PHONY: test
