@@ -14,7 +14,7 @@ class DatastoreSweeperConfig(CentralityConfig):
     How often to sweep the datastore for old data, and how long to keep data points around.
     """
 
-    sweep_interval_secs: int = 60 * 60 * 12  # 12 hours
+    sweep_interval_secs: int = 60 * 10  # 10 minutes
     data_retention_secs: int = 60 * 60 * 24 * 7  # 7 days
     reap_machines_interval_secs: int = (
         15  # How often to check for dead machines that need to be reaped
