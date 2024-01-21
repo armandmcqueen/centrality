@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for centrality-canary on 2024-01-20T23:25:26-08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "centrality-canary"
+primary_region = "sjc"
+
+[build]
+
+[http_service]
+  internal_port = 7777
+  force_https = true
+  min_machines_running = 1
+  processes = ["canary"]
+
+[processes]
+  canary = "python deploy/deploy/canary/canary.py prod --pagerduty"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
+
+[env]
+  PYTHONUNBUFFERED = 1
