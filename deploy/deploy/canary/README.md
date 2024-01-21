@@ -3,11 +3,14 @@
 A script that queries the control plane + streamlit to check if it is working. If it is not, it can optionally trigger
 a Pager Duty alert.
 
-TODO: Add fly canary deployment that watches the main deployment.
 
 ## Prod
 
 Currently, the Fly deployment is the production deployment. The agent cluster is also part of the prod deployment.
+
+## Canary deployment
+
+The canary is deployed to Fly as a separate application. It is deployed using the `fly-canary.toml` config file.
 
 ## Failure of the canary
 
