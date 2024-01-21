@@ -134,12 +134,17 @@ To access the DB locally on port 5433:
 fly proxy 5433 -a centrality-datastore-dev
 ```
 
+To deploy the canary which checks that the prod (Fly) control plane is up and running:
+```bash
+fly --config fly-canary.toml deploy
+```
+Note: this requires the `PAGERDUTY_INTEGRATION_KEY` environment variable to be set. See `deploy/deploy/canary/canary.py`.
 
 ## Monorepo
 
-Each of `common`, `controlplane`, `machineagent`, `cli`, `rapidui` and `deploy` are developed as independent Python 
-packages, with many of them having a dependency on `common`. They are versioned together, so the monorepo 
-essentially has a single version number.
+Each of the subprojects are developed as independent Python packages, with many of them having a 
+dependency on `common`. They are versioned together, so the monorepo essentially has a single version 
+number for now.
 
 ## pre-commit
 
