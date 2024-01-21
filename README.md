@@ -28,7 +28,7 @@ data to the control plane REST endpoints.
 
 Early
 
-Currently the control plane exists and there is a MachineAgent (technically a bad name because it works just as well on bare metal)
+Currently the control plane exists and there is a MachineAgent
 that sends data to the control plane. Check out https://centrality-dev.fly.dev/Cluster for a rough UI that displays some of the
 data being collected.
 
