@@ -39,13 +39,15 @@ def run_code():
 
     print("[green]Output of script")
     # Stream the output
-    try:
-        for line in container.logs(stream=True):
-            # Decode the binary data to a string
-            sys.stdout.write(line.decode("utf-8"))
+    buffer = b""
+    for chunk in container.logs(stream=True):
+        buffer += chunk
+        try:
+            sys.stdout.write(buffer.decode("utf-8"))
             sys.stdout.flush()
-    except KeyboardInterrupt:
-        pass
+            buffer = b""
+        except UnicodeDecodeError:
+            continue
 
     # Wait for the container to finish
     container.wait()
@@ -59,7 +61,3 @@ def run_code():
     # print(output.decode("utf-8"))
     # Remove the container
     # container.remove()
-
-
-if __name__ == "__main__":
-    run_code("print('Hello World')")

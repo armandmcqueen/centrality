@@ -22,10 +22,10 @@ class DataVisualizer:
     def data_api(self) -> centrality_controlplane_sdk.DataApi:
         raise NotImplementedError()
 
-    def collect_data(self):
+    def collect_data():
         raise NotImplementedError()
 
-    def visualize_data(self):
+    def visualize_data():
         raise NotImplementedError()
 ```
 

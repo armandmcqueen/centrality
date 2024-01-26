@@ -1,0 +1,70 @@
+# Create a table using rich that shows me the average CPU for each machine, averaged over the past 30 seconds. The url is https://centrality-dev.fly.dev:8000 and the token is 'dev'
+
+import datetime
+import centrality_controlplane_sdk
+from rich.table import Table
+from rich.console import Console
+from centrality_controlplane_sdk.rest import ApiException
+
+# Configuration for Centrality Controlplane SDK
+configuration = centrality_controlplane_sdk.Configuration(
+    host="https://centrality-dev.fly.dev:8000", access_token="dev"
+)
+
+
+# Function to fetch CPU metrics for each machine
+def fetch_cpu_metrics(api_instance, current_time, past_seconds=30):
+    from_ts = current_time - datetime.timedelta(seconds=past_seconds)
+    # Fetch all live machines to get their IDs
+    try:
+        live_machines = api_instance.get_live_machines()
+        machine_ids = [machine.machine_id for machine in live_machines]
+        cpu_metrics = api_instance.get_cpu_metrics(
+            machine_ids, from_ts=from_ts, to_ts=current_time
+        )
+        return cpu_metrics
+    except ApiException as e:
+        print(
+            f"An exception occurred when calling get_live_machines or get_cpu_metrics: {e}"
+        )
+        return []
+
+
+# Function to calculate the average CPU usage for each machine
+def calculate_average_cpu(cpu_metrics):
+    average_cpus = {}
+    for measurement in cpu_metrics:
+        if measurement.cpu_percents:
+            avg_cpu = sum(measurement.cpu_percents) / len(measurement.cpu_percents)
+            # TODO(label): This code is wrong
+            average_cpus[measurement.machine_id] = avg_cpu
+    return average_cpus
+
+
+# Function to create and display table using rich
+def display_cpu_table(average_cpus):
+    table = Table(title="Average CPU Usage (Last 30 seconds)")
+
+    table.add_column("Machine ID", style="cyan")
+    table.add_column("Average CPU %", style="magenta")
+
+    for machine_id, avg_cpu in average_cpus.items():
+        table.add_row(machine_id, f"{avg_cpu:.2f}")
+
+    console = Console()
+    console.print(table)
+
+
+# Main execution
+def main():
+    with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+        api_instance = centrality_controlplane_sdk.DataApi(api_client)
+        current_time = datetime.datetime.utcnow()
+        cpu_metrics = fetch_cpu_metrics(api_instance, current_time)
+        average_cpus = calculate_average_cpu(cpu_metrics)
+        display_cpu_table(average_cpus)
+
+
+# Execute the script
+if __name__ == "__main__":
+    main()

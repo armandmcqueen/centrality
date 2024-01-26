@@ -39,8 +39,10 @@ def parse_markdown(markdown_output: str):
 
 @app.command()
 def test_gpt_lib(skip_gen: bool = False):
-    if not skip_gen:
-        prompt = "Create a table using rich that shows me the average CPU for each machine over the past 30 seconds. The url is https://centrality-dev.fly.dev:8000 and the token is 'dev'"
+    if skip_gen:
+        print("Skipping generation of code, reusing cached code")
+    else:
+        prompt = "Create a table using rich that shows me the average CPU for each machine, averaged over the past 30 seconds. The url is https://centrality-dev.fly.dev:8000 and the token is 'dev'"
         output = complete(
             model="gpt-4-1106-preview",
             prompt=prompt,

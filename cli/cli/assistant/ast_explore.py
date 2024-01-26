@@ -2,6 +2,10 @@ from typing import Optional, Union
 import ast
 import graphviz
 from rich import print, inspect
+import typer
+from pathlib import Path
+
+app = typer.Typer()
 
 
 def build_ast_graph(
@@ -44,19 +48,62 @@ def visualize_ast(source_code: str) -> str:
     """
     tree = ast.parse(source_code)
     inspect(tree)
+    # inspect(tree.body[6])
+    # inspect(tree.body[6].targets[0])
+    # configuration_function_call = tree.body[6].value
+    # # inspect(tree.body[6].value)
+    # inspect(configuration_function_call.func)
+    class_defs = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+    subclass_class_defs = [
+        class_def
+        for class_def in class_defs
+        if class_def.name != "DataVisualizer"
+        and len(class_def.bases) == 1
+        and class_def.bases[0].id == "DataVisualizer"
+    ]
+    assert (
+        len(subclass_class_defs) == 1
+    ), f"Expected exactly one subclass of DataVisualizer, got {len(subclass_class_defs)}: {subclass_class_defs}"
+    subclass_class_def = subclass_class_defs[0]
+    collect_data_function_def = None
+    visualize_data_function_def = None
+    for node in ast.walk(subclass_class_def):
+        if isinstance(node, ast.FunctionDef):
+            print(node.name)
+            inspect(node)
+            if node.name == "collect_data":
+                collect_data_function_def = node
+
+            if node.name == "visualize_data":
+                visualize_data_function_def = node
+
+    assert (
+        collect_data_function_def is not None
+    ), f"Could not find collect_data function definition in subclass {subclass_class_def.name}"
+    assert (
+        visualize_data_function_def is not None
+    ), f"Could not find visualize_data function definition in subclass {subclass_class_def.name}"
+
+    inspect(collect_data_function_def.returns)
+    print(ast.dump(collect_data_function_def, indent=4))
+
+    return ""
     graph = graphviz.Digraph(format="png")
     build_ast_graph(tree, graph)
-    output_filename = "ast-graph.png"
+    output_filename = "ast-graph"
     graph.render(output_filename, cleanup=True)
     return output_filename
 
 
-if __name__ == "__main__":
-    # Example usage
-    source_code = """
-    def greet(name):
-        print(f"Hello, {name}!")
-    """
+@app.command()
+def main(file: str):
+    source_file = Path(file)
+    with source_file.open() as f:
+        source_code = f.read()
 
     output_file = visualize_ast(source_code)
     print(f"AST visualization saved as: {output_file}")
+
+
+if __name__ == "__main__":
+    app()
