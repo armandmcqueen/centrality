@@ -4,6 +4,8 @@ import graphviz
 from rich import print, inspect
 import typer
 from pathlib import Path
+import astpretty
+import astor
 
 app = typer.Typer()
 
@@ -86,13 +88,15 @@ def visualize_ast(source_code: str) -> str:
 
     inspect(collect_data_function_def.returns)
     print(ast.dump(collect_data_function_def, indent=4))
+    astpretty.pprint(collect_data_function_def)
+    print(astor.to_source(collect_data_function_def))
 
     return ""
-    graph = graphviz.Digraph(format="png")
-    build_ast_graph(tree, graph)
-    output_filename = "ast-graph"
-    graph.render(output_filename, cleanup=True)
-    return output_filename
+    # graph = graphviz.Digraph(format="png")
+    # build_ast_graph(tree, graph)
+    # output_filename = "ast-graph"
+    # graph.render(output_filename, cleanup=True)
+    # return output_filename
 
 
 @app.command()
