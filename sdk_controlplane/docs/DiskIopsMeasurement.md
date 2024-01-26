@@ -5,8 +5,8 @@ A measurement of DiskIops
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
 **iops** | [**List[DiskIops]**](DiskIops.md) |  | 
 
 ## Example

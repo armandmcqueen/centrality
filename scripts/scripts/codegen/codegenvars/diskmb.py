@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Any
 
 metric_obj_fields = """\
-    usage: list[DiskUsage]
+    usage: list[DiskUsage] = Field(..., description="A list with disk usage for each disk. Each disk will have one entry in the list.")
 """
 metric_name_lowercase = "disk_usage"
 metric_name_camelcase = "DiskUsage"
@@ -12,9 +12,9 @@ metrics_type_db = "JSONB"
 example_metrics = "{disk1: [used, total], disk2: [used, total]}"
 custom_types = """\
 class DiskUsage(BaseModel):
-    disk_name: str
-    used_mb: float
-    total_mb: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    used_mb: float = Field(..., description="The used disk space in MiB.")
+    total_mb: float = Field(..., description="The total space of the disk in MiB.")
 """
 
 

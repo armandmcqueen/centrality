@@ -4,8 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**disk_name** | **str** |  | 
-**iops** | **float** |  | 
+**disk_name** | **str** | The name of the disk, e.g. /dev/sda. | 
+**iops** | **float** | The IOPS for the disk. | 
 
 ## Example
 

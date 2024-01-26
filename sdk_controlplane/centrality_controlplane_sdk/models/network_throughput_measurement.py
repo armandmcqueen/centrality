@@ -20,6 +20,7 @@ import json
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List
 from pydantic import BaseModel, StrictStr
+from pydantic import Field
 from centrality_controlplane_sdk.models.throughput import Throughput
 try:
     from typing import Self
@@ -30,8 +31,8 @@ class NetworkThroughputMeasurement(BaseModel):
     """
     A measurement of NetworkThroughput
     """ # noqa: E501
-    machine_id: StrictStr
-    ts: datetime
+    machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
+    ts: datetime = Field(description="The timestamp of the measurement")
     per_interface: List[Throughput]
     total: Throughput
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "per_interface", "total"]

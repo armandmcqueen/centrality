@@ -4,7 +4,7 @@ CpuPercents = list[float]
 
 
 metric_obj_fields = """\
-    cpu_percents: list[float]
+    cpu_percents: list[float] = Field(..., description="A list with CPU utilization for each core. Values vary between 0 and 100.")
 """
 metric_name_lowercase = "cpu"
 metric_name_camelcase = "Cpu"

@@ -4,8 +4,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**used_mb** | **float** |  | 
-**total_mb** | **float** |  | 
+**used_mb** | **float** | The used GPU memory in MiB. | 
+**total_mb** | **float** | The total GPU memory in MiB. | 
 
 ## Example
 

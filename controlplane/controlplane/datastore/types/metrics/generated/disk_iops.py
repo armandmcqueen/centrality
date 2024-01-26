@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "disk_iops"
@@ -21,8 +21,8 @@ metric_shape_db = dict[str, float]
 
 # Custom Types
 class DiskIops(BaseModel):
-    disk_name: str
-    iops: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    iops: float = Field(..., description="The IOPS for the disk.")
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
@@ -62,7 +62,10 @@ class DiskIopsMetricORM(MetricBaseORM):
 class DiskIopsMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    iops: list[DiskIops]
+    iops: list[DiskIops] = Field(
+        ...,
+        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+    )
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricLatestORM, **kwargs) -> "DiskIopsMetricLatest":
@@ -78,7 +81,10 @@ class DiskIopsMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    iops: list[DiskIops]
+    iops: list[DiskIops] = Field(
+        ...,
+        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+    )
 
     @classmethod
     def from_orm(cls, orm: DiskIopsMetricORM, **kwargs) -> "DiskIopsMetric":
@@ -97,9 +103,14 @@ class DiskIopsMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    iops: list[DiskIops]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    iops: list[DiskIops] = Field(
+        ...,
+        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+    )
 
     def to_metrics(self) -> dict[str, float]:
         return convert_to_metrics(self)

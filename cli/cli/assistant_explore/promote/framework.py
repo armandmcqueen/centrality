@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 from rich import Console
 from common.sdks.controlplane.sdk import get_sdk, ControlPlaneSdkConfig

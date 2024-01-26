@@ -12,7 +12,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "METRIC_NAME_LOWERCASE"
@@ -80,8 +80,8 @@ class METRIC_NAME_CAMELCASEMeasurement(BaseModel):
     A measurement of METRIC_NAME_CAMELCASE
     """
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
+    machine_id: str = Field(..., description="The machine_id of the machine that generated this measurement")
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
 #METRIC_OBJ_FIELDS
 
     def to_metrics(self) -> METRIC_SHAPE_DB:

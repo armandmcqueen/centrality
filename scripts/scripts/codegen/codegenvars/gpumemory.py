@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Any
 
 metric_obj_fields = """\
-    memory: list[GpuMemory]
+    memory: list[GpuMemory] = Field(..., description="A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.")
 """
 metric_name_lowercase = "gpu_memory"
 metric_name_camelcase = "GpuMemory"
@@ -12,8 +12,8 @@ metrics_type_db = "JSONB"
 example_metrics = "[[used, total], [used, total]]"
 custom_types = """\
 class GpuMemory(BaseModel):
-    used_mb: float
-    total_mb: float
+    used_mb: float = Field(..., description="The used GPU memory in MiB.")
+    total_mb: float = Field(..., description="The total GPU memory in MiB.")
 """
 
 

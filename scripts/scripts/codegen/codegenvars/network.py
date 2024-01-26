@@ -2,8 +2,8 @@ from pydantic import BaseModel
 from typing import Any
 
 metric_obj_fields = """\
-    per_interface: list[Throughput]
-    total: Throughput
+    per_interface: list[Throughput] = Field(..., description="A list with throughput for each network interface. There will be one entry per interface.")
+    total: Throughput = Field(..., description="The total throughput for all interfaces summed over all interfaces.")
 """
 metric_name_lowercase = "network_throughput"
 metric_name_camelcase = "NetworkThroughput"
@@ -13,9 +13,9 @@ metrics_type_db = "JSONB"
 example_metrics = "{ifaceA: [sentXXX, recvXXX], ifaceB: [sentYYY, recvYYY], total: [sentZZZ, recvZZZ]}"
 custom_types = """\
 class Throughput(BaseModel):
-    interface_name: str
-    sent_mbps: float
-    recv_mbps: float
+    interface_name: str = Field(..., description="The name of the network interface, e.g. eth0.")
+    sent_mbps: float = Field(..., description="The sent throughput for the interface in MiB/s.")
+    recv_mbps: float = Field(..., description="The received throughput for the interface in MiB/s.")
 """
 
 

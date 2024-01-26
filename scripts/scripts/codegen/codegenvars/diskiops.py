@@ -2,7 +2,7 @@ from typing import Any
 from pydantic import BaseModel
 
 metric_obj_fields = """\
-    iops: list[DiskIops]
+    iops: list[DiskIops] = Field(..., description="A list with IOPS for each disk. Each disk will have one entry in the list.")
 """
 metric_name_lowercase = "disk_iops"
 metric_name_camelcase = "DiskIops"
@@ -12,8 +12,8 @@ metrics_type_db = "JSONB"
 example_metrics = "{disk1: iopsXXX, disk2: iopsYYY}"
 custom_types = """\
 class DiskIops(BaseModel):
-    disk_name: str
-    iops: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    iops: float = Field(..., description="The IOPS for the disk.")
 """
 
 

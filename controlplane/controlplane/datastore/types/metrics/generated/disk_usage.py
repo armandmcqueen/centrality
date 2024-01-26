@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "disk_usage"
@@ -21,9 +21,9 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class DiskUsage(BaseModel):
-    disk_name: str
-    used_mb: float
-    total_mb: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    used_mb: float = Field(..., description="The used disk space in MiB.")
+    total_mb: float = Field(..., description="The total space of the disk in MiB.")
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
@@ -62,7 +62,10 @@ class DiskUsageMetricORM(MetricBaseORM):
 class DiskUsageMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage]
+    usage: list[DiskUsage] = Field(
+        ...,
+        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+    )
 
     @classmethod
     def from_orm(
@@ -80,7 +83,10 @@ class DiskUsageMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage]
+    usage: list[DiskUsage] = Field(
+        ...,
+        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+    )
 
     @classmethod
     def from_orm(cls, orm: DiskUsageMetricORM, **kwargs) -> "DiskUsageMetric":
@@ -99,9 +105,14 @@ class DiskUsageMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    usage: list[DiskUsage]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    usage: list[DiskUsage] = Field(
+        ...,
+        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+    )
 
     def to_metrics(self) -> dict[str, list[float]]:
         return convert_to_metrics(self)

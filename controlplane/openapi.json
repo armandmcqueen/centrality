@@ -2017,19 +2017,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "cpu_percents": {
             "items": {
               "type": "number"
             },
             "type": "array",
-            "title": "Cpu Percents"
+            "title": "Cpu Percents",
+            "description": "A list with CPU utilization for each core. Values vary between 0 and 100."
           }
         },
         "type": "object",
@@ -2045,11 +2048,13 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "iops": {
             "type": "number",
-            "title": "Iops"
+            "title": "Iops",
+            "description": "The IOPS for the disk."
           }
         },
         "type": "object",
@@ -2063,19 +2068,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "iops": {
             "items": {
               "$ref": "#/components/schemas/DiskIops"
             },
             "type": "array",
-            "title": "Iops"
+            "title": "Iops",
+            "description": "A list with IOPS for each disk. Each disk will have one entry in the list."
           }
         },
         "type": "object",
@@ -2091,15 +2099,18 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "read_mbps": {
             "type": "number",
-            "title": "Read Mbps"
+            "title": "Read Mbps",
+            "description": "The read throughput for the disk in MiB/s."
           },
           "write_mbps": {
             "type": "number",
-            "title": "Write Mbps"
+            "title": "Write Mbps",
+            "description": "The write throughput for the disk in MiB/s."
           }
         },
         "type": "object",
@@ -2114,19 +2125,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "throughput": {
             "items": {
               "$ref": "#/components/schemas/DiskThroughput"
             },
             "type": "array",
-            "title": "Throughput"
+            "title": "Throughput",
+            "description": "A list with disk throughput for each disk. Each disk will have one entry in the list."
           }
         },
         "type": "object",
@@ -2142,15 +2156,18 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "used_mb": {
             "type": "number",
-            "title": "Used Mb"
+            "title": "Used Mb",
+            "description": "The used disk space in MiB."
           },
           "total_mb": {
             "type": "number",
-            "title": "Total Mb"
+            "title": "Total Mb",
+            "description": "The total space of the disk in MiB."
           }
         },
         "type": "object",
@@ -2165,19 +2182,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "usage": {
             "items": {
               "$ref": "#/components/schemas/DiskUsage"
             },
             "type": "array",
-            "title": "Usage"
+            "title": "Usage",
+            "description": "A list with disk usage for each disk. Each disk will have one entry in the list."
           }
         },
         "type": "object",
@@ -2193,11 +2213,13 @@
         "properties": {
           "used_mb": {
             "type": "number",
-            "title": "Used Mb"
+            "title": "Used Mb",
+            "description": "The used GPU memory in MiB."
           },
           "total_mb": {
             "type": "number",
-            "title": "Total Mb"
+            "title": "Total Mb",
+            "description": "The total GPU memory in MiB."
           }
         },
         "type": "object",
@@ -2211,19 +2233,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "memory": {
             "items": {
               "$ref": "#/components/schemas/GpuMemory"
             },
             "type": "array",
-            "title": "Memory"
+            "title": "Memory",
+            "description": "A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi."
           }
         },
         "type": "object",
@@ -2239,19 +2264,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "gpu_percents": {
             "items": {
               "type": "number"
             },
             "type": "array",
-            "title": "Gpu Percents"
+            "title": "Gpu Percents",
+            "description": "A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi."
           }
         },
         "type": "object",
@@ -2466,20 +2494,24 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "free_memory_mb": {
             "type": "number",
-            "title": "Free Memory Mb"
+            "title": "Free Memory Mb",
+            "description": "The free memory in MiB."
           },
           "total_memory_mb": {
             "type": "number",
-            "title": "Total Memory Mb"
+            "title": "Total Memory Mb",
+            "description": "The total memory in MiB."
           }
         },
         "type": "object",
@@ -2496,22 +2528,30 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "per_interface": {
             "items": {
               "$ref": "#/components/schemas/Throughput"
             },
             "type": "array",
-            "title": "Per Interface"
+            "title": "Per Interface",
+            "description": "A list with throughput for each network interface. There will be one entry per interface."
           },
           "total": {
-            "$ref": "#/components/schemas/Throughput"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Throughput"
+              }
+            ],
+            "description": "The total throughput for all interfaces summed over all interfaces."
           }
         },
         "type": "object",
@@ -2528,16 +2568,19 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "output": {
             "type": "string",
-            "title": "Output"
+            "title": "Output",
+            "description": "The output of nvidia-smi as a string."
           }
         },
         "type": "object",
@@ -2564,15 +2607,18 @@
         "properties": {
           "interface_name": {
             "type": "string",
-            "title": "Interface Name"
+            "title": "Interface Name",
+            "description": "The name of the network interface, e.g. eth0."
           },
           "sent_mbps": {
             "type": "number",
-            "title": "Sent Mbps"
+            "title": "Sent Mbps",
+            "description": "The sent throughput for the interface in MiB/s."
           },
           "recv_mbps": {
             "type": "number",
-            "title": "Recv Mbps"
+            "title": "Recv Mbps",
+            "description": "The received throughput for the interface in MiB/s."
           }
         },
         "type": "object",

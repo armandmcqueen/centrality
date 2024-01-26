@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "network_throughput"
@@ -21,9 +21,15 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class Throughput(BaseModel):
-    interface_name: str
-    sent_mbps: float
-    recv_mbps: float
+    interface_name: str = Field(
+        ..., description="The name of the network interface, e.g. eth0."
+    )
+    sent_mbps: float = Field(
+        ..., description="The sent throughput for the interface in MiB/s."
+    )
+    recv_mbps: float = Field(
+        ..., description="The received throughput for the interface in MiB/s."
+    )
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
@@ -73,8 +79,14 @@ class NetworkThroughputMetricORM(MetricBaseORM):
 class NetworkThroughputMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    per_interface: list[Throughput]
-    total: Throughput
+    per_interface: list[Throughput] = Field(
+        ...,
+        description="A list with throughput for each network interface. There will be one entry per interface.",
+    )
+    total: Throughput = Field(
+        ...,
+        description="The total throughput for all interfaces summed over all interfaces.",
+    )
 
     @classmethod
     def from_orm(
@@ -92,8 +104,14 @@ class NetworkThroughputMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    per_interface: list[Throughput]
-    total: Throughput
+    per_interface: list[Throughput] = Field(
+        ...,
+        description="A list with throughput for each network interface. There will be one entry per interface.",
+    )
+    total: Throughput = Field(
+        ...,
+        description="The total throughput for all interfaces summed over all interfaces.",
+    )
 
     @classmethod
     def from_orm(
@@ -114,10 +132,18 @@ class NetworkThroughputMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    per_interface: list[Throughput]
-    total: Throughput
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    per_interface: list[Throughput] = Field(
+        ...,
+        description="A list with throughput for each network interface. There will be one entry per interface.",
+    )
+    total: Throughput = Field(
+        ...,
+        description="The total throughput for all interfaces summed over all interfaces.",
+    )
 
     def to_metrics(self) -> dict[str, list[float]]:
         return convert_to_metrics(self)
