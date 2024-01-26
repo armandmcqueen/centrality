@@ -29,17 +29,20 @@ class DiskUsage(BaseModel):
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, list[DiskUsage]]:
-    usage: list[DiskUsage] = [
-        DiskUsage(disk_name=disk, used_mb=usage_vals[0], total_mb=usage_vals[1])
+) -> dict[str, dict[str, DiskUsage]]:
+    usage: dict[str, DiskUsage] = {
+        disk: DiskUsage(disk_name=disk, used_mb=usage_vals[0], total_mb=usage_vals[1])
         for disk, usage_vals in metrics.items()
-    ]
+    }
     return dict(usage=usage)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
-    return {usage.disk_name: [usage.used_mb, usage.total_mb] for usage in self.usage}
+    output = {}
+    for machine_id, usage in self.usage.items():
+        output[machine_id] = [usage.used_mb, usage.total_mb]
+    return output
 
 
 class DiskUsageMetricLatestORM(MetricLatestBaseORM):
@@ -62,9 +65,9 @@ class DiskUsageMetricORM(MetricBaseORM):
 class DiskUsageMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage] = Field(
+    usage: dict[str, DiskUsage] = Field(
         ...,
-        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+        description="A dict with disk usage for each disk with the disk name as the key.",
     )
 
     @classmethod
@@ -83,9 +86,9 @@ class DiskUsageMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage] = Field(
+    usage: dict[str, DiskUsage] = Field(
         ...,
-        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+        description="A dict with disk usage for each disk with the disk name as the key.",
     )
 
     @classmethod
@@ -109,9 +112,9 @@ class DiskUsageMeasurement(BaseModel):
         ..., description="The machine_id of the machine that generated this measurement"
     )
     ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
-    usage: list[DiskUsage] = Field(
+    usage: dict[str, DiskUsage] = Field(
         ...,
-        description="A list with disk usage for each disk. Each disk will have one entry in the list.",
+        description="A dict with disk usage for each disk with the disk name as the key.",
     )
 
     def to_metrics(self) -> dict[str, list[float]]:

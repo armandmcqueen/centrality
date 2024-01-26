@@ -18,10 +18,9 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictStr
 from pydantic import Field
-from centrality_controlplane_sdk.models.disk_usage import DiskUsage
 try:
     from typing import Self
 except ImportError:
@@ -33,7 +32,7 @@ class DiskUsageMeasurement(BaseModel):
     """ # noqa: E501
     machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
     ts: datetime = Field(description="The timestamp of the measurement")
-    usage: List[DiskUsage]
+    usage: Optional[Any] = Field(description="A dict with disk usage for each disk with the disk name as the key.")
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "usage"]
 
     model_config = {
@@ -72,13 +71,11 @@ class DiskUsageMeasurement(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in usage (list)
-        _items = []
-        if self.usage:
-            for _item in self.usage:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict['usage'] = _items
+        # set to None if usage (nullable) is None
+        # and model_fields_set contains the field
+        if self.usage is None and "usage" in self.model_fields_set:
+            _dict['usage'] = None
+
         return _dict
 
     @classmethod
@@ -93,7 +90,6 @@ class DiskUsageMeasurement(BaseModel):
         _obj = cls.model_validate({
             "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
-            "usage": [DiskUsage.from_dict(_item) for _item in obj.get("usage")] if obj.get("usage") is not None else None
         })
         return _obj
 

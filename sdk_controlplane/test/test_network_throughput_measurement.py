@@ -38,12 +38,12 @@ class TestNetworkThroughputMeasurement(unittest.TestCase):
             return NetworkThroughputMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                per_interface = [
-                    centrality_controlplane_sdk.models.throughput.Throughput(
+                per_interface = {
+                    'key' : centrality_controlplane_sdk.models.throughput.Throughput(
                         interface_name = '', 
                         sent_mbps = 1.337, 
                         recv_mbps = 1.337, )
-                    ],
+                    },
                 total = centrality_controlplane_sdk.models.throughput.Throughput(
                     interface_name = '', 
                     sent_mbps = 1.337, 
@@ -53,12 +53,12 @@ class TestNetworkThroughputMeasurement(unittest.TestCase):
             return NetworkThroughputMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                per_interface = [
-                    centrality_controlplane_sdk.models.throughput.Throughput(
+                per_interface = {
+                    'key' : centrality_controlplane_sdk.models.throughput.Throughput(
                         interface_name = '', 
                         sent_mbps = 1.337, 
                         recv_mbps = 1.337, )
-                    ],
+                    },
                 total = centrality_controlplane_sdk.models.throughput.Throughput(
                     interface_name = '', 
                     sent_mbps = 1.337, 

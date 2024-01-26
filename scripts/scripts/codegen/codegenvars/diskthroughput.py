@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Any
 
 metric_obj_fields = """\
-    throughput: list[DiskThroughput] = Field(..., description="A list with disk throughput for each disk. Each disk will have one entry in the list.")
+    throughput: dict[str, DiskThroughput] = Field(..., description="A dict with disk throughput for each disk with the disk name as the key.")
 """
 metric_name_lowercase = "disk_throughput"
 metric_name_camelcase = "DiskThroughput"
@@ -26,18 +26,18 @@ class DiskThroughput(BaseModel):
 
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, list[DiskThroughput]]:
-    throughput: list[DiskThroughput] = [
-        DiskThroughput(
+) -> dict[str, dict[str, DiskThroughput]]:
+    throughput: dict[str, DiskThroughput] = {
+        disk: DiskThroughput(
             disk_name=disk, read_mbps=throughput_vals[0], write_mbps=throughput_vals[1]
         )
         for disk, throughput_vals in metrics.items()
-    ]
+    }
     return dict(throughput=throughput)
 
 
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
     return {
-        throughput.disk_name: [throughput.read_mbps, throughput.write_mbps]
-        for throughput in self.throughput
+        disk_name: [throughput.read_mbps, throughput.write_mbps]
+        for disk_name, throughput in self.throughput.items()
     }

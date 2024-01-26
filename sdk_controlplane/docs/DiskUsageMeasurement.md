@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **machine_id** | **str** | The machine_id of the machine that generated this measurement | 
 **ts** | **datetime** | The timestamp of the measurement | 
-**usage** | [**List[DiskUsage]**](DiskUsage.md) |  | 
+**usage** | [**Dict[str, DiskUsage]**](DiskUsage.md) | A dict with disk usage for each disk with the disk name as the key. | 
 
 ## Example
 

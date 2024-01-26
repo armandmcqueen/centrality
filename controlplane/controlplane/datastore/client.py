@@ -444,23 +444,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[CpuMetric]:
-        return self._get_measurements(
+    ) -> dict[str, CpuMetric]:
+        rows = self._get_measurements(
             metric_orm=CpuMetricORM,
             metric=CpuMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_cpu_measurements(
         self, machine_ids: list[str]
-    ) -> list[CpuMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, CpuMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=CpuMetricLatestORM,
             latest_metric=CpuMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_cpu_measurements(
         self,
@@ -490,23 +498,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[DiskIopsMetric]:
-        return self._get_measurements(
+    ) -> dict[str, DiskIopsMetric]:
+        rows = self._get_measurements(
             metric_orm=DiskIopsMetricORM,
             metric=DiskIopsMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_disk_iops_measurements(
         self, machine_ids: list[str]
-    ) -> list[DiskIopsMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, DiskIopsMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=DiskIopsMetricLatestORM,
             latest_metric=DiskIopsMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_disk_iops_measurements(
         self,
@@ -536,23 +552,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[DiskUsageMetric]:
-        return self._get_measurements(
+    ) -> dict[str, DiskUsageMetric]:
+        rows = self._get_measurements(
             metric_orm=DiskUsageMetricORM,
             metric=DiskUsageMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_disk_usage_measurements(
         self, machine_ids: list[str]
-    ) -> list[DiskUsageMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, DiskUsageMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=DiskUsageMetricLatestORM,
             latest_metric=DiskUsageMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_disk_usage_measurements(
         self,
@@ -582,23 +606,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[DiskThroughputMetric]:
-        return self._get_measurements(
+    ) -> dict[str, DiskThroughputMetric]:
+        rows = self._get_measurements(
             metric_orm=DiskThroughputMetricORM,
             metric=DiskThroughputMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_disk_throughput_measurements(
         self, machine_ids: list[str]
-    ) -> list[DiskThroughputMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, DiskThroughputMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=DiskThroughputMetricLatestORM,
             latest_metric=DiskThroughputMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_disk_throughput_measurements(
         self,
@@ -628,23 +660,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[GpuMemoryMetric]:
-        return self._get_measurements(
+    ) -> dict[str, GpuMemoryMetric]:
+        rows = self._get_measurements(
             metric_orm=GpuMemoryMetricORM,
             metric=GpuMemoryMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_gpu_memory_measurements(
         self, machine_ids: list[str]
-    ) -> list[GpuMemoryMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, GpuMemoryMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=GpuMemoryMetricLatestORM,
             latest_metric=GpuMemoryMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_gpu_memory_measurements(
         self,
@@ -674,23 +714,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[GpuUtilizationMetric]:
-        return self._get_measurements(
+    ) -> dict[str, GpuUtilizationMetric]:
+        rows = self._get_measurements(
             metric_orm=GpuUtilizationMetricORM,
             metric=GpuUtilizationMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_gpu_utilization_measurements(
         self, machine_ids: list[str]
-    ) -> list[GpuUtilizationMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, GpuUtilizationMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=GpuUtilizationMetricLatestORM,
             latest_metric=GpuUtilizationMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_gpu_utilization_measurements(
         self,
@@ -720,23 +768,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[MemoryMetric]:
-        return self._get_measurements(
+    ) -> dict[str, MemoryMetric]:
+        rows = self._get_measurements(
             metric_orm=MemoryMetricORM,
             metric=MemoryMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_memory_measurements(
         self, machine_ids: list[str]
-    ) -> list[MemoryMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, MemoryMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=MemoryMetricLatestORM,
             latest_metric=MemoryMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_memory_measurements(
         self,
@@ -766,23 +822,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[NetworkThroughputMetric]:
-        return self._get_measurements(
+    ) -> dict[str, NetworkThroughputMetric]:
+        rows = self._get_measurements(
             metric_orm=NetworkThroughputMetricORM,
             metric=NetworkThroughputMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_network_throughput_measurements(
         self, machine_ids: list[str]
-    ) -> list[NetworkThroughputMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, NetworkThroughputMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=NetworkThroughputMetricLatestORM,
             latest_metric=NetworkThroughputMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_network_throughput_measurements(
         self,
@@ -812,23 +876,31 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> list[NvidiaSmiMetric]:
-        return self._get_measurements(
+    ) -> dict[str, NvidiaSmiMetric]:
+        rows = self._get_measurements(
             metric_orm=NvidiaSmiMetricORM,
             metric=NvidiaSmiMetric,
             machine_ids=machine_ids,
             start_ts=start_ts,
             end_ts=end_ts,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def get_latest_nvidia_smi_measurements(
         self, machine_ids: list[str]
-    ) -> list[NvidiaSmiMetricLatest]:
-        return self._get_latest_measurements(
+    ) -> dict[str, NvidiaSmiMetricLatest]:
+        rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=NvidiaSmiMetricLatestORM,
             latest_metric=NvidiaSmiMetricLatest,
         )
+        per_machine = {}
+        for row in rows:
+            per_machine.setdefault(row.machine_id, []).append(row)
+        return per_machine
 
     def delete_old_nvidia_smi_measurements(
         self,

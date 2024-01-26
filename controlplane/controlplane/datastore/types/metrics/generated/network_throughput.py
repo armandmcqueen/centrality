@@ -35,14 +35,15 @@ class Throughput(BaseModel):
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, list[Throughput] | Throughput]:
-    interfaces: list[Throughput] = [
-        Throughput(
+) -> dict[str, dict[str, Throughput] | Throughput]:
+    interfaces: dict[str, Throughput] = {
+        interface: Throughput(
             interface_name=interface, sent_mbps=throughput[0], recv_mbps=throughput[1]
         )
         for interface, throughput in metrics.items()
         if interface != "total"
-    ]
+    }
+    # TODO: Should total be saved in the DB?
     total = Throughput(
         interface_name="total",
         sent_mbps=metrics["total"][0],
@@ -54,8 +55,8 @@ def convert_from_metrics(
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
     return {
-        throughput.interface_name: [throughput.sent_mbps, throughput.recv_mbps]
-        for throughput in self.per_interface
+        interface_name: [throughput.sent_mbps, throughput.recv_mbps]
+        for interface_name, throughput in self.per_interface.items()
     }
 
 
@@ -79,9 +80,9 @@ class NetworkThroughputMetricORM(MetricBaseORM):
 class NetworkThroughputMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    per_interface: list[Throughput] = Field(
+    per_interface: dict[str, Throughput] = Field(
         ...,
-        description="A list with throughput for each network interface. There will be one entry per interface.",
+        description="A dict with throughput for each network interface with the interface name as the key",
     )
     total: Throughput = Field(
         ...,
@@ -104,9 +105,9 @@ class NetworkThroughputMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    per_interface: list[Throughput] = Field(
+    per_interface: dict[str, Throughput] = Field(
         ...,
-        description="A list with throughput for each network interface. There will be one entry per interface.",
+        description="A dict with throughput for each network interface with the interface name as the key",
     )
     total: Throughput = Field(
         ...,
@@ -136,9 +137,9 @@ class NetworkThroughputMeasurement(BaseModel):
         ..., description="The machine_id of the machine that generated this measurement"
     )
     ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
-    per_interface: list[Throughput] = Field(
+    per_interface: dict[str, Throughput] = Field(
         ...,
-        description="A list with throughput for each network interface. There will be one entry per interface.",
+        description="A dict with throughput for each network interface with the interface name as the key",
     )
     total: Throughput = Field(
         ...,

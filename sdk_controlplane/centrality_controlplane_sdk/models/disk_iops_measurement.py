@@ -18,10 +18,9 @@ import re  # noqa: F401
 import json
 
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictStr
 from pydantic import Field
-from centrality_controlplane_sdk.models.disk_iops import DiskIops
 try:
     from typing import Self
 except ImportError:
@@ -33,7 +32,7 @@ class DiskIopsMeasurement(BaseModel):
     """ # noqa: E501
     machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
     ts: datetime = Field(description="The timestamp of the measurement")
-    iops: List[DiskIops]
+    iops: Optional[Any] = Field(description="A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key.")
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "iops"]
 
     model_config = {
@@ -72,13 +71,11 @@ class DiskIopsMeasurement(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in iops (list)
-        _items = []
-        if self.iops:
-            for _item in self.iops:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict['iops'] = _items
+        # set to None if iops (nullable) is None
+        # and model_fields_set contains the field
+        if self.iops is None and "iops" in self.model_fields_set:
+            _dict['iops'] = None
+
         return _dict
 
     @classmethod
@@ -93,7 +90,6 @@ class DiskIopsMeasurement(BaseModel):
         _obj = cls.model_validate({
             "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
-            "iops": [DiskIops.from_dict(_item) for _item in obj.get("iops")] if obj.get("iops") is not None else None
         })
         return _obj
 

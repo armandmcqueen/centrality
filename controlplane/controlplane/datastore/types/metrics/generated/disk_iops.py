@@ -20,26 +20,27 @@ metric_shape_db = dict[str, float]
 
 
 # Custom Types
+
+
 class DiskIops(BaseModel):
     disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
     iops: float = Field(..., description="The IOPS for the disk.")
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
-def convert_from_metrics(metrics: dict[str, float]) -> dict[str, list[DiskIops]]:
-    iops: list[DiskIops] = [
-        DiskIops(disk_name=device, iops=iops_val)
+def convert_from_metrics(
+    metrics: dict[str, float],
+) -> dict[str, dict[str, DiskIops]]:
+    iops: dict[str, DiskIops] = {
+        device: DiskIops(disk_name=device, iops=iops_val)
         for device, iops_val in metrics.items()
-    ]
+    }
     return dict(iops=iops)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, float]:
-    iops = {}
-    for iop in self.iops:
-        iops[iop.disk_name] = iop.iops
-    return iops
+    return {disk_name: iops.iops for disk_name, iops in self.iops.items()}
 
 
 class DiskIopsMetricLatestORM(MetricLatestBaseORM):
@@ -62,9 +63,9 @@ class DiskIopsMetricORM(MetricBaseORM):
 class DiskIopsMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    iops: list[DiskIops] = Field(
+    iops: dict[str, DiskIops] = Field(
         ...,
-        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+        description="A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key.",
     )
 
     @classmethod
@@ -81,9 +82,9 @@ class DiskIopsMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    iops: list[DiskIops] = Field(
+    iops: dict[str, DiskIops] = Field(
         ...,
-        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+        description="A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key.",
     )
 
     @classmethod
@@ -107,9 +108,9 @@ class DiskIopsMeasurement(BaseModel):
         ..., description="The machine_id of the machine that generated this measurement"
     )
     ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
-    iops: list[DiskIops] = Field(
+    iops: dict[str, DiskIops] = Field(
         ...,
-        description="A list with IOPS for each disk. Each disk will have one entry in the list.",
+        description="A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key.",
     )
 
     def to_metrics(self) -> dict[str, float]:

@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **machine_id** | **str** | The machine_id of the machine that generated this measurement | 
 **ts** | **datetime** | The timestamp of the measurement | 
-**iops** | [**List[DiskIops]**](DiskIops.md) |  | 
+**iops** | [**Dict[str, DiskIops]**](DiskIops.md) | A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key. | 
 
 ## Example
 
