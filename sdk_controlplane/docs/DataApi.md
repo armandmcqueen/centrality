@@ -115,7 +115,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_cpu_metrics**
-> Dict[str, CpuMeasurement] get_cpu_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_cpu_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Cpu Metrics
 
@@ -176,7 +176,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, CpuMeasurement]**](CpuMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -196,7 +196,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_iops_metrics**
-> Dict[str, DiskIopsMeasurement] get_disk_iops_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_iops_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Iops Metrics
 
@@ -257,7 +257,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, DiskIopsMeasurement]**](DiskIopsMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -277,7 +277,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_throughput_metrics**
-> Dict[str, DiskThroughputMeasurement] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Throughput Metrics
 
@@ -338,7 +338,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, DiskThroughputMeasurement]**](DiskThroughputMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -358,7 +358,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_usage_metrics**
-> Dict[str, DiskUsageMeasurement] get_disk_usage_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_usage_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Usage Metrics
 
@@ -419,7 +419,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, DiskUsageMeasurement]**](DiskUsageMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -439,7 +439,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_gpu_memory_metrics**
-> Dict[str, GpuMemoryMeasurement] get_gpu_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_gpu_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Gpu Memory Metrics
 
@@ -500,7 +500,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, GpuMemoryMeasurement]**](GpuMemoryMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -520,7 +520,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_gpu_utilization_metrics**
-> Dict[str, GpuUtilizationMeasurement] get_gpu_utilization_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_gpu_utilization_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Gpu Utilization Metrics
 
@@ -581,7 +581,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, GpuUtilizationMeasurement]**](GpuUtilizationMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -1571,7 +1571,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_memory_metrics**
-> Dict[str, MemoryMeasurement] get_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Memory Metrics
 
@@ -1632,7 +1632,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, MemoryMeasurement]**](MemoryMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -1652,7 +1652,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_network_throughput_metrics**
-> Dict[str, NetworkThroughputMeasurement] get_network_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_network_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Network Throughput Metrics
 
@@ -1713,7 +1713,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, NetworkThroughputMeasurement]**](NetworkThroughputMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -1733,7 +1733,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_nvidia_smi_metrics**
-> Dict[str, NvidiaSmiMeasurement] get_nvidia_smi_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_nvidia_smi_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Nvidia Smi Metrics
 
@@ -1794,7 +1794,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Dict[str, NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 

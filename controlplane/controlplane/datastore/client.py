@@ -444,7 +444,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, CpuMetric]:
+    ) -> dict[str, list[CpuMetric]]:
         rows = self._get_measurements(
             metric_orm=CpuMetricORM,
             metric=CpuMetric,
@@ -453,6 +453,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -468,7 +469,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_cpu_measurements(
         self,
@@ -498,7 +508,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, DiskIopsMetric]:
+    ) -> dict[str, list[DiskIopsMetric]]:
         rows = self._get_measurements(
             metric_orm=DiskIopsMetricORM,
             metric=DiskIopsMetric,
@@ -507,6 +517,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -522,7 +533,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_disk_iops_measurements(
         self,
@@ -552,7 +572,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, DiskUsageMetric]:
+    ) -> dict[str, list[DiskUsageMetric]]:
         rows = self._get_measurements(
             metric_orm=DiskUsageMetricORM,
             metric=DiskUsageMetric,
@@ -561,6 +581,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -576,7 +597,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_disk_usage_measurements(
         self,
@@ -606,7 +636,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, DiskThroughputMetric]:
+    ) -> dict[str, list[DiskThroughputMetric]]:
         rows = self._get_measurements(
             metric_orm=DiskThroughputMetricORM,
             metric=DiskThroughputMetric,
@@ -615,6 +645,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -630,7 +661,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_disk_throughput_measurements(
         self,
@@ -660,7 +700,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, GpuMemoryMetric]:
+    ) -> dict[str, list[GpuMemoryMetric]]:
         rows = self._get_measurements(
             metric_orm=GpuMemoryMetricORM,
             metric=GpuMemoryMetric,
@@ -669,6 +709,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -684,7 +725,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_gpu_memory_measurements(
         self,
@@ -714,7 +764,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, GpuUtilizationMetric]:
+    ) -> dict[str, list[GpuUtilizationMetric]]:
         rows = self._get_measurements(
             metric_orm=GpuUtilizationMetricORM,
             metric=GpuUtilizationMetric,
@@ -723,6 +773,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -738,7 +789,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_gpu_utilization_measurements(
         self,
@@ -768,7 +828,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, MemoryMetric]:
+    ) -> dict[str, list[MemoryMetric]]:
         rows = self._get_measurements(
             metric_orm=MemoryMetricORM,
             metric=MemoryMetric,
@@ -777,6 +837,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -792,7 +853,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_memory_measurements(
         self,
@@ -822,7 +892,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, NetworkThroughputMetric]:
+    ) -> dict[str, list[NetworkThroughputMetric]]:
         rows = self._get_measurements(
             metric_orm=NetworkThroughputMetricORM,
             metric=NetworkThroughputMetric,
@@ -831,6 +901,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -846,7 +917,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_network_throughput_measurements(
         self,
@@ -876,7 +956,7 @@ class DatastoreClient:
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, NvidiaSmiMetric]:
+    ) -> dict[str, list[NvidiaSmiMetric]]:
         rows = self._get_measurements(
             metric_orm=NvidiaSmiMetricORM,
             metric=NvidiaSmiMetric,
@@ -885,6 +965,7 @@ class DatastoreClient:
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
@@ -900,7 +981,16 @@ class DatastoreClient:
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(
+                    f"Found multiple latest metrics for machine {machine_id}"
+                )
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
     def delete_old_nvidia_smi_measurements(
         self,

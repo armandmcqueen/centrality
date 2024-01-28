@@ -6,8 +6,8 @@ from centrality_controlplane_sdk import DiskUsage as DiskUsageHolder
 
 
 class DiskMbSampler(MetricSampler):
-    def sample(self) -> list[DiskUsageHolder]:
-        usages = []
+    def sample(self) -> dict[str, DiskUsageHolder]:
+        usages = {}
         for partition in psutil.disk_partitions():
             try:
                 usage = psutil.disk_usage(partition.mountpoint)
@@ -17,11 +17,10 @@ class DiskMbSampler(MetricSampler):
 
             total_mb = usage.total / (1024 * 1024)
             used_mb = usage.used / (1024 * 1024)
-            usages.append(
-                DiskUsageHolder(
-                    disk_name=partition.device, used_mb=used_mb, total_mb=total_mb
-                )
+            usages[partition.device] = DiskUsageHolder(
+                disk_name=partition.device, used_mb=used_mb, total_mb=total_mb
             )
+
         return usages
 
     def sample_and_render(self, live: Live):
@@ -32,7 +31,7 @@ class DiskMbSampler(MetricSampler):
         table.add_column(header[1])
         table.add_column(header[2])
         table.add_column(header[3])
-        for usage in info:
+        for partition, usage in info.items():
             used = int(usage.used_mb)
             total = int(usage.total_mb)
             percent = round(used / total * 100, 2)

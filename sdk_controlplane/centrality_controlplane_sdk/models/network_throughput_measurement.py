@@ -33,7 +33,7 @@ class NetworkThroughputMeasurement(BaseModel):
     """ # noqa: E501
     machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
     ts: datetime = Field(description="The timestamp of the measurement")
-    per_interface: Optional[Any] = Field(description="A dict with throughput for each network interface with the interface name as the key")
+    per_interface: Dict[str, Throughput] = Field(description="A dict with throughput for each network interface with the interface name as the key")
     total: Throughput
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "per_interface", "total"]
 
@@ -92,10 +92,14 @@ class NetworkThroughputMeasurement(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
+        print("network_throughput_measurement.from_dict: obj: ", obj)
         _obj = cls.model_validate({
             "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
-            "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None
+            "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None,
+            "per_interface": {
+                interface_name: Throughput.from_dict(throughput) for interface_name, throughput in obj.get("per_interface").items()
+            },
         })
         return _obj
 

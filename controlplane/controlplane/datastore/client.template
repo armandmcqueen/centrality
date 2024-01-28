@@ -33,7 +33,7 @@ class TemplateDatastoreClient(DatastoreClient):
         machine_ids: list[str],
         start_ts: Optional[datetime.datetime] = None,
         end_ts: Optional[datetime.datetime] = None,
-    ) -> dict[str, METRIC_NAME_CAMELCASEMetric]:
+    ) -> dict[str, list[METRIC_NAME_CAMELCASEMetric]]:
         rows = self._get_measurements(
             metric_orm=METRIC_NAME_CAMELCASEMetricORM,
             metric=METRIC_NAME_CAMELCASEMetric,
@@ -42,11 +42,15 @@ class TemplateDatastoreClient(DatastoreClient):
             end_ts=end_ts,
         )
         per_machine = {}
+
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
         return per_machine
 
-    def get_latest_METRIC_NAME_LOWERCASE_measurements(self, machine_ids: list[str]) -> dict[str, METRIC_NAME_CAMELCASEMetricLatest]:
+    def get_latest_METRIC_NAME_LOWERCASE_measurements(
+        self,
+        machine_ids: list[str]
+    ) -> dict[str, METRIC_NAME_CAMELCASEMetricLatest]:
         rows = self._get_latest_measurements(
             machine_ids=machine_ids,
             latest_metric_orm=METRIC_NAME_CAMELCASEMetricLatestORM,
@@ -55,7 +59,14 @@ class TemplateDatastoreClient(DatastoreClient):
         per_machine = {}
         for row in rows:
             per_machine.setdefault(row.machine_id, []).append(row)
-        return per_machine
+
+        reduced = {}
+        for machine_id, latest_metrics in per_machine.items():
+            if len(latest_metrics) > 1:
+                # TODO: Clearer exception type
+                raise Exception(f"Found multiple latest metrics for machine {machine_id}")
+            reduced[machine_id] = latest_metrics[0]
+        return reduced
 
 
     def delete_old_METRIC_NAME_LOWERCASE_measurements(

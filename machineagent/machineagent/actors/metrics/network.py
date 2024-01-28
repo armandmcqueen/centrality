@@ -31,23 +31,26 @@ class NetworkMetricCollector(conclib.PeriodicActor):
         self.fake_metric_generator = FakeMetricGenerator(self.config.fake)
         super().__init__()
 
+    def gen_fake_metric(self) -> tuple[dict[str, ThroughputHolder], ThroughputHolder]:
+        sent_mbs = self.fake_metric_generator.sample()
+        recv_mbs = self.fake_metric_generator.sample()
+        iface_infos = {}
+        for i, (sent_mib, recv_mib) in enumerate(zip(sent_mbs, recv_mbs)):
+            interface_name = f"fake{i}"
+            iface_infos[interface_name] = ThroughputHolder(
+                interface_name=interface_name,
+                sent_mbps=sent_mib,
+                recv_mbps=recv_mib,
+            )
+        total_info = ThroughputHolder(
+            interface_name="total", sent_mbps=sum(sent_mbs), recv_mbps=sum(recv_mbs)
+        )
+        iface_infos["total"] = total_info
+        return iface_infos, total_info
+
     def send_network_metric(self) -> None:
         if self.config.use_fake:
-            sent_mbs = self.fake_metric_generator.sample()
-            recv_mbs = self.fake_metric_generator.sample()
-            iface_infos = []
-            for i, (sent_mib, recv_mib) in enumerate(zip(sent_mbs, recv_mbs)):
-                iface_infos.append(
-                    ThroughputHolder(
-                        interface_name=f"fake{i}",
-                        sent_mbps=sent_mib,
-                        recv_mbps=recv_mib,
-                    )
-                )
-            total_info = ThroughputHolder(
-                interface_name="total", sent_mbps=sum(sent_mbs), recv_mbps=sum(recv_mbs)
-            )
-            iface_infos.append(total_info)
+            iface_infos, total_info = self.gen_fake_metric()
         else:
             iface_infos, total_info = self.sampler.sample()
 

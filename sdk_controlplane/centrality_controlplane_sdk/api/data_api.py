@@ -326,7 +326,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, CpuMeasurement]:
+    ) -> Dict[str, object]:
         """Get Cpu Metrics
 
         Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of CpuMeasurement objects with machine_id as the key.
@@ -370,7 +370,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, CpuMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -403,7 +403,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, CpuMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Cpu Metrics
 
         Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of CpuMeasurement objects with machine_id as the key.
@@ -447,7 +447,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, CpuMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -524,7 +524,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, CpuMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -646,7 +646,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, DiskIopsMeasurement]:
+    ) -> Dict[str, object]:
         """Get Disk Iops Metrics
 
         Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskIopsMeasurement objects with machine_id as the key.
@@ -690,7 +690,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskIopsMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -723,7 +723,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, DiskIopsMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Disk Iops Metrics
 
         Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskIopsMeasurement objects with machine_id as the key.
@@ -767,7 +767,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskIopsMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -844,7 +844,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskIopsMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -966,7 +966,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, DiskThroughputMeasurement]:
+    ) -> Dict[str, object]:
         """Get Disk Throughput Metrics
 
         Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskThroughputMeasurement objects with machine_id as the key.
@@ -1010,7 +1010,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1043,7 +1043,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, DiskThroughputMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Disk Throughput Metrics
 
         Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskThroughputMeasurement objects with machine_id as the key.
@@ -1087,7 +1087,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1164,7 +1164,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1286,7 +1286,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, DiskUsageMeasurement]:
+    ) -> Dict[str, object]:
         """Get Disk Usage Metrics
 
         Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskUsageMeasurement objects with machine_id as the key.
@@ -1330,7 +1330,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskUsageMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1363,7 +1363,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, DiskUsageMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Disk Usage Metrics
 
         Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskUsageMeasurement objects with machine_id as the key.
@@ -1407,7 +1407,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskUsageMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1484,7 +1484,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, DiskUsageMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1606,7 +1606,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, GpuMemoryMeasurement]:
+    ) -> Dict[str, object]:
         """Get Gpu Memory Metrics
 
         Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuMemoryMeasurement objects with machine_id as the key.
@@ -1650,7 +1650,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuMemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1683,7 +1683,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, GpuMemoryMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Gpu Memory Metrics
 
         Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuMemoryMeasurement objects with machine_id as the key.
@@ -1727,7 +1727,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuMemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1804,7 +1804,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuMemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -1926,7 +1926,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, GpuUtilizationMeasurement]:
+    ) -> Dict[str, object]:
         """Get Gpu Utilization Metrics
 
         Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuUtilizationMeasurement objects with machine_id as the key.
@@ -1970,7 +1970,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuUtilizationMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -2003,7 +2003,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, GpuUtilizationMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Gpu Utilization Metrics
 
         Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuUtilizationMeasurement objects with machine_id as the key.
@@ -2047,7 +2047,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuUtilizationMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -2124,7 +2124,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, GpuUtilizationMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -4659,6 +4659,7 @@ class DataApi:
             _request_timeout=_request_timeout
         )
         response_data.read()
+        print("Response data:", response_data.data)
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -4728,6 +4729,7 @@ class DataApi:
             _request_timeout=_request_timeout
         )
         response_data.read()
+
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -5662,7 +5664,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, MemoryMeasurement]:
+    ) -> Dict[str, object]:
         """Get Memory Metrics
 
         Get memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of MemoryMeasurement objects with machine_id as the key.
@@ -5706,7 +5708,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, MemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -5739,7 +5741,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, MemoryMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Memory Metrics
 
         Get memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of MemoryMeasurement objects with machine_id as the key.
@@ -5783,7 +5785,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, MemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -5860,7 +5862,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, MemoryMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -5982,7 +5984,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, NetworkThroughputMeasurement]:
+    ) -> Dict[str, object]:
         """Get Network Throughput Metrics
 
         Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NetworkThroughputMeasurement objects with machine_id as the key.
@@ -6026,7 +6028,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NetworkThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -6059,7 +6061,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, NetworkThroughputMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Network Throughput Metrics
 
         Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NetworkThroughputMeasurement objects with machine_id as the key.
@@ -6103,7 +6105,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NetworkThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -6180,7 +6182,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NetworkThroughputMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -6302,7 +6304,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, NvidiaSmiMeasurement]:
+    ) -> Dict[str, object]:
         """Get Nvidia Smi Metrics
 
         Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NvidiaSmiMeasurement objects with machine_id as the key.
@@ -6346,7 +6348,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NvidiaSmiMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -6379,7 +6381,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[Dict[str, NvidiaSmiMeasurement]]:
+    ) -> ApiResponse[Dict[str, object]]:
         """Get Nvidia Smi Metrics
 
         Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NvidiaSmiMeasurement objects with machine_id as the key.
@@ -6423,7 +6425,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NvidiaSmiMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }
@@ -6500,7 +6502,7 @@ class DataApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "Dict[str, NvidiaSmiMeasurement]",
+            '200': "Dict[str, object]",
             '422': "HTTPValidationError"
             
         }

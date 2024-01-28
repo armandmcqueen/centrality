@@ -378,7 +378,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/CpuMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CpuMeasurement"
+                    }
                   },
                   "title": "Response Get Cpu Metrics Machine Metrics Cpu Get"
                 }
@@ -567,7 +570,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/DiskIopsMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskIopsMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Iops Metrics Machine Metrics Disk Iops Get"
                 }
@@ -756,7 +762,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/DiskUsageMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskUsageMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Usage Metrics Machine Metrics Disk Usage Get"
                 }
@@ -945,7 +954,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Throughput Metrics Machine Metrics Disk Throughput Get"
                 }
@@ -1134,7 +1146,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                    }
                   },
                   "title": "Response Get Gpu Memory Metrics Machine Metrics Gpu Memory Get"
                 }
@@ -1323,7 +1338,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                    }
                   },
                   "title": "Response Get Gpu Utilization Metrics Machine Metrics Gpu Utilization Get"
                 }
@@ -1512,7 +1530,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/MemoryMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MemoryMeasurement"
+                    }
                   },
                   "title": "Response Get Memory Metrics Machine Metrics Memory Get"
                 }
@@ -1701,7 +1722,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                    }
                   },
                   "title": "Response Get Network Throughput Metrics Machine Metrics Network Throughput Get"
                 }
@@ -1890,7 +1914,10 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
-                    "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                    }
                   },
                   "title": "Response Get Nvidia Smi Metrics Machine Metrics Nvidia Smi Get"
                 }
