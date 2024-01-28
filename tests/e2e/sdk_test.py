@@ -73,10 +73,12 @@ def test_cpu_measurements(docker_compose, sdk: DataApi):
     sdk.put_cpu_metric(measurement2)
 
     # Confirm that there are the two we expect
+    # TODO: This changed
     asserts.list_size(sdk.get_cpu_metrics(machine_ids=[machine_id]), 2)
 
     # Confirm that the correct one is the latest one
     latest_metrics = sdk.get_latest_cpu_metrics(machine_ids=[machine_id])
+    # TODO: This changed
     asserts.list_size(latest_metrics, 1)
     asserts.matches(latest_metrics[0].ts, latest_ts)
     asserts.matches(latest_metrics[0].cpu_percents, latest_cpu_percents)
