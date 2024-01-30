@@ -21,21 +21,19 @@ from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictStr
 from pydantic import Field
-from centrality_controlplane_sdk.models.throughput import Throughput
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-class NetworkThroughputMeasurement(BaseModel):
+class DiskThroughputMeasurement(BaseModel):
     """
-    A measurement of NetworkThroughput
+    A measurement of DiskThroughput
     """ # noqa: E501
     machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
     ts: datetime = Field(description="The timestamp of the measurement")
-    per_interface: Optional[Any] = Field(description="A dict with throughput for each network interface with the interface name as the key")
-    total: Throughput
-    __properties: ClassVar[List[str]] = ["machine_id", "ts", "per_interface", "total"]
+    throughput: Optional[Any] = Field(description="A dict with disk throughput for each disk with the disk name as the key.")
+    __properties: ClassVar[List[str]] = ["machine_id", "ts", "throughput"]
 
     model_config = {
         "populate_by_name": True,
@@ -54,7 +52,7 @@ class NetworkThroughputMeasurement(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of NetworkThroughputMeasurement from a JSON string"""
+        """Create an instance of DiskThroughputMeasurement from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,19 +71,16 @@ class NetworkThroughputMeasurement(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of total
-        if self.total:
-            _dict['total'] = self.total.to_dict()
-        # set to None if per_interface (nullable) is None
+        # set to None if throughput (nullable) is None
         # and model_fields_set contains the field
-        if self.per_interface is None and "per_interface" in self.model_fields_set:
-            _dict['per_interface'] = None
+        if self.throughput is None and "throughput" in self.model_fields_set:
+            _dict['throughput'] = None
 
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of NetworkThroughputMeasurement from a dict"""
+        """Create an instance of DiskThroughputMeasurement from a dict"""
         if obj is None:
             return None
 
@@ -95,7 +90,6 @@ class NetworkThroughputMeasurement(BaseModel):
         _obj = cls.model_validate({
             "machine_id": obj.get("machine_id"),
             "ts": obj.get("ts"),
-            "total": Throughput.from_dict(obj.get("total")) if obj.get("total") is not None else None
         })
         return _obj
 
