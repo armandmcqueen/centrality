@@ -9,8 +9,8 @@ from redbaron import RedBaron
 
 root = Path(git.Repo(".", search_parent_directories=True).working_tree_dir)
 
-# MODEL_DEF_PATH = root / "sdk_controlplane/centrality_controlplane_sdk/models/disk_throughput_measurement.py"
-MODEL_DEF_PATH = root / "sdk_example.py"
+MODEL_DEF_PATH = root / "sdk_controlplane/centrality_controlplane_sdk/models/disk_throughput_measurement.py"
+# MODEL_DEF_PATH = root / "sdk_example.py"
 DATA_API_PATH = root / "sdk_controlplane/centrality_controlplane_sdk/api/data_api.py"
 
 
@@ -59,7 +59,7 @@ class TypeHintTransformer(cst.CSTTransformer):
 #     print(modified_code.code)
 
 def fix_model_def():
-    # Load the code into a RedBaron tree
+    # Load the model definition code into a RedBaron tree
     red = RedBaron(MODEL_DEF_PATH.read_text())
 
     ####################################################################################################
@@ -119,6 +119,43 @@ def fix_model_def():
     print("```python")
     print(red.dumps())
     print("```")
+    # TODO: Write this back to the original code file
+    # Write the modified code back to the file
+    MODEL_DEF_PATH.write_text(red.dumps())
+
+    ####################################################################################################
+    # Modify the data api
+    red = RedBaron(DATA_API_PATH.read_text())
+
+    ####################################################################################################
+    # Change the type annotation for get_metrics (get_latest_metrics is fine)
+    node = red.find('class', name='DataApi').find('def', name='get_disk_throughput_metrics')
+    print(node)
+    # Get the return type annotation node
+    # return_type_node = node.find('return_annotation')
+    node.return_annotation = "Dict[str, list[DiskThroughputMeasurement]]"
+    print(node.return_annotation)
+    print(node)
+
+    ####################################################################################################
+    # Find and change the return type map
+    """
+            _response_types_map: Dict[str, Optional[str]] = {
+            '200': "Dict[str, object]",
+            '422': "HTTPValidationError"
+            
+        }
+    """
+    type_map_node = node.find('name', value='_response_types_map').parent.value
+    print(type_map_node.value[0].value)
+    type_map_node.value[0].value = '"Dict[str, list[DiskThroughputMeasurement]]"'
+    print(type_map_node)
+
+    # TODO: Repeat this for the other variants
+    # Write the modified code back to the file
+    DATA_API_PATH.write_text(red.dumps())
+
+
 
 if __name__ == '__main__':
     fix_model_def()
