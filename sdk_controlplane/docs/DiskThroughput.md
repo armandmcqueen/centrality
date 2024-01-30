@@ -4,9 +4,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**disk_name** | **str** |  | 
-**read_mbps** | **float** |  | 
-**write_mbps** | **float** |  | 
+**disk_name** | **str** | The name of the disk, e.g. /dev/sda. | 
+**read_mbps** | **float** | The read throughput for the disk in MiB/s. | 
+**write_mbps** | **float** | The write throughput for the disk in MiB/s. | 
 
 ## Example
 

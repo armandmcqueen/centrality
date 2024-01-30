@@ -4,9 +4,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**interface_name** | **str** |  | 
-**sent_mbps** | **float** |  | 
-**recv_mbps** | **float** |  | 
+**interface_name** | **str** | The name of the network interface, e.g. eth0. | 
+**sent_mbps** | **float** | The sent throughput for the interface in MiB/s. | 
+**recv_mbps** | **float** | The received throughput for the interface in MiB/s. | 
 
 ## Example
 

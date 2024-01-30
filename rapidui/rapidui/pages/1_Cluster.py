@@ -32,10 +32,14 @@ def get_cpu_metrics(
     """Use epoch as a cache key to force a refresh at some interval"""
     measurements = _sdk.get_latest_cpu_metrics(machine_ids=live_machines)
     # TODO: Handle errors?
-    return [
-        (m.machine_id, sum(m.cpu_percents) / len(m.cpu_percents))
-        for m in sorted(measurements, key=lambda m: m.machine_id)
-    ]
+    machine_ids = sorted(list(measurements.keys()))
+    metrics = []
+    for machine_id in machine_ids:
+        avg_cpu = sum(measurements[machine_id].cpu_percents) / len(
+            measurements[machine_id].cpu_percents
+        )
+        metrics.append((machine_id, avg_cpu))
+    return metrics
 
 
 def get_data(

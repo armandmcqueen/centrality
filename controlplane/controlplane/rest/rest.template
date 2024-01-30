@@ -7,19 +7,27 @@ def get_METRIC_NAME_LOWERCASE_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[METRIC_NAME_CAMELCASEMeasurement]:
+) -> dict[str, list[METRIC_NAME_CAMELCASEMeasurement]]:
     """
     Get METRIC_NAME_LOWERCASE metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of METRIC_NAME_CAMELCASEMeasurement objects
+    :return: Dict of METRIC_NAME_CAMELCASEMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_METRIC_NAME_LOWERCASE_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_METRIC_NAME_LOWERCASE_measurement() for result in results]
+    converted_results = {}
+    # Convert METRIC_NAME_CAMELCASEMetric to METRIC_NAME_CAMELCASEMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_METRIC_NAME_LOWERCASE_measurement()
+            for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(f"{constants.CONTROL_PLANE_METRIC_METRIC_NAME_CAPITALIZED_ENDPOINT}/latest", tags=[MAIN_TAG])
@@ -27,10 +35,15 @@ def get_METRIC_NAME_LOWERCASE_metrics(
 def get_latest_METRIC_NAME_LOWERCASE_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[METRIC_NAME_CAMELCASEMeasurement]:
+) -> dict[str, METRIC_NAME_CAMELCASEMeasurement]:
     """Get the most recent METRIC_NAME_LOWERCASE measurements for each machine"""
     results = datastore_client.get_latest_METRIC_NAME_LOWERCASE_measurements(machine_ids=machine_ids)
-    return [result.to_METRIC_NAME_LOWERCASE_measurement() for result in results]
+    converted_results = {}
+    # Convert METRIC_NAME_CAMELCASEMetric to METRIC_NAME_CAMELCASEMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_METRIC_NAME_LOWERCASE_measurement()
+    return converted_results
+
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_METRIC_NAME_CAPITALIZED_ENDPOINT, tags=[MAIN_TAG])

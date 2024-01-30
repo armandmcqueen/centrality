@@ -20,6 +20,7 @@ import json
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,10 +30,10 @@ class MemoryMeasurement(BaseModel):
     """
     A measurement of Memory
     """ # noqa: E501
-    machine_id: StrictStr
-    ts: datetime
-    free_memory_mb: Union[StrictFloat, StrictInt]
-    total_memory_mb: Union[StrictFloat, StrictInt]
+    machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
+    ts: datetime = Field(description="The timestamp of the measurement")
+    free_memory_mb: Union[StrictFloat, StrictInt] = Field(description="The free memory in MiB.")
+    total_memory_mb: Union[StrictFloat, StrictInt] = Field(description="The total memory in MiB.")
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "free_memory_mb", "total_memory_mb"]
 
     model_config = {

@@ -1,8 +1,8 @@
 from typing import Any
 
 metric_obj_fields = """\
-    free_memory_mb: float
-    total_memory_mb: float
+    free_memory_mb: float = Field(..., description="The free memory in MiB.")
+    total_memory_mb: float = Field(..., description="The total memory in MiB.")
 """
 metric_name_lowercase = "memory"
 metric_name_camelcase = "Memory"
