@@ -1,12 +1,13 @@
 import pytest
 import subprocess
 from pathlib import Path
-from centrality_controlplane_sdk import DataApi
+from centrality_controlplane_sdk import DataApi, DiskThroughputMeasurement
 from common.sdks.controlplane.sdk import ControlPlaneSdkConfig
+
 from common.utils.wait_for_healthy import wait_for_healthy
 from common import constants
 from common.sdks.controlplane.sdk import get_sdk
-from rich import print
+from rich import print, inspect
 import datetime
 import time
 
@@ -51,7 +52,11 @@ def main():
 
     print("Running get_disk_throughput_metrics")
     r = client.get_disk_throughput_metrics(machine_ids=[machine_id], from_ts=query_start, to_ts=now)
+    print(type(r))
     print(r)
+    throughput = r['fake-data'][0]
+    print(type(throughput))
+    print(throughput)
     print("Finished get_disk_throughput_metrics")
     print("--------------------")
 

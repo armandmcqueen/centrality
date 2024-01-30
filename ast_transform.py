@@ -3,60 +3,16 @@ from pathlib import Path
 from typing import Optional
 
 import git
-import libcst as cst
 from rich import print, inspect
 from redbaron import RedBaron
 
 root = Path(git.Repo(".", search_parent_directories=True).working_tree_dir)
 
 MODEL_DEF_PATH = root / "sdk_controlplane/centrality_controlplane_sdk/models/disk_throughput_measurement.py"
-# MODEL_DEF_PATH = root / "sdk_example.py"
 DATA_API_PATH = root / "sdk_controlplane/centrality_controlplane_sdk/api/data_api.py"
 
 
-from libcst import matchers as m
 
-class TypeHintTransformer(cst.CSTTransformer):
-    def leave_AnnAssign(self, original_node, updated_node):
-        # Define a matcher for the specific attribute
-        throughput_matcher = m.AnnAssign(
-            target=m.Name("throughput"),
-            annotation=m.Annotation(m.Subscript(value=m.Name("Optional"), slice=[m.SubscriptElement()])),
-        )
-
-        # Check if the node matches the desired pattern
-        inspect(original_node.annotation)
-        if m.matches(updated_node, throughput_matcher):
-            new_annotation = cst.Annotation(annotation=cst.Subscript(
-                value=cst.Name(value='dict'),
-                slice=[
-                    # cst.SubscriptElement(slice=cst.SimpleString(value="'str'")),
-                    cst.SubscriptElement(slice=cst.Index(value=cst.SimpleString('"str"'))),
-                    cst.SubscriptElement(slice=cst.Index(value=cst.Name(value='DiskThroughput')))
-                ]
-            ))
-            inspect(new_annotation)
-            print(new_annotation.code)
-            return updated_node.with_changes(annotation=new_annotation)
-        return updated_node
-
-
-# def fix_model_def():
-#     # Pydantic subclass implementation, DiskThroughputMeasurement
-#     # throughput: Optional[Any], needs to be converted to Dict[str, DiskThroughput]
-#     # DiskThroughput needs to be imported from centrality_controlplane_sdk.models.disk_throughput
-#
-#     # In to_dict, the code that checks if throughput is none should be removed (not 100% necessary I think)
-#
-#     # In from_dict, the creation of the object needs to be changed so that (1) throughput is actually included and (2) throughput is recursively converted to DiskThroughputs
-#
-#     module = cst.parse_module(MODEL_DEF_PATH.read_text())
-#
-#     # print(module.body)
-#
-#     transformer = TypeHintTransformer()
-#     modified_code = module.visit(transformer)
-#     print(modified_code.code)
 
 def fix_model_def():
     # Load the model definition code into a RedBaron tree
@@ -67,6 +23,9 @@ def fix_model_def():
     location = 15  # hardcoded
     type_alias = RedBaron("DiskName = str\n")[0]
     red.insert(location, type_alias)
+
+    import_node = RedBaron("from centrality_controlplane_sdk.models.disk_throughput import DiskThroughput\n")[0]
+    red.insert(location, import_node)
 
     ####################################################################################################
     # Find the 'throughput' node in the 'DiskThroughputMeasurement' class
@@ -119,7 +78,7 @@ def fix_model_def():
     print("```python")
     print(red.dumps())
     print("```")
-    # TODO: Write this back to the original code file
+
     # Write the modified code back to the file
     MODEL_DEF_PATH.write_text(red.dumps())
 
@@ -146,12 +105,62 @@ def fix_model_def():
             
         }
     """
-    type_map_node = node.find('name', value='_response_types_map').parent.value
-    print(type_map_node.value[0].value)
-    type_map_node.value[0].value = '"Dict[str, list[DiskThroughputMeasurement]]"'
-    print(type_map_node)
+    # TODO: This fails, we need to leave the map as is, and then manually convert the output into the correct type
+    """
+    current code
+    
+    
+    response_data.read()
+    return self.api_client.response_deserialize(
+        response_data=response_data,
+        response_types_map=_response_types_map,
+    ).data
+    """
 
-    # TODO: Repeat this for the other variants
+    """
+    desired
+    
+    dict_return = self.api_client.response_deserialize(
+        response_data=response_data,
+        response_types_map=_response_types_map,
+    ).data
+    structured_output = {
+        machine_id: [DiskThroughputMeasurement(**x) for x in measurements]
+        for machine_id, measurements in dict_return.items()
+    }
+    return structured_output
+    """
+    # Convert the return into an assignment to dict_return
+
+    # Get the return node
+    return_node = node.find("return")
+
+    # Create the new assignment node
+    assignment_node = RedBaron("dict_return = None")[0]
+    assignment_node.value = return_node.value
+    # print(node)
+    return_node.replace(assignment_node)
+    print("value", node.value)
+
+    # Add the structured output node
+    # TODO: This doesn't have correct indentation, but it isn't syntactically incorrect
+    structured_output_node = RedBaron("""
+    structured_output = {
+        machine_id: [DiskThroughputMeasurement(**x) for x in measurements]
+        for machine_id, measurements in dict_return.items()
+    }
+    """)
+    # print(structured_output_node)
+    node.value.append(structured_output_node)
+    print("value2", node.value)
+
+    # Add the return node
+    new_return_node = RedBaron("return structured_output")[0]
+    node.append(new_return_node)
+
+    print(node)
+
+    # TODO: Repeat this for the other variants. Or just delete the variants?
     # Write the modified code back to the file
     DATA_API_PATH.write_text(red.dumps())
 
