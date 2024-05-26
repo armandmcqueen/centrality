@@ -20,6 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +30,9 @@ class Throughput(BaseModel):
     """
     Throughput
     """ # noqa: E501
-    interface_name: StrictStr
-    sent_mbps: Union[StrictFloat, StrictInt]
-    recv_mbps: Union[StrictFloat, StrictInt]
+    interface_name: StrictStr = Field(description="The name of the network interface, e.g. eth0.")
+    sent_mbps: Union[StrictFloat, StrictInt] = Field(description="The sent throughput for the interface in MiB/s.")
+    recv_mbps: Union[StrictFloat, StrictInt] = Field(description="The received throughput for the interface in MiB/s.")
     __properties: ClassVar[List[str]] = ["interface_name", "sent_mbps", "recv_mbps"]
 
     model_config = {

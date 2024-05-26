@@ -20,6 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +30,9 @@ class DiskUsage(BaseModel):
     """
     DiskUsage
     """ # noqa: E501
-    disk_name: StrictStr
-    used_mb: Union[StrictFloat, StrictInt]
-    total_mb: Union[StrictFloat, StrictInt]
+    disk_name: StrictStr = Field(description="The name of the disk, e.g. /dev/sda.")
+    used_mb: Union[StrictFloat, StrictInt] = Field(description="The used disk space in MiB.")
+    total_mb: Union[StrictFloat, StrictInt] = Field(description="The total space of the disk in MiB.")
     __properties: ClassVar[List[str]] = ["disk_name", "used_mb", "total_mb"]
 
     model_config = {

@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "cpu"
@@ -51,7 +51,10 @@ class CpuMetricORM(MetricBaseORM):
 class CpuMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    cpu_percents: list[float]
+    cpu_percents: list[float] = Field(
+        ...,
+        description="A list with CPU utilization for each core. Values vary between 0 and 100.",
+    )
 
     @classmethod
     def from_orm(cls, orm: CpuMetricLatestORM, **kwargs) -> "CpuMetricLatest":
@@ -67,7 +70,10 @@ class CpuMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    cpu_percents: list[float]
+    cpu_percents: list[float] = Field(
+        ...,
+        description="A list with CPU utilization for each core. Values vary between 0 and 100.",
+    )
 
     @classmethod
     def from_orm(cls, orm: CpuMetricORM, **kwargs) -> "CpuMetric":
@@ -86,9 +92,14 @@ class CpuMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    cpu_percents: list[float]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    cpu_percents: list[float] = Field(
+        ...,
+        description="A list with CPU utilization for each core. Values vary between 0 and 100.",
+    )
 
     def to_metrics(self) -> list[float]:
         return convert_to_metrics(self)

@@ -315,7 +315,7 @@
           "data"
         ],
         "summary": "Get Cpu Metrics",
-        "description": "Get cpu metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of CpuMeasurement objects",
+        "description": "Get cpu metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of CpuMeasurement objects with machine_id as the key.",
         "operationId": "get_cpu_metrics",
         "security": [
           {
@@ -376,9 +376,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CpuMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CpuMeasurement"
+                    }
                   },
                   "title": "Response Get Cpu Metrics Machine Metrics Cpu Get"
                 }
@@ -476,8 +479,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/CpuMeasurement"
                   },
                   "title": "Response Get Latest Cpu Metrics Machine Metrics Cpu Latest Get"
@@ -504,7 +507,7 @@
           "data"
         ],
         "summary": "Get Disk Iops Metrics",
-        "description": "Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskIopsMeasurement objects",
+        "description": "Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of DiskIopsMeasurement objects with machine_id as the key.",
         "operationId": "get_disk_iops_metrics",
         "security": [
           {
@@ -565,9 +568,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiskIopsMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskIopsMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Iops Metrics Machine Metrics Disk Iops Get"
                 }
@@ -665,8 +671,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/DiskIopsMeasurement"
                   },
                   "title": "Response Get Latest Disk Iops Metrics Machine Metrics Disk Iops Latest Get"
@@ -693,7 +699,7 @@
           "data"
         ],
         "summary": "Get Disk Usage Metrics",
-        "description": "Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskUsageMeasurement objects",
+        "description": "Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of DiskUsageMeasurement objects with machine_id as the key.",
         "operationId": "get_disk_usage_metrics",
         "security": [
           {
@@ -754,9 +760,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiskUsageMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskUsageMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Usage Metrics Machine Metrics Disk Usage Get"
                 }
@@ -854,8 +863,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/DiskUsageMeasurement"
                   },
                   "title": "Response Get Latest Disk Usage Metrics Machine Metrics Disk Usage Latest Get"
@@ -882,7 +891,7 @@
           "data"
         ],
         "summary": "Get Disk Throughput Metrics",
-        "description": "Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of DiskThroughputMeasurement objects",
+        "description": "Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of DiskThroughputMeasurement objects with machine_id as the key.",
         "operationId": "get_disk_throughput_metrics",
         "security": [
           {
@@ -943,9 +952,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DiskThroughputMeasurement"
+                    }
                   },
                   "title": "Response Get Disk Throughput Metrics Machine Metrics Disk Throughput Get"
                 }
@@ -1043,8 +1055,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/DiskThroughputMeasurement"
                   },
                   "title": "Response Get Latest Disk Throughput Metrics Machine Metrics Disk Throughput Latest Get"
@@ -1071,7 +1083,7 @@
           "data"
         ],
         "summary": "Get Gpu Memory Metrics",
-        "description": "Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuMemoryMeasurement objects",
+        "description": "Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of GpuMemoryMeasurement objects with machine_id as the key.",
         "operationId": "get_gpu_memory_metrics",
         "security": [
           {
@@ -1132,9 +1144,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GpuMemoryMeasurement"
+                    }
                   },
                   "title": "Response Get Gpu Memory Metrics Machine Metrics Gpu Memory Get"
                 }
@@ -1232,8 +1247,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/GpuMemoryMeasurement"
                   },
                   "title": "Response Get Latest Gpu Memory Metrics Machine Metrics Gpu Memory Latest Get"
@@ -1260,7 +1275,7 @@
           "data"
         ],
         "summary": "Get Gpu Utilization Metrics",
-        "description": "Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of GpuUtilizationMeasurement objects",
+        "description": "Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of GpuUtilizationMeasurement objects with machine_id as the key.",
         "operationId": "get_gpu_utilization_metrics",
         "security": [
           {
@@ -1321,9 +1336,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/GpuUtilizationMeasurement"
+                    }
                   },
                   "title": "Response Get Gpu Utilization Metrics Machine Metrics Gpu Utilization Get"
                 }
@@ -1421,8 +1439,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/GpuUtilizationMeasurement"
                   },
                   "title": "Response Get Latest Gpu Utilization Metrics Machine Metrics Gpu Utilization Latest Get"
@@ -1449,7 +1467,7 @@
           "data"
         ],
         "summary": "Get Memory Metrics",
-        "description": "Get memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of MemoryMeasurement objects",
+        "description": "Get memory metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of MemoryMeasurement objects with machine_id as the key.",
         "operationId": "get_memory_metrics",
         "security": [
           {
@@ -1510,9 +1528,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MemoryMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MemoryMeasurement"
+                    }
                   },
                   "title": "Response Get Memory Metrics Machine Metrics Memory Get"
                 }
@@ -1610,8 +1631,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/MemoryMeasurement"
                   },
                   "title": "Response Get Latest Memory Metrics Machine Metrics Memory Latest Get"
@@ -1638,7 +1659,7 @@
           "data"
         ],
         "summary": "Get Network Throughput Metrics",
-        "description": "Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NetworkThroughputMeasurement objects",
+        "description": "Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of NetworkThroughputMeasurement objects with machine_id as the key.",
         "operationId": "get_network_throughput_metrics",
         "security": [
           {
@@ -1699,9 +1720,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NetworkThroughputMeasurement"
+                    }
                   },
                   "title": "Response Get Network Throughput Metrics Machine Metrics Network Throughput Get"
                 }
@@ -1799,8 +1823,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/NetworkThroughputMeasurement"
                   },
                   "title": "Response Get Latest Network Throughput Metrics Machine Metrics Network Throughput Latest Get"
@@ -1827,7 +1851,7 @@
           "data"
         ],
         "summary": "Get Nvidia Smi Metrics",
-        "description": "Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: List of NvidiaSmiMeasurement objects",
+        "description": "Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.\n:param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).\n:param from_ts: Start time filter, inclusive. Optional.\n:param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an\n              error, but the results will be empty.\n:return: Dict of NvidiaSmiMeasurement objects with machine_id as the key.",
         "operationId": "get_nvidia_smi_metrics",
         "security": [
           {
@@ -1888,9 +1912,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/NvidiaSmiMeasurement"
+                    }
                   },
                   "title": "Response Get Nvidia Smi Metrics Machine Metrics Nvidia Smi Get"
                 }
@@ -1988,8 +2015,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/NvidiaSmiMeasurement"
                   },
                   "title": "Response Get Latest Nvidia Smi Metrics Machine Metrics Nvidia Smi Latest Get"
@@ -2017,19 +2044,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "cpu_percents": {
             "items": {
               "type": "number"
             },
             "type": "array",
-            "title": "Cpu Percents"
+            "title": "Cpu Percents",
+            "description": "A list with CPU utilization for each core. Values vary between 0 and 100."
           }
         },
         "type": "object",
@@ -2045,11 +2075,13 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "iops": {
             "type": "number",
-            "title": "Iops"
+            "title": "Iops",
+            "description": "The IOPS for the disk."
           }
         },
         "type": "object",
@@ -2063,19 +2095,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "iops": {
-            "items": {
+            "additionalProperties": {
               "$ref": "#/components/schemas/DiskIops"
             },
-            "type": "array",
-            "title": "Iops"
+            "type": "object",
+            "title": "Iops",
+            "description": "A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key."
           }
         },
         "type": "object",
@@ -2091,15 +2126,18 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "read_mbps": {
             "type": "number",
-            "title": "Read Mbps"
+            "title": "Read Mbps",
+            "description": "The read throughput for the disk in MiB/s."
           },
           "write_mbps": {
             "type": "number",
-            "title": "Write Mbps"
+            "title": "Write Mbps",
+            "description": "The write throughput for the disk in MiB/s."
           }
         },
         "type": "object",
@@ -2114,19 +2152,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "throughput": {
-            "items": {
+            "additionalProperties": {
               "$ref": "#/components/schemas/DiskThroughput"
             },
-            "type": "array",
-            "title": "Throughput"
+            "type": "object",
+            "title": "Throughput",
+            "description": "A dict with disk throughput for each disk with the disk name as the key."
           }
         },
         "type": "object",
@@ -2142,15 +2183,18 @@
         "properties": {
           "disk_name": {
             "type": "string",
-            "title": "Disk Name"
+            "title": "Disk Name",
+            "description": "The name of the disk, e.g. /dev/sda."
           },
           "used_mb": {
             "type": "number",
-            "title": "Used Mb"
+            "title": "Used Mb",
+            "description": "The used disk space in MiB."
           },
           "total_mb": {
             "type": "number",
-            "title": "Total Mb"
+            "title": "Total Mb",
+            "description": "The total space of the disk in MiB."
           }
         },
         "type": "object",
@@ -2165,19 +2209,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "usage": {
-            "items": {
+            "additionalProperties": {
               "$ref": "#/components/schemas/DiskUsage"
             },
-            "type": "array",
-            "title": "Usage"
+            "type": "object",
+            "title": "Usage",
+            "description": "A dict with disk usage for each disk with the disk name as the key."
           }
         },
         "type": "object",
@@ -2193,11 +2240,13 @@
         "properties": {
           "used_mb": {
             "type": "number",
-            "title": "Used Mb"
+            "title": "Used Mb",
+            "description": "The used GPU memory in MiB."
           },
           "total_mb": {
             "type": "number",
-            "title": "Total Mb"
+            "title": "Total Mb",
+            "description": "The total GPU memory in MiB."
           }
         },
         "type": "object",
@@ -2211,19 +2260,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "memory": {
             "items": {
               "$ref": "#/components/schemas/GpuMemory"
             },
             "type": "array",
-            "title": "Memory"
+            "title": "Memory",
+            "description": "A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi."
           }
         },
         "type": "object",
@@ -2239,19 +2291,22 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "gpu_percents": {
             "items": {
               "type": "number"
             },
             "type": "array",
-            "title": "Gpu Percents"
+            "title": "Gpu Percents",
+            "description": "A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi."
           }
         },
         "type": "object",
@@ -2466,20 +2521,24 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "free_memory_mb": {
             "type": "number",
-            "title": "Free Memory Mb"
+            "title": "Free Memory Mb",
+            "description": "The free memory in MiB."
           },
           "total_memory_mb": {
             "type": "number",
-            "title": "Total Memory Mb"
+            "title": "Total Memory Mb",
+            "description": "The total memory in MiB."
           }
         },
         "type": "object",
@@ -2496,22 +2555,30 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "per_interface": {
-            "items": {
+            "additionalProperties": {
               "$ref": "#/components/schemas/Throughput"
             },
-            "type": "array",
-            "title": "Per Interface"
+            "type": "object",
+            "title": "Per Interface",
+            "description": "A dict with throughput for each network interface with the interface name as the key"
           },
           "total": {
-            "$ref": "#/components/schemas/Throughput"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Throughput"
+              }
+            ],
+            "description": "The total throughput for all interfaces summed over all interfaces."
           }
         },
         "type": "object",
@@ -2528,16 +2595,19 @@
         "properties": {
           "machine_id": {
             "type": "string",
-            "title": "Machine Id"
+            "title": "Machine Id",
+            "description": "The machine_id of the machine that generated this measurement"
           },
           "ts": {
             "type": "string",
             "format": "date-time",
-            "title": "Ts"
+            "title": "Ts",
+            "description": "The timestamp of the measurement"
           },
           "output": {
             "type": "string",
-            "title": "Output"
+            "title": "Output",
+            "description": "The output of nvidia-smi as a string."
           }
         },
         "type": "object",
@@ -2564,15 +2634,18 @@
         "properties": {
           "interface_name": {
             "type": "string",
-            "title": "Interface Name"
+            "title": "Interface Name",
+            "description": "The name of the network interface, e.g. eth0."
           },
           "sent_mbps": {
             "type": "number",
-            "title": "Sent Mbps"
+            "title": "Sent Mbps",
+            "description": "The sent throughput for the interface in MiB/s."
           },
           "recv_mbps": {
             "type": "number",
-            "title": "Recv Mbps"
+            "title": "Recv Mbps",
+            "description": "The received throughput for the interface in MiB/s."
           }
         },
         "type": "object",

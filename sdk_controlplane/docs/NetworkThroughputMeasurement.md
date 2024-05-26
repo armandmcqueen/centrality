@@ -5,9 +5,9 @@ A measurement of NetworkThroughput
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
-**per_interface** | [**List[Throughput]**](Throughput.md) |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
+**per_interface** | [**Dict[str, Throughput]**](Throughput.md) | A dict with throughput for each network interface with the interface name as the key | 
 **total** | [**Throughput**](Throughput.md) |  | 
 
 ## Example

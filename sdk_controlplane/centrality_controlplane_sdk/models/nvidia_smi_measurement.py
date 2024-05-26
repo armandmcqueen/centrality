@@ -20,6 +20,7 @@ import json
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List
 from pydantic import BaseModel, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,9 +30,9 @@ class NvidiaSmiMeasurement(BaseModel):
     """
     A measurement of NvidiaSmi
     """ # noqa: E501
-    machine_id: StrictStr
-    ts: datetime
-    output: StrictStr
+    machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
+    ts: datetime = Field(description="The timestamp of the measurement")
+    output: StrictStr = Field(description="The output of nvidia-smi as a string.")
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "output"]
 
     model_config = {

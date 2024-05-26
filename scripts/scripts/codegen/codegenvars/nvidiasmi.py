@@ -2,7 +2,7 @@ from typing import Any
 
 
 metric_obj_fields = """\
-    output: str
+    output: str = Field(..., description="The output of nvidia-smi as a string.")
 """
 metric_name_lowercase = "nvidia_smi"
 metric_name_camelcase = "NvidiaSmi"

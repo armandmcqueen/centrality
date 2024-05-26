@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "disk_usage"
@@ -21,25 +21,28 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class DiskUsage(BaseModel):
-    disk_name: str
-    used_mb: float
-    total_mb: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    used_mb: float = Field(..., description="The used disk space in MiB.")
+    total_mb: float = Field(..., description="The total space of the disk in MiB.")
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, list[DiskUsage]]:
-    usage: list[DiskUsage] = [
-        DiskUsage(disk_name=disk, used_mb=usage_vals[0], total_mb=usage_vals[1])
+) -> dict[str, dict[str, DiskUsage]]:
+    usage: dict[str, DiskUsage] = {
+        disk: DiskUsage(disk_name=disk, used_mb=usage_vals[0], total_mb=usage_vals[1])
         for disk, usage_vals in metrics.items()
-    ]
+    }
     return dict(usage=usage)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
-    return {usage.disk_name: [usage.used_mb, usage.total_mb] for usage in self.usage}
+    output = {}
+    for machine_id, usage in self.usage.items():
+        output[machine_id] = [usage.used_mb, usage.total_mb]
+    return output
 
 
 class DiskUsageMetricLatestORM(MetricLatestBaseORM):
@@ -62,7 +65,10 @@ class DiskUsageMetricORM(MetricBaseORM):
 class DiskUsageMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage]
+    usage: dict[str, DiskUsage] = Field(
+        ...,
+        description="A dict with disk usage for each disk with the disk name as the key.",
+    )
 
     @classmethod
     def from_orm(
@@ -80,7 +86,10 @@ class DiskUsageMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    usage: list[DiskUsage]
+    usage: dict[str, DiskUsage] = Field(
+        ...,
+        description="A dict with disk usage for each disk with the disk name as the key.",
+    )
 
     @classmethod
     def from_orm(cls, orm: DiskUsageMetricORM, **kwargs) -> "DiskUsageMetric":
@@ -99,9 +108,14 @@ class DiskUsageMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    usage: list[DiskUsage]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    usage: dict[str, DiskUsage] = Field(
+        ...,
+        description="A dict with disk usage for each disk with the disk name as the key.",
+    )
 
     def to_metrics(self) -> dict[str, list[float]]:
         return convert_to_metrics(self)

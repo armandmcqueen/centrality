@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "memory"
@@ -52,8 +52,8 @@ class MemoryMetricORM(MetricBaseORM):
 class MemoryMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    free_memory_mb: float
-    total_memory_mb: float
+    free_memory_mb: float = Field(..., description="The free memory in MiB.")
+    total_memory_mb: float = Field(..., description="The total memory in MiB.")
 
     @classmethod
     def from_orm(cls, orm: MemoryMetricLatestORM, **kwargs) -> "MemoryMetricLatest":
@@ -69,8 +69,8 @@ class MemoryMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    free_memory_mb: float
-    total_memory_mb: float
+    free_memory_mb: float = Field(..., description="The free memory in MiB.")
+    total_memory_mb: float = Field(..., description="The total memory in MiB.")
 
     @classmethod
     def from_orm(cls, orm: MemoryMetricORM, **kwargs) -> "MemoryMetric":
@@ -89,10 +89,12 @@ class MemoryMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    free_memory_mb: float
-    total_memory_mb: float
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    free_memory_mb: float = Field(..., description="The free memory in MiB.")
+    total_memory_mb: float = Field(..., description="The total memory in MiB.")
 
     def to_metrics(self) -> list[float]:
         return convert_to_metrics(self)

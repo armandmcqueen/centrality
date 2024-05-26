@@ -20,6 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,8 +30,8 @@ class DiskIops(BaseModel):
     """
     DiskIops
     """ # noqa: E501
-    disk_name: StrictStr
-    iops: Union[StrictFloat, StrictInt]
+    disk_name: StrictStr = Field(description="The name of the disk, e.g. /dev/sda.")
+    iops: Union[StrictFloat, StrictInt] = Field(description="The IOPS for the disk.")
     __properties: ClassVar[List[str]] = ["disk_name", "iops"]
 
     model_config = {

@@ -58,17 +58,17 @@ def validate_measurement_is_sane(metric_type: MetricType, measurement):
         assert measurement.free_memory_mb <= measurement.total_memory_mb
     elif metric_type == MetricType.NETWORK:
         measurement = cast(NetworkThroughputMeasurement, measurement)
-        assert len(measurement.per_interface) > 0
+        assert len(measurement.per_interface.keys()) > 0
         assert measurement.total.interface_name == "total"
     elif metric_type == MetricType.DISK_USAGE:
         measurement = cast(DiskUsageMeasurement, measurement)
-        assert len(measurement.usage) > 0
+        assert len(measurement.usage.keys()) > 0
     elif metric_type == MetricType.DISK_IOPS:
         measurement = cast(DiskIopsMeasurement, measurement)
-        assert len(measurement.iops) > 0
+        assert len(measurement.iops.keys()) > 0
     elif metric_type == MetricType.DISK_THROUGHPUT:
         measurement = cast(DiskThroughputMeasurement, measurement)
-        assert len(measurement.throughput) > 0
+        assert len(measurement.throughput.keys()) > 0
     elif metric_type == MetricType.GPU_MEMORY:
         measurement = cast(GpuMemoryMeasurement, measurement)
         assert len(measurement.memory) > 0

@@ -5,9 +5,9 @@ A measurement of DiskIops
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
-**iops** | [**List[DiskIops]**](DiskIops.md) |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
+**iops** | [**Dict[str, DiskIops]**](DiskIops.md) | A dict of IOPS for each disk. Each disk will have an entry in the dict with the disk name as the key. | 
 
 ## Example
 

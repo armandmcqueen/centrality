@@ -1,7 +1,7 @@
 from typing import Any
 
 metric_obj_fields = """\
-    gpu_percents: list[float]
+    gpu_percents: list[float] = Field(..., description="A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.")
 """
 metric_name_lowercase = "gpu_utilization"
 metric_name_camelcase = "GpuUtilization"

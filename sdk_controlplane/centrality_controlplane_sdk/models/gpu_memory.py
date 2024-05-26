@@ -20,6 +20,7 @@ import json
 
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,8 +30,8 @@ class GpuMemory(BaseModel):
     """
     GpuMemory
     """ # noqa: E501
-    used_mb: Union[StrictFloat, StrictInt]
-    total_mb: Union[StrictFloat, StrictInt]
+    used_mb: Union[StrictFloat, StrictInt] = Field(description="The used GPU memory in MiB.")
+    total_mb: Union[StrictFloat, StrictInt] = Field(description="The total GPU memory in MiB.")
     __properties: ClassVar[List[str]] = ["used_mb", "total_mb"]
 
     model_config = {

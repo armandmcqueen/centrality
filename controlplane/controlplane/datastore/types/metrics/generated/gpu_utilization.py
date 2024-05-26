@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "gpu_utilization"
@@ -52,7 +52,10 @@ class GpuUtilizationMetricORM(MetricBaseORM):
 class GpuUtilizationMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    gpu_percents: list[float]
+    gpu_percents: list[float] = Field(
+        ...,
+        description="A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     @classmethod
     def from_orm(
@@ -70,7 +73,10 @@ class GpuUtilizationMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    gpu_percents: list[float]
+    gpu_percents: list[float] = Field(
+        ...,
+        description="A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     @classmethod
     def from_orm(cls, orm: GpuUtilizationMetricORM, **kwargs) -> "GpuUtilizationMetric":
@@ -89,9 +95,14 @@ class GpuUtilizationMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    gpu_percents: list[float]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    gpu_percents: list[float] = Field(
+        ...,
+        description="A list with GPU utilization for each GPU. The values varys from 0 to 100. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     def to_metrics(self) -> list[float]:
         return convert_to_metrics(self)

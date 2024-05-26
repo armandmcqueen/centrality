@@ -5,8 +5,8 @@ A measurement of GpuMemory
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
 **memory** | [**List[GpuMemory]**](GpuMemory.md) |  | 
 
 ## Example

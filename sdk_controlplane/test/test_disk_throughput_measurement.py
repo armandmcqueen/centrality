@@ -38,23 +38,23 @@ class TestDiskThroughputMeasurement(unittest.TestCase):
             return DiskThroughputMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                throughput = [
-                    centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(
+                throughput = {
+                    'key' : centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(
                         disk_name = '', 
                         read_mbps = 1.337, 
                         write_mbps = 1.337, )
-                    ]
+                    }
             )
         else:
             return DiskThroughputMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                throughput = [
-                    centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(
+                throughput = {
+                    'key' : centrality_controlplane_sdk.models.disk_throughput.DiskThroughput(
                         disk_name = '', 
                         read_mbps = 1.337, 
                         write_mbps = 1.337, )
-                    ],
+                    },
         )
         """
 

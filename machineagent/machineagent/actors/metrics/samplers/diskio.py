@@ -6,8 +6,8 @@ from centrality_controlplane_sdk import DiskIops as DiskIopsHolder
 from rich.live import Live
 from rich.table import Table
 
-DiskThroughputs = list[DiskThroughputHolder]
-IopsPerDisk = list[DiskIopsHolder]
+DiskThroughputs = dict[str, DiskThroughputHolder]
+IopsPerDisk = dict[str, DiskIopsHolder]
 
 
 class DiskIoSampler(MetricSampler):
@@ -24,8 +24,8 @@ class DiskIoSampler(MetricSampler):
             )
 
     def sample(self) -> tuple[DiskThroughputs, IopsPerDisk]:
-        throughputs = []
-        iopses = []
+        throughputs = {}
+        iopses = {}
         disks = psutil.disk_io_counters(perdisk=True)
         for disk_name, disk in disks.items():
             # Disks could be added
@@ -46,12 +46,10 @@ class DiskIoSampler(MetricSampler):
                 self.write_trackers[disk_name].add(disk.write_bytes) / 1024 / 1024
             )
             iops = self.iops_trackers[disk_name].add(disk.read_count + disk.write_count)
-            throughputs.append(
-                DiskThroughputHolder(
-                    disk_name=disk_name, read_mbps=read_mb, write_mbps=write_mb
-                )
+            throughputs[disk_name] = DiskThroughputHolder(
+                disk_name=disk_name, read_mbps=read_mb, write_mbps=write_mb
             )
-            iopses.append(DiskIopsHolder(disk_name=disk_name, iops=iops))
+            iopses[disk_name] = DiskIopsHolder(disk_name=disk_name, iops=iops)
         return throughputs, iopses
 
     def sample_and_render(self, live: Live):
@@ -66,9 +64,8 @@ class DiskIoSampler(MetricSampler):
         table.add_column(header[2])
         table.add_column(header[3])
 
-        iops_by_disk = {i.disk_name: i for i in iops}
-        for t in throughputs:
-            disk_iops = iops_by_disk[t.disk_name]
+        for disk_name, t in throughputs.items():
+            disk_iops = iops[disk_name]
             read_mib = int(t.read_mbps)
             write_mib = int(t.write_mbps)
             disk_iops = int(disk_iops.iops)

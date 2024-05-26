@@ -63,6 +63,16 @@ class UserTurn(ChatEntry):
 
 
 @dataclass
+class SystemTurn(ChatEntry):
+    def as_json(self):
+        return {"role": "system", "content": self.text}
+
+    @property
+    def role(self):
+        return "System"
+
+
+@dataclass
 class ChatConfig:
     history_on: bool = True
     chat_system_prompt: str = SYSTEM_PROMPT

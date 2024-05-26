@@ -39,26 +39,30 @@ class DiskIoMetricCollector(conclib.PeriodicActor):
         self.fake_metric_generator_iops = FakeMetricGenerator(self.iops_config.fake)
         super().__init__()
 
+    def gen_fake_metric(
+        self,
+    ) -> tuple[dict[str, DiskThroughputHolder], dict[str, DiskIopsHolder]]:
+        iops = self.fake_metric_generator_iops.sample()
+        read_mbs = self.fake_metric_generator_throughput.sample()
+        write_mbs = self.fake_metric_generator_throughput.sample()
+        throughput_infos = {}
+        iops_infos = {}
+        for i in range(self.throughput_config.fake.num_vals):
+            disk_name = f"/dev/fake{i}"
+            disk_iops = iops[i]
+            disk_read_mib = read_mbs[i]
+            disk_write_mib = write_mbs[i]
+            throughput_infos[disk_name] = DiskThroughputHolder(
+                disk_name=disk_name,
+                read_mbps=disk_read_mib,
+                write_mbps=disk_write_mib,
+            )
+            iops_infos[disk_name] = DiskIopsHolder(disk_name=disk_name, iops=disk_iops)
+        return throughput_infos, iops_infos
+
     def send_disk_io_metric(self) -> None:
         if self.throughput_config.use_fake:
-            iops = self.fake_metric_generator_iops.sample()
-            read_mbs = self.fake_metric_generator_throughput.sample()
-            write_mbs = self.fake_metric_generator_throughput.sample()
-            throughput_infos = []
-            iops_infos = []
-            for i in range(self.throughput_config.fake.num_vals):
-                disk_name = f"/dev/fake{i}"
-                disk_iops = iops[i]
-                disk_read_mib = read_mbs[i]
-                disk_write_mib = write_mbs[i]
-                throughput_infos.append(
-                    DiskThroughputHolder(
-                        disk_name=disk_name,
-                        read_mbps=disk_read_mib,
-                        write_mbps=disk_write_mib,
-                    )
-                )
-                iops_infos.append(DiskIopsHolder(disk_name=disk_name, iops=disk_iops))
+            throughput_infos, iops_infos = self.gen_fake_metric()
         else:
             throughput_infos, iops_infos = self.sampler.sample()
 

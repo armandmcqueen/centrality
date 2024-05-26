@@ -5,9 +5,9 @@ A measurement of DiskThroughput
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
-**throughput** | [**List[DiskThroughput]**](DiskThroughput.md) |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
+**throughput** | [**Dict[str, DiskThroughput]**](DiskThroughput.md) | A dict with disk throughput for each disk with the disk name as the key. | 
 
 ## Example
 

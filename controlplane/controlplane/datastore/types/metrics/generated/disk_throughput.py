@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "disk_throughput"
@@ -21,29 +21,33 @@ metric_shape_db = dict[str, list[float]]
 
 # Custom Types
 class DiskThroughput(BaseModel):
-    disk_name: str
-    read_mbps: float
-    write_mbps: float
+    disk_name: str = Field(..., description="The name of the disk, e.g. /dev/sda.")
+    read_mbps: float = Field(
+        ..., description="The read throughput for the disk in MiB/s."
+    )
+    write_mbps: float = Field(
+        ..., description="The write throughput for the disk in MiB/s."
+    )
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
 def convert_from_metrics(
     metrics: dict[str, list[float]],
-) -> dict[str, list[DiskThroughput]]:
-    throughput: list[DiskThroughput] = [
-        DiskThroughput(
+) -> dict[str, dict[str, DiskThroughput]]:
+    throughput: dict[str, DiskThroughput] = {
+        disk: DiskThroughput(
             disk_name=disk, read_mbps=throughput_vals[0], write_mbps=throughput_vals[1]
         )
         for disk, throughput_vals in metrics.items()
-    ]
+    }
     return dict(throughput=throughput)
 
 
 # Convert user-facing object fields to metrics column shape in DB
 def convert_to_metrics(self: Any) -> dict[str, list[float]]:
     return {
-        throughput.disk_name: [throughput.read_mbps, throughput.write_mbps]
-        for throughput in self.throughput
+        disk_name: [throughput.read_mbps, throughput.write_mbps]
+        for disk_name, throughput in self.throughput.items()
     }
 
 
@@ -67,7 +71,10 @@ class DiskThroughputMetricORM(MetricBaseORM):
 class DiskThroughputMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    throughput: list[DiskThroughput]
+    throughput: dict[str, DiskThroughput] = Field(
+        ...,
+        description="A dict with disk throughput for each disk with the disk name as the key.",
+    )
 
     @classmethod
     def from_orm(
@@ -85,7 +92,10 @@ class DiskThroughputMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    throughput: list[DiskThroughput]
+    throughput: dict[str, DiskThroughput] = Field(
+        ...,
+        description="A dict with disk throughput for each disk with the disk name as the key.",
+    )
 
     @classmethod
     def from_orm(cls, orm: DiskThroughputMetricORM, **kwargs) -> "DiskThroughputMetric":
@@ -104,9 +114,14 @@ class DiskThroughputMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    throughput: list[DiskThroughput]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    throughput: dict[str, DiskThroughput] = Field(
+        ...,
+        description="A dict with disk throughput for each disk with the disk name as the key.",
+    )
 
     def to_metrics(self) -> dict[str, list[float]]:
         return convert_to_metrics(self)

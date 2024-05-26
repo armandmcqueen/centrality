@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "gpu_memory"
@@ -21,8 +21,8 @@ metric_shape_db = list[list[float]]
 
 # Custom Types
 class GpuMemory(BaseModel):
-    used_mb: float
-    total_mb: float
+    used_mb: float = Field(..., description="The used GPU memory in MiB.")
+    total_mb: float = Field(..., description="The total GPU memory in MiB.")
 
 
 # Convert metrics column in DB to object fields as dict that can be passed to super().from_orm() as kwargs
@@ -60,7 +60,10 @@ class GpuMemoryMetricORM(MetricBaseORM):
 class GpuMemoryMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    memory: list[GpuMemory]
+    memory: list[GpuMemory] = Field(
+        ...,
+        description="A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     @classmethod
     def from_orm(
@@ -78,7 +81,10 @@ class GpuMemoryMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    memory: list[GpuMemory]
+    memory: list[GpuMemory] = Field(
+        ...,
+        description="A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     @classmethod
     def from_orm(cls, orm: GpuMemoryMetricORM, **kwargs) -> "GpuMemoryMetric":
@@ -97,9 +103,14 @@ class GpuMemoryMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    memory: list[GpuMemory]
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    memory: list[GpuMemory] = Field(
+        ...,
+        description="A list with GPU memory usage for each GPU. There will be one entry per GPU. The order of the GPUs is the same as in the output of nvidia-smi.",
+    )
 
     def to_metrics(self) -> list[list[float]]:
         return convert_to_metrics(self)

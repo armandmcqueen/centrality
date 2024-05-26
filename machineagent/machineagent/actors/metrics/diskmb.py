@@ -29,17 +29,22 @@ class DiskUsageMetricCollector(conclib.PeriodicActor):
         self.fake_metric_generator = FakeMetricGenerator(self.config.fake)
         super().__init__()
 
+    def gen_fake_metric(self) -> dict[str, DiskUsage]:
+        used_mibs = self.fake_metric_generator.sample()
+        disk_infos = {}
+        for i, used_mib in enumerate(used_mibs):
+            disk_name = f"/dev/fake{i}"
+            d = DiskUsage(
+                disk_name=disk_name,
+                used_mb=used_mib,
+                total_mb=self.config.fake.max_val,
+            )
+            disk_infos[disk_name] = d
+        return disk_infos
+
     def send_disk_mb_metric(self) -> None:
         if self.config.use_fake:
-            used_mibs = self.fake_metric_generator.sample()
-            disk_infos = []
-            for i, used_mib in enumerate(used_mibs):
-                d = DiskUsage(
-                    disk_name=f"/dev/fake{i}",
-                    used_mb=used_mib,
-                    total_mb=self.config.fake.max_val,
-                )
-                disk_infos.append(d)
+            disk_infos = self.gen_fake_metric()
 
         else:
             disk_infos = self.sampler.sample()

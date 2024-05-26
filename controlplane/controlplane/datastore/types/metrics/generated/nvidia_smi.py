@@ -11,7 +11,7 @@ from controlplane.datastore.types.metrics.metric import (
     MetricBaseModel,
     MetricLatestBaseModel,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 metric_name = "nvidia_smi"
@@ -52,7 +52,7 @@ class NvidiaSmiMetricORM(MetricBaseORM):
 class NvidiaSmiMetricLatest(MetricLatestBaseModel):
     machine_id: str
     ts: datetime.datetime
-    output: str
+    output: str = Field(..., description="The output of nvidia-smi as a string.")
 
     @classmethod
     def from_orm(
@@ -70,7 +70,7 @@ class NvidiaSmiMetric(MetricBaseModel):
     metric_id: str
     machine_id: str
     ts: datetime.datetime
-    output: str
+    output: str = Field(..., description="The output of nvidia-smi as a string.")
 
     @classmethod
     def from_orm(cls, orm: NvidiaSmiMetricORM, **kwargs) -> "NvidiaSmiMetric":
@@ -89,9 +89,11 @@ class NvidiaSmiMeasurement(BaseModel):
     """
 
     # This is the user-facing object that is sent to and from the REST endpoint
-    machine_id: str
-    ts: datetime.datetime
-    output: str
+    machine_id: str = Field(
+        ..., description="The machine_id of the machine that generated this measurement"
+    )
+    ts: datetime.datetime = Field(..., description="The timestamp of the measurement")
+    output: str = Field(..., description="The output of nvidia-smi as a string.")
 
     def to_metrics(self) -> str:
         return convert_to_metrics(self)

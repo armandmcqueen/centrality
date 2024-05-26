@@ -20,6 +20,7 @@ import json
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Union
 from pydantic import BaseModel, StrictFloat, StrictInt, StrictStr
+from pydantic import Field
 try:
     from typing import Self
 except ImportError:
@@ -29,8 +30,8 @@ class GpuUtilizationMeasurement(BaseModel):
     """
     A measurement of GpuUtilization
     """ # noqa: E501
-    machine_id: StrictStr
-    ts: datetime
+    machine_id: StrictStr = Field(description="The machine_id of the machine that generated this measurement")
+    ts: datetime = Field(description="The timestamp of the measurement")
     gpu_percents: List[Union[StrictFloat, StrictInt]]
     __properties: ClassVar[List[str]] = ["machine_id", "ts", "gpu_percents"]
 

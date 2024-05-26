@@ -38,21 +38,21 @@ class TestDiskIopsMeasurement(unittest.TestCase):
             return DiskIopsMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                iops = [
-                    centrality_controlplane_sdk.models.disk_iops.DiskIops(
+                iops = {
+                    'key' : centrality_controlplane_sdk.models.disk_iops.DiskIops(
                         disk_name = '', 
                         iops = 1.337, )
-                    ]
+                    }
             )
         else:
             return DiskIopsMeasurement(
                 machine_id = '',
                 ts = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                iops = [
-                    centrality_controlplane_sdk.models.disk_iops.DiskIops(
+                iops = {
+                    'key' : centrality_controlplane_sdk.models.disk_iops.DiskIops(
                         disk_name = '', 
                         iops = 1.337, )
-                    ],
+                    },
         )
         """
 

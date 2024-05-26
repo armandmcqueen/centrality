@@ -4,9 +4,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**disk_name** | **str** |  | 
-**used_mb** | **float** |  | 
-**total_mb** | **float** |  | 
+**disk_name** | **str** | The name of the disk, e.g. /dev/sda. | 
+**used_mb** | **float** | The used disk space in MiB. | 
+**total_mb** | **float** | The total space of the disk in MiB. | 
 
 ## Example
 

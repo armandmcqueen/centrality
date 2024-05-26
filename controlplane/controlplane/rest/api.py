@@ -241,19 +241,26 @@ def get_cpu_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[CpuMeasurement]:
+) -> dict[str, list[CpuMeasurement]]:
     """
     Get cpu metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of CpuMeasurement objects
+    :return: Dict of CpuMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_cpu_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_cpu_measurement() for result in results]
+    converted_results = {}
+    # Convert CpuMetric to CpuMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_cpu_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(f"{constants.CONTROL_PLANE_METRIC_CPU_ENDPOINT}/latest", tags=[MAIN_TAG])
@@ -261,10 +268,14 @@ def get_cpu_metrics(
 def get_latest_cpu_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[CpuMeasurement]:
+) -> dict[str, CpuMeasurement]:
     """Get the most recent cpu measurements for each machine"""
     results = datastore_client.get_latest_cpu_measurements(machine_ids=machine_ids)
-    return [result.to_cpu_measurement() for result in results]
+    converted_results = {}
+    # Convert CpuMetric to CpuMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_cpu_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_CPU_ENDPOINT, tags=[MAIN_TAG])
@@ -289,19 +300,26 @@ def get_disk_iops_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[DiskIopsMeasurement]:
+) -> dict[str, list[DiskIopsMeasurement]]:
     """
     Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of DiskIopsMeasurement objects
+    :return: Dict of DiskIopsMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_disk_iops_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_disk_iops_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskIopsMetric to DiskIopsMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_disk_iops_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(f"{constants.CONTROL_PLANE_METRIC_DISK_IOPS_ENDPOINT}/latest", tags=[MAIN_TAG])
@@ -309,12 +327,16 @@ def get_disk_iops_metrics(
 def get_latest_disk_iops_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[DiskIopsMeasurement]:
+) -> dict[str, DiskIopsMeasurement]:
     """Get the most recent disk_iops measurements for each machine"""
     results = datastore_client.get_latest_disk_iops_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_disk_iops_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskIopsMetric to DiskIopsMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_disk_iops_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_DISK_IOPS_ENDPOINT, tags=[MAIN_TAG])
@@ -339,19 +361,26 @@ def get_disk_usage_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[DiskUsageMeasurement]:
+) -> dict[str, list[DiskUsageMeasurement]]:
     """
     Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of DiskUsageMeasurement objects
+    :return: Dict of DiskUsageMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_disk_usage_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_disk_usage_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskUsageMetric to DiskUsageMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_disk_usage_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -361,12 +390,16 @@ def get_disk_usage_metrics(
 def get_latest_disk_usage_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[DiskUsageMeasurement]:
+) -> dict[str, DiskUsageMeasurement]:
     """Get the most recent disk_usage measurements for each machine"""
     results = datastore_client.get_latest_disk_usage_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_disk_usage_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskUsageMetric to DiskUsageMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_disk_usage_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_DISK_USAGE_ENDPOINT, tags=[MAIN_TAG])
@@ -391,19 +424,26 @@ def get_disk_throughput_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[DiskThroughputMeasurement]:
+) -> dict[str, list[DiskThroughputMeasurement]]:
     """
     Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of DiskThroughputMeasurement objects
+    :return: Dict of DiskThroughputMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_disk_throughput_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_disk_throughput_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskThroughputMetric to DiskThroughputMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_disk_throughput_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -413,12 +453,16 @@ def get_disk_throughput_metrics(
 def get_latest_disk_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[DiskThroughputMeasurement]:
+) -> dict[str, DiskThroughputMeasurement]:
     """Get the most recent disk_throughput measurements for each machine"""
     results = datastore_client.get_latest_disk_throughput_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_disk_throughput_measurement() for result in results]
+    converted_results = {}
+    # Convert DiskThroughputMetric to DiskThroughputMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_disk_throughput_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_DISK_THROUGHPUT_ENDPOINT, tags=[MAIN_TAG])
@@ -443,19 +487,26 @@ def get_gpu_memory_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[GpuMemoryMeasurement]:
+) -> dict[str, list[GpuMemoryMeasurement]]:
     """
     Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of GpuMemoryMeasurement objects
+    :return: Dict of GpuMemoryMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_gpu_memory_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_gpu_memory_measurement() for result in results]
+    converted_results = {}
+    # Convert GpuMemoryMetric to GpuMemoryMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_gpu_memory_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -465,12 +516,16 @@ def get_gpu_memory_metrics(
 def get_latest_gpu_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[GpuMemoryMeasurement]:
+) -> dict[str, GpuMemoryMeasurement]:
     """Get the most recent gpu_memory measurements for each machine"""
     results = datastore_client.get_latest_gpu_memory_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_gpu_memory_measurement() for result in results]
+    converted_results = {}
+    # Convert GpuMemoryMetric to GpuMemoryMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_gpu_memory_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_GPU_MEMORY_ENDPOINT, tags=[MAIN_TAG])
@@ -495,19 +550,26 @@ def get_gpu_utilization_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[GpuUtilizationMeasurement]:
+) -> dict[str, list[GpuUtilizationMeasurement]]:
     """
     Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of GpuUtilizationMeasurement objects
+    :return: Dict of GpuUtilizationMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_gpu_utilization_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_gpu_utilization_measurement() for result in results]
+    converted_results = {}
+    # Convert GpuUtilizationMetric to GpuUtilizationMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_gpu_utilization_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -517,12 +579,16 @@ def get_gpu_utilization_metrics(
 def get_latest_gpu_utilization_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[GpuUtilizationMeasurement]:
+) -> dict[str, GpuUtilizationMeasurement]:
     """Get the most recent gpu_utilization measurements for each machine"""
     results = datastore_client.get_latest_gpu_utilization_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_gpu_utilization_measurement() for result in results]
+    converted_results = {}
+    # Convert GpuUtilizationMetric to GpuUtilizationMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_gpu_utilization_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_GPU_UTILIZATION_ENDPOINT, tags=[MAIN_TAG])
@@ -547,19 +613,26 @@ def get_memory_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[MemoryMeasurement]:
+) -> dict[str, list[MemoryMeasurement]]:
     """
     Get memory metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of MemoryMeasurement objects
+    :return: Dict of MemoryMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_memory_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_memory_measurement() for result in results]
+    converted_results = {}
+    # Convert MemoryMetric to MemoryMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_memory_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(f"{constants.CONTROL_PLANE_METRIC_MEMORY_ENDPOINT}/latest", tags=[MAIN_TAG])
@@ -567,10 +640,14 @@ def get_memory_metrics(
 def get_latest_memory_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[MemoryMeasurement]:
+) -> dict[str, MemoryMeasurement]:
     """Get the most recent memory measurements for each machine"""
     results = datastore_client.get_latest_memory_measurements(machine_ids=machine_ids)
-    return [result.to_memory_measurement() for result in results]
+    converted_results = {}
+    # Convert MemoryMetric to MemoryMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_memory_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_MEMORY_ENDPOINT, tags=[MAIN_TAG])
@@ -595,19 +672,26 @@ def get_network_throughput_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[NetworkThroughputMeasurement]:
+) -> dict[str, list[NetworkThroughputMeasurement]]:
     """
     Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of NetworkThroughputMeasurement objects
+    :return: Dict of NetworkThroughputMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_network_throughput_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_network_throughput_measurement() for result in results]
+    converted_results = {}
+    # Convert NetworkThroughputMetric to NetworkThroughputMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_network_throughput_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -618,12 +702,16 @@ def get_network_throughput_metrics(
 def get_latest_network_throughput_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[NetworkThroughputMeasurement]:
+) -> dict[str, NetworkThroughputMeasurement]:
     """Get the most recent network_throughput measurements for each machine"""
     results = datastore_client.get_latest_network_throughput_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_network_throughput_measurement() for result in results]
+    converted_results = {}
+    # Convert NetworkThroughputMetric to NetworkThroughputMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_network_throughput_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_NETWORK_THROUGHPUT_ENDPOINT, tags=[MAIN_TAG])
@@ -648,19 +736,26 @@ def get_nvidia_smi_metrics(
     machine_ids: Annotated[list[str], Query()],
     from_ts: Optional[datetime.datetime] = None,
     to_ts: Optional[datetime.datetime] = None,
-) -> list[NvidiaSmiMeasurement]:
+) -> dict[str, list[NvidiaSmiMeasurement]]:
     """
     Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.
     :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error).
     :param from_ts: Start time filter, inclusive. Optional.
     :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an
                   error, but the results will be empty.
-    :return: List of NvidiaSmiMeasurement objects
+    :return: Dict of NvidiaSmiMeasurement objects with machine_id as the key.
     """
     results = datastore_client.get_nvidia_smi_measurements(
         machine_ids=machine_ids, start_ts=from_ts, end_ts=to_ts
     )
-    return [result.to_nvidia_smi_measurement() for result in results]
+    converted_results = {}
+    # Convert NvidiaSmiMetric to NvidiaSmiMeasurement
+    for machine_id, metrics in results.items():
+        converted_results[machine_id] = [
+            metric.to_nvidia_smi_measurement() for metric in metrics
+        ]
+
+    return converted_results
 
 
 @app.get(
@@ -670,12 +765,16 @@ def get_nvidia_smi_metrics(
 def get_latest_nvidia_smi_metrics(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
     machine_ids: Annotated[list[str], Query()],
-) -> list[NvidiaSmiMeasurement]:
+) -> dict[str, NvidiaSmiMeasurement]:
     """Get the most recent nvidia_smi measurements for each machine"""
     results = datastore_client.get_latest_nvidia_smi_measurements(
         machine_ids=machine_ids
     )
-    return [result.to_nvidia_smi_measurement() for result in results]
+    converted_results = {}
+    # Convert NvidiaSmiMetric to NvidiaSmiMeasurement
+    for machine_id, metric in results.items():
+        converted_results[machine_id] = metric.to_nvidia_smi_measurement()
+    return converted_results
 
 
 @app.post(constants.CONTROL_PLANE_METRIC_NVIDIA_SMI_ENDPOINT, tags=[MAIN_TAG])

@@ -45,9 +45,9 @@ def get_metrics_for_machine(
         measurements = _sdk.get_latest_cpu_metrics(machine_ids=[machine_id])
         # TODO: Handle errors?
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        cpu_vals = measurements[0].cpu_percents
+        cpu_vals = measurements[machine_id].cpu_percents
         return (
             CpuCard,
             [
@@ -61,9 +61,9 @@ def get_metrics_for_machine(
         if len(measurements) == 0:
             return GpuUtilCard, [], False
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        gpu_vals = measurements[0].gpu_percents
+        gpu_vals = measurements[machine_id].gpu_percents
         return (
             GpuUtilCard,
             [
@@ -74,12 +74,12 @@ def get_metrics_for_machine(
         )
     elif metric_type == MetricType.GPU_MEMORY:
         measurements = _sdk.get_latest_gpu_memory_metrics(machine_ids=[machine_id])
-        if len(measurements) == 0:
+        if len(measurements.keys()) == 0:
             return GpuMemCard, [], True
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        per_cpu_mem = measurements[0].memory
+        per_cpu_mem = measurements[machine_id].memory
         return (
             GpuMemCard,
             [
@@ -92,20 +92,20 @@ def get_metrics_for_machine(
         )
     elif metric_type == MetricType.MEMORY:
         measurements = _sdk.get_latest_memory_metrics(machine_ids=[machine_id])
-        if len(measurements) == 0:
+        if len(measurements.keys()) == 0:
             return MemCard, [], True
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        free_mb = measurements[0].free_memory_mb
-        total_mb = measurements[0].total_memory_mb
+        free_mb = measurements[machine_id].free_memory_mb
+        total_mb = measurements[machine_id].total_memory_mb
         return MemCard, [MemCardContents(free_mem=free_mb, total_mem=total_mb)], True
     elif metric_type == MetricType.DISK_USAGE:
         measurements = _sdk.get_latest_disk_usage_metrics(machine_ids=[machine_id])
-        if len(measurements) == 0:
+        if len(measurements.keys()) == 0:
             return DiskUsageCard, [], True
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
         return (
             DiskUsageCard,
@@ -115,7 +115,7 @@ def get_metrics_for_machine(
                     used_mb=disk.used_mb,
                     total_mb=disk.total_mb,
                 )
-                for disk in measurements[0].usage
+                for disk_name, disk in measurements[machine_id].usage.items()
             ],
             True,
         )
@@ -124,18 +124,20 @@ def get_metrics_for_machine(
         throughput_measurements = _sdk.get_latest_disk_throughput_metrics(
             machine_ids=[machine_id]
         )
-        assert len(iops_measurements) == len(
+        assert len(iops_measurements.keys()) == len(
             throughput_measurements
         ), "There should be the same number of iops and throughput measurements"
-        if len(iops_measurements) == 0:
+        if len(iops_measurements.keys()) == 0:
             return DiskUsageCard, [], True
         assert (
-            len(iops_measurements) == 1
+            len(iops_measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(iops_measurements)}."
 
         card_contents = []
-        throughput_map = {t.disk_name: t for t in throughput_measurements[0].throughput}
-        for iop in iops_measurements[0].iops:
+        throughput_map = {
+            t.disk_name: t for t in throughput_measurements[machine_id].throughput
+        }
+        for disk_name, iop in iops_measurements[machine_id].iops.items():
             throughput = throughput_map[iop.disk_name]
             card_contents.append(
                 DiskIoCardContents(
@@ -150,12 +152,14 @@ def get_metrics_for_machine(
         measurements = _sdk.get_latest_network_throughput_metrics(
             machine_ids=[machine_id]
         )
-        if len(measurements) == 0:
+        print("MEASUREMENTS RETRIEVED!")
+        print(measurements)
+        if len(measurements.keys()) == 0:
             return NetThroughputCard, [], True
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        m = measurements[0]
+        m = measurements[machine_id]
         per_interface = m.per_interface
         cards = []
         total_card = NetThroughputCardContents(
@@ -163,7 +167,7 @@ def get_metrics_for_machine(
             sent_mbps=m.total.sent_mbps,
             recv_mbps=m.total.recv_mbps,
         )
-        for throughput in per_interface:
+        for interface_name, throughput in per_interface.items():
             card = NetThroughputCardContents(
                 interface_name=throughput.interface_name,
                 sent_mbps=throughput.sent_mbps,
@@ -176,12 +180,12 @@ def get_metrics_for_machine(
         return NetThroughputCard, cards, True
     elif metric_type == MetricType.NVIDIA_SMI:
         measurements = _sdk.get_latest_nvidia_smi_metrics(machine_ids=[machine_id])
-        if len(measurements) == 0:
+        if len(measurements.keys()) == 0:
             return NvidiaSmiCard, [], True
         assert (
-            len(measurements) == 1
+            len(measurements.keys()) == 1
         ), f"There should exactly 1 result, but there was {len(measurements)}."
-        m = measurements[0]
+        m = measurements[machine_id]
 
         card = [
             NvidiaSmiCardContents(

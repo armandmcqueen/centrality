@@ -115,11 +115,11 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_cpu_metrics**
-> List[CpuMeasurement] get_cpu_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_cpu_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Cpu Metrics
 
-Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of CpuMeasurement objects
+Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of CpuMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -128,7 +128,6 @@ Get cpu metrics for certain machines between from_ts to to_ts, inclusive. :param
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -177,7 +176,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[CpuMeasurement]**](CpuMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -197,11 +196,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_iops_metrics**
-> List[DiskIopsMeasurement] get_disk_iops_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_iops_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Iops Metrics
 
-Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskIopsMeasurement objects
+Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskIopsMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -210,7 +209,6 @@ Get disk_iops metrics for certain machines between from_ts to to_ts, inclusive. 
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_iops_measurement import DiskIopsMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -259,7 +257,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskIopsMeasurement]**](DiskIopsMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -279,11 +277,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_throughput_metrics**
-> List[DiskThroughputMeasurement] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Throughput Metrics
 
-Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskThroughputMeasurement objects
+Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskThroughputMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -292,7 +290,6 @@ Get disk_throughput metrics for certain machines between from_ts to to_ts, inclu
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_throughput_measurement import DiskThroughputMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -341,7 +338,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskThroughputMeasurement]**](DiskThroughputMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -361,11 +358,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_disk_usage_metrics**
-> List[DiskUsageMeasurement] get_disk_usage_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_disk_usage_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Disk Usage Metrics
 
-Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of DiskUsageMeasurement objects
+Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskUsageMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -374,7 +371,6 @@ Get disk_usage metrics for certain machines between from_ts to to_ts, inclusive.
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_usage_measurement import DiskUsageMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -423,7 +419,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskUsageMeasurement]**](DiskUsageMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -443,11 +439,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_gpu_memory_metrics**
-> List[GpuMemoryMeasurement] get_gpu_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_gpu_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Gpu Memory Metrics
 
-Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuMemoryMeasurement objects
+Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuMemoryMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -456,7 +452,6 @@ Get gpu_memory metrics for certain machines between from_ts to to_ts, inclusive.
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.gpu_memory_measurement import GpuMemoryMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -505,7 +500,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[GpuMemoryMeasurement]**](GpuMemoryMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -525,11 +520,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_gpu_utilization_metrics**
-> List[GpuUtilizationMeasurement] get_gpu_utilization_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_gpu_utilization_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Gpu Utilization Metrics
 
-Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of GpuUtilizationMeasurement objects
+Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of GpuUtilizationMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -538,7 +533,6 @@ Get gpu_utilization metrics for certain machines between from_ts to to_ts, inclu
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.gpu_utilization_measurement import GpuUtilizationMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -587,7 +581,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[GpuUtilizationMeasurement]**](GpuUtilizationMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -733,7 +727,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_cpu_metrics**
-> List[CpuMeasurement] get_latest_cpu_metrics(machine_ids)
+> Dict[str, CpuMeasurement] get_latest_cpu_metrics(machine_ids)
 
 Get Latest Cpu Metrics
 
@@ -746,7 +740,6 @@ Get the most recent cpu measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.cpu_measurement import CpuMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -791,7 +784,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[CpuMeasurement]**](CpuMeasurement.md)
+[**Dict[str, CpuMeasurement]**](CpuMeasurement.md)
 
 ### Authorization
 
@@ -811,7 +804,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_disk_iops_metrics**
-> List[DiskIopsMeasurement] get_latest_disk_iops_metrics(machine_ids)
+> Dict[str, DiskIopsMeasurement] get_latest_disk_iops_metrics(machine_ids)
 
 Get Latest Disk Iops Metrics
 
@@ -824,7 +817,6 @@ Get the most recent disk_iops measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_iops_measurement import DiskIopsMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -869,7 +861,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskIopsMeasurement]**](DiskIopsMeasurement.md)
+[**Dict[str, DiskIopsMeasurement]**](DiskIopsMeasurement.md)
 
 ### Authorization
 
@@ -889,7 +881,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_disk_throughput_metrics**
-> List[DiskThroughputMeasurement] get_latest_disk_throughput_metrics(machine_ids)
+> Dict[str, DiskThroughputMeasurement] get_latest_disk_throughput_metrics(machine_ids)
 
 Get Latest Disk Throughput Metrics
 
@@ -902,7 +894,6 @@ Get the most recent disk_throughput measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_throughput_measurement import DiskThroughputMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -947,7 +938,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskThroughputMeasurement]**](DiskThroughputMeasurement.md)
+[**Dict[str, DiskThroughputMeasurement]**](DiskThroughputMeasurement.md)
 
 ### Authorization
 
@@ -967,7 +958,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_disk_usage_metrics**
-> List[DiskUsageMeasurement] get_latest_disk_usage_metrics(machine_ids)
+> Dict[str, DiskUsageMeasurement] get_latest_disk_usage_metrics(machine_ids)
 
 Get Latest Disk Usage Metrics
 
@@ -980,7 +971,6 @@ Get the most recent disk_usage measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.disk_usage_measurement import DiskUsageMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1025,7 +1015,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[DiskUsageMeasurement]**](DiskUsageMeasurement.md)
+[**Dict[str, DiskUsageMeasurement]**](DiskUsageMeasurement.md)
 
 ### Authorization
 
@@ -1045,7 +1035,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_gpu_memory_metrics**
-> List[GpuMemoryMeasurement] get_latest_gpu_memory_metrics(machine_ids)
+> Dict[str, GpuMemoryMeasurement] get_latest_gpu_memory_metrics(machine_ids)
 
 Get Latest Gpu Memory Metrics
 
@@ -1058,7 +1048,6 @@ Get the most recent gpu_memory measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.gpu_memory_measurement import GpuMemoryMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1103,7 +1092,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[GpuMemoryMeasurement]**](GpuMemoryMeasurement.md)
+[**Dict[str, GpuMemoryMeasurement]**](GpuMemoryMeasurement.md)
 
 ### Authorization
 
@@ -1123,7 +1112,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_gpu_utilization_metrics**
-> List[GpuUtilizationMeasurement] get_latest_gpu_utilization_metrics(machine_ids)
+> Dict[str, GpuUtilizationMeasurement] get_latest_gpu_utilization_metrics(machine_ids)
 
 Get Latest Gpu Utilization Metrics
 
@@ -1136,7 +1125,6 @@ Get the most recent gpu_utilization measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.gpu_utilization_measurement import GpuUtilizationMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1181,7 +1169,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[GpuUtilizationMeasurement]**](GpuUtilizationMeasurement.md)
+[**Dict[str, GpuUtilizationMeasurement]**](GpuUtilizationMeasurement.md)
 
 ### Authorization
 
@@ -1201,7 +1189,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_memory_metrics**
-> List[MemoryMeasurement] get_latest_memory_metrics(machine_ids)
+> Dict[str, MemoryMeasurement] get_latest_memory_metrics(machine_ids)
 
 Get Latest Memory Metrics
 
@@ -1214,7 +1202,6 @@ Get the most recent memory measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.memory_measurement import MemoryMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1259,7 +1246,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[MemoryMeasurement]**](MemoryMeasurement.md)
+[**Dict[str, MemoryMeasurement]**](MemoryMeasurement.md)
 
 ### Authorization
 
@@ -1279,7 +1266,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_network_throughput_metrics**
-> List[NetworkThroughputMeasurement] get_latest_network_throughput_metrics(machine_ids)
+> Dict[str, NetworkThroughputMeasurement] get_latest_network_throughput_metrics(machine_ids)
 
 Get Latest Network Throughput Metrics
 
@@ -1292,7 +1279,6 @@ Get the most recent network_throughput measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.network_throughput_measurement import NetworkThroughputMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1337,7 +1323,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[NetworkThroughputMeasurement]**](NetworkThroughputMeasurement.md)
+[**Dict[str, NetworkThroughputMeasurement]**](NetworkThroughputMeasurement.md)
 
 ### Authorization
 
@@ -1357,7 +1343,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_latest_nvidia_smi_metrics**
-> List[NvidiaSmiMeasurement] get_latest_nvidia_smi_metrics(machine_ids)
+> Dict[str, NvidiaSmiMeasurement] get_latest_nvidia_smi_metrics(machine_ids)
 
 Get Latest Nvidia Smi Metrics
 
@@ -1370,7 +1356,6 @@ Get the most recent nvidia_smi measurements for each machine
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1415,7 +1400,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
+[**Dict[str, NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
 
 ### Authorization
 
@@ -1586,11 +1571,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_memory_metrics**
-> List[MemoryMeasurement] get_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_memory_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Memory Metrics
 
-Get memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of MemoryMeasurement objects
+Get memory metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of MemoryMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -1599,7 +1584,6 @@ Get memory metrics for certain machines between from_ts to to_ts, inclusive. :pa
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.memory_measurement import MemoryMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1648,7 +1632,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[MemoryMeasurement]**](MemoryMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -1668,11 +1652,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_network_throughput_metrics**
-> List[NetworkThroughputMeasurement] get_network_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_network_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Network Throughput Metrics
 
-Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NetworkThroughputMeasurement objects
+Get network_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NetworkThroughputMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -1681,7 +1665,6 @@ Get network_throughput metrics for certain machines between from_ts to to_ts, in
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.network_throughput_measurement import NetworkThroughputMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1730,7 +1713,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[NetworkThroughputMeasurement]**](NetworkThroughputMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 
@@ -1750,11 +1733,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_nvidia_smi_metrics**
-> List[NvidiaSmiMeasurement] get_nvidia_smi_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+> Dict[str, object] get_nvidia_smi_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
 Get Nvidia Smi Metrics
 
-Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: List of NvidiaSmiMeasurement objects
+Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of NvidiaSmiMeasurement objects with machine_id as the key.
 
 ### Example
 
@@ -1763,7 +1746,6 @@ Get nvidia_smi metrics for certain machines between from_ts to to_ts, inclusive.
 import time
 import os
 import centrality_controlplane_sdk
-from centrality_controlplane_sdk.models.nvidia_smi_measurement import NvidiaSmiMeasurement
 from centrality_controlplane_sdk.rest import ApiException
 from pprint import pprint
 
@@ -1812,7 +1794,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List[NvidiaSmiMeasurement]**](NvidiaSmiMeasurement.md)
+**Dict[str, object]**
 
 ### Authorization
 

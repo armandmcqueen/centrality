@@ -5,10 +5,10 @@ A measurement of Memory
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**machine_id** | **str** |  | 
-**ts** | **datetime** |  | 
-**free_memory_mb** | **float** |  | 
-**total_memory_mb** | **float** |  | 
+**machine_id** | **str** | The machine_id of the machine that generated this measurement | 
+**ts** | **datetime** | The timestamp of the measurement | 
+**free_memory_mb** | **float** | The free memory in MiB. | 
+**total_memory_mb** | **float** | The total memory in MiB. | 
 
 ## Example
 
