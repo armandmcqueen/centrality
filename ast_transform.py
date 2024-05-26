@@ -135,7 +135,8 @@ def fix_model_def():
     # Get the return node
     return_node = node.find("return")
 
-    # Create the new assignment node
+    # Create the new assignment node.
+    # The None is a placeholder that will be overwritten
     assignment_node = RedBaron("dict_return = None")[0]
     assignment_node.value = return_node.value
     # print(node)
@@ -160,11 +161,40 @@ def fix_model_def():
 
     print(node)
 
+    # Note: we are ignoring the other variants of the function as they are not used or documented.
     # TODO: Repeat this for the other variants. Or just delete the variants?
     # Write the modified code back to the file
     DATA_API_PATH.write_text(red.dumps())
 
+    # TODO: Update the markdown documentation (DataApi.md) to reflect the correct type?
+    """
+    Currently
+    
+    > Dict[str, object] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
+    
+    Change to
+    > Dict[str, list[DiskThroughputMeasurement]] get_disk_throughput_metrics(machine_ids, from_ts=from_ts, to_ts=to_ts)
 
+    """
+    """
+    Currently
+    ### Return type
+    
+    **Dict[str, object]**
+    
+    Change to
+    ### Return type
+    
+    **Dict[str, list[DiskThroughputMeasurement]**
+    """
+    # TODO: Function documentation is google style (IIRC) and doesn't translate well to markdown
+    # TODO: The function params are not well documented, probably could improve that with FastAPI annotations
+
+
+
+
+def fix():
+    pass
 
 if __name__ == '__main__':
     fix_model_def()

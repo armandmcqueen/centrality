@@ -966,7 +966,7 @@ class DataApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> Dict[str, object]:
+    ) -> Dict[str, list[DiskThroughputMeasurement]]:
         """Get Disk Throughput Metrics
 
         Get disk_throughput metrics for certain machines between from_ts to to_ts, inclusive. :param machine_ids: A list of machine ids to get metrics for. Empty list returns no results (but not an error). :param from_ts: Start time filter, inclusive. Optional. :param to_ts: End time filter, inclusive. Optional. If to_ts is before from_ts, there will not be an               error, but the results will be empty. :return: Dict of DiskThroughputMeasurement objects with machine_id as the key.
@@ -997,7 +997,8 @@ class DataApi:
                             in the spec for a single request.
         :type _host_index: int, optional
         :return: Returns the result object.
-        """ # noqa: E501
+        """
+         # noqa: E501
 
         _param = self._get_disk_throughput_metrics_serialize(
             machine_ids=machine_ids,
@@ -1019,12 +1020,17 @@ class DataApi:
             _request_timeout=_request_timeout
         )
         response_data.read()
-        return self.api_client.response_deserialize(
+        dict_return = self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
         ).data
 
 
+        structured_output = {
+        machine_id: [DiskThroughputMeasurement(**x) for x in measurements]
+        for machine_id, measurements in dict_return.items()
+    }
+        return structured_output
     @validate_call
     def get_disk_throughput_metrics_with_http_info(
         self,
