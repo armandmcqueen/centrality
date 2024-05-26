@@ -309,6 +309,149 @@
         }
       }
     },
+    "/messages/create": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create Message",
+        "description": "Create a message for a machine",
+        "operationId": "create_message",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MachineAgentMessageCreationInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response Create Message Messages Create Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/messages/ack": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Ack Message",
+        "description": "Acknowledge a message",
+        "operationId": "ack_message",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "msg_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Msg Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/complete": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Complete Message",
+        "description": "Complete a message",
+        "operationId": "complete_message",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MachineAgentMessageCompletionInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/machine/metrics/cpu": {
       "get": {
         "tags": [
@@ -2304,6 +2447,62 @@
           "deploy_time"
         ],
         "title": "InfoResponse"
+      },
+      "MachineAgentMessageCompletionInfo": {
+        "properties": {
+          "msg_id": {
+            "type": "string",
+            "title": "Msg Id"
+          },
+          "errored": {
+            "type": "boolean",
+            "title": "Errored"
+          },
+          "outcome": {
+            "type": "string",
+            "title": "Outcome"
+          }
+        },
+        "type": "object",
+        "required": [
+          "msg_id",
+          "errored",
+          "outcome"
+        ],
+        "title": "MachineAgentMessageCompletionInfo"
+      },
+      "MachineAgentMessageCreationInfo": {
+        "properties": {
+          "machine_id": {
+            "type": "string",
+            "title": "Machine Id"
+          },
+          "is_ask": {
+            "type": "boolean",
+            "title": "Is Ask"
+          },
+          "msg_type": {
+            "type": "string",
+            "title": "Msg Type"
+          },
+          "msg_content": {
+            "type": "string",
+            "title": "Msg Content"
+          },
+          "max_response_chars": {
+            "type": "integer",
+            "title": "Max Response Chars"
+          }
+        },
+        "type": "object",
+        "required": [
+          "machine_id",
+          "is_ask",
+          "msg_type",
+          "msg_content",
+          "max_response_chars"
+        ],
+        "title": "MachineAgentMessageCreationInfo"
       },
       "MachineInfo": {
         "properties": {

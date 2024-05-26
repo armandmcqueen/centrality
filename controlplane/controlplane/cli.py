@@ -21,7 +21,6 @@ def launch(postgres_host: str = "localhost"):
     """
     Launch the Control Plane FastAPI server.
 
-    When we add an actor system, this is where we'll launch it.
     """
     print("📝 Using default configs")
     conclib_config = conclib.DefaultConfig()
@@ -39,6 +38,7 @@ def launch(postgres_host: str = "localhost"):
             raise RuntimeError("Timed out waiting for DB to start")
         try:
             datastore_client.setup_db()  # Runs DDL. TODO: Handle proper migrations?
+            # datastore_client.reset_db()
             break
         except Exception as e:
             print(e)

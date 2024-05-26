@@ -36,6 +36,10 @@ from controlplane.datastore.types.machine_info import (
     MachineRegistrationInfo,
     MachineInfo,
 )
+from controlplane.datastore.types.messages import (
+    MachineAgentMessageCreationInfo,
+    MachineAgentMessageCompletionInfo,
+)
 from common import constants
 from controlplane.datastore.client import (
     DatastoreClient,
@@ -229,6 +233,49 @@ def get_machine(
     if len(live_machines) == 0:
         raise ValueError(f"Machine {machine_id} not found")  # TODO: Better error type?
     return live_machines[0]
+
+
+@app.post(constants.CONTROL_PLANE_MESSAGE_CREATE_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def create_message(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    creation_info: MachineAgentMessageCreationInfo,
+) -> str:
+    """Create a message for a machine"""
+    msg_id = datastore_client.create_machine_agent_message(
+        machine_id=creation_info.machine_id,
+        is_ask=creation_info.is_ask,
+        msg_type=creation_info.msg_type,
+        msg_content=creation_info.msg_content,
+        max_resp_chars=creation_info.max_response_chars,
+    )
+    return msg_id
+
+
+@app.post(constants.CONTROL_PLANE_MESSAGE_ACK_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def ack_message(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    msg_id: str,
+) -> OkResponse:
+    """Acknowledge a message"""
+    datastore_client.ack_machine_agent_message(msg_id)
+    return OkResponse()
+
+
+@app.post(constants.CONTROL_PLANE_MESSAGE_COMPLETE_ENDPOINT, tags=[MAIN_TAG])
+@auth(datastore_client)
+def complete_message(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],  # noqa
+    completion_info: MachineAgentMessageCompletionInfo,
+) -> OkResponse:
+    """Complete a message"""
+    datastore_client.complete_machine_agent_message(
+        msg_id=completion_info.msg_id,
+        outcome=completion_info.outcome,
+        errored=completion_info.errored,
+    )
+    return OkResponse()
 
 
 # BEGIN GENERATED CODE

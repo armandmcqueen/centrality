@@ -76,14 +76,15 @@ configuration = centrality_controlplane_sdk.Configuration(
 with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    msg_id = 'msg_id_example' # str | 
 
     try:
-        # Get Auth Healthcheck
-        api_response = api_instance.get_auth_healthcheck()
-        print("The response of DataApi->get_auth_healthcheck:\n")
+        # Ack Message
+        api_response = api_instance.ack_message(msg_id)
+        print("The response of DataApi->ack_message:\n")
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling DataApi->get_auth_healthcheck: %s\n" % e)
+        print("Exception when calling DataApi->ack_message: %s\n" % e)
 
 ```
 
@@ -93,6 +94,9 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*DataApi* | [**ack_message**](docs/DataApi.md#ack_message) | **POST** /messages/ack | Ack Message
+*DataApi* | [**complete_message**](docs/DataApi.md#complete_message) | **POST** /messages/complete | Complete Message
+*DataApi* | [**create_message**](docs/DataApi.md#create_message) | **POST** /messages/create | Create Message
 *DataApi* | [**get_auth_healthcheck**](docs/DataApi.md#get_auth_healthcheck) | **GET** /healthz/auth | Get Auth Healthcheck
 *DataApi* | [**get_cpu_metrics**](docs/DataApi.md#get_cpu_metrics) | **GET** /machine/metrics/cpu | Get Cpu Metrics
 *DataApi* | [**get_disk_iops_metrics**](docs/DataApi.md#get_disk_iops_metrics) | **GET** /machine/metrics/disk-iops | Get Disk Iops Metrics
@@ -144,6 +148,8 @@ Class | Method | HTTP request | Description
  - [GpuUtilizationMeasurement](docs/GpuUtilizationMeasurement.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
  - [InfoResponse](docs/InfoResponse.md)
+ - [MachineAgentMessageCompletionInfo](docs/MachineAgentMessageCompletionInfo.md)
+ - [MachineAgentMessageCreationInfo](docs/MachineAgentMessageCreationInfo.md)
  - [MachineInfo](docs/MachineInfo.md)
  - [MachineRegistrationInfo](docs/MachineRegistrationInfo.md)
  - [MemoryMeasurement](docs/MemoryMeasurement.md)

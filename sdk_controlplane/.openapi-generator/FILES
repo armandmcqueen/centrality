@@ -24,6 +24,8 @@ centrality_controlplane_sdk/models/gpu_memory_measurement.py
 centrality_controlplane_sdk/models/gpu_utilization_measurement.py
 centrality_controlplane_sdk/models/http_validation_error.py
 centrality_controlplane_sdk/models/info_response.py
+centrality_controlplane_sdk/models/machine_agent_message_completion_info.py
+centrality_controlplane_sdk/models/machine_agent_message_creation_info.py
 centrality_controlplane_sdk/models/machine_info.py
 centrality_controlplane_sdk/models/machine_registration_info.py
 centrality_controlplane_sdk/models/memory_measurement.py
@@ -48,6 +50,8 @@ docs/GpuMemoryMeasurement.md
 docs/GpuUtilizationMeasurement.md
 docs/HTTPValidationError.md
 docs/InfoResponse.md
+docs/MachineAgentMessageCompletionInfo.md
+docs/MachineAgentMessageCreationInfo.md
 docs/MachineInfo.md
 docs/MachineRegistrationInfo.md
 docs/MemoryMeasurement.md
@@ -77,6 +81,8 @@ test/test_gpu_memory_measurement.py
 test/test_gpu_utilization_measurement.py
 test/test_http_validation_error.py
 test/test_info_response.py
+test/test_machine_agent_message_completion_info.py
+test/test_machine_agent_message_creation_info.py
 test/test_machine_info.py
 test/test_machine_registration_info.py
 test/test_memory_measurement.py
