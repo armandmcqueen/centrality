@@ -79,6 +79,9 @@ from controlplane.datastore.types.metrics.generated.nvidia_smi import (
     NvidiaSmiMetric,
     NvidiaSmiMetricLatest,
 )
+from controlplane.datastore.types.messages import (
+    MachineAgentMessageORM,
+)
 
 
 from controlplane.datastore.types.utils import gen_random_uuid
@@ -312,6 +315,67 @@ class DatastoreClient:
             rows = query.all()
             rows = [cast(MachineInfoOrm, row) for row in rows]
             return [MachineInfo.from_orm(row) for row in rows]
+
+    def create_machine_agent_message(
+        self,
+        msg_type: str,
+        msg_content: str,
+        machine_id: str,
+        is_ask: bool,
+        max_resp_chars: int = 1000,  # TODO: Decide if this is a good default
+        timeout: datetime.timedelta = datetime.timedelta(
+            120
+        ),  # Decide if this is a good default
+    ) -> str:
+        # Returns msg_id
+        with Session(bind=self.engine) as session:
+            msg = MachineAgentMessageORM(
+                creation_ts=datetime.datetime.now(),
+                machine_id=machine_id,
+                is_ask=is_ask,
+                msg_type=msg_type,
+                msg_content=msg_content,
+                max_response_chars=max_resp_chars,
+                timeout_ts=datetime.datetime.now() + timeout,
+            )
+            session.add(msg)
+            session.commit()
+            return msg.msg_id
+
+    def ack_machine_agent_message(self, msg_id: str) -> None:
+        with Session(bind=self.engine) as session:
+            msg = (
+                session.query(MachineAgentMessageORM)
+                .filter(MachineAgentMessageORM.msg_id == msg_id)
+                .first()
+            )
+            if msg is None:
+                raise ValueError(f"Message with msg_id {msg_id} does not exist")
+            msg.msg_state = "ACKD"  # TODO: Make this a proper enum?
+            session.commit()
+
+    def complete_machine_agent_message(
+        self, msg_id: str, outcome: str, errored: bool
+    ) -> None:
+        with Session(bind=self.engine) as session:
+            msg = (
+                session.query(MachineAgentMessageORM)
+                .filter(MachineAgentMessageORM.msg_id == msg_id)
+                .first()
+            )
+            if msg is None:
+                raise ValueError(f"Message with msg_id {msg_id} does not exist")
+            # Check if outcome is too long and truncate
+            if len(outcome) > msg.max_response_chars:
+                print(
+                    f"Message with msg_id {msg_id} has outcome too long, truncating to {msg.max_response_chars} chars"
+                )
+                outcome = outcome[: msg.max_response_chars]
+
+            msg.outcome = outcome
+            msg.errored = errored
+            msg.msg_state = "COMPLETE"
+            session.commit()
 
     ############################################################
     # Generic methods for adding, getting, and deleting metrics

@@ -26,6 +26,27 @@ class TestDataApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
+    def test_ack_message(self) -> None:
+        """Test case for ack_message
+
+        Ack Message
+        """
+        pass
+
+    def test_complete_message(self) -> None:
+        """Test case for complete_message
+
+        Complete Message
+        """
+        pass
+
+    def test_create_message(self) -> None:
+        """Test case for create_message
+
+        Create Message
+        """
+        pass
+
     def test_get_auth_healthcheck(self) -> None:
         """Test case for get_auth_healthcheck
 

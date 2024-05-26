@@ -68,10 +68,10 @@ class MachineInfo(BaseModel):
             registration_ts=self.registration_ts,
             num_cpus=self.num_cpus,
             cpu_description=self.cpu_description,
-            host_memory_mb=self.host_memory,
+            host_memory_mb=self.host_memory_mb,
             num_gpus=self.num_gpus,
             gpu_type=self.gpu_type,
-            gpu_memory_mb=self.gpu_memory,
+            gpu_memory_mb=self.gpu_memory_mb,
             nvidia_driver_version=self.nvidia_driver_version,
             hostname=self.hostname,
         )

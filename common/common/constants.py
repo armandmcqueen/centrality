@@ -25,6 +25,10 @@ CONTROL_PLANE_MACHINE_REGISTRATION_ENDPOINT = "/machine/{machine_id}/register"
 CONTROL_PLANE_MACHINE_HEARTBEAT_ENDPOINT = "/machine/{machine_id}/heartbeat"
 CONTROL_PLANE_MACHINE_DEATH_ENDPOINT = "/machine/{machine_id}/report-death"
 
+CONTROL_PLANE_MESSAGE_CREATE_ENDPOINT = "/messages/create"
+CONTROL_PLANE_MESSAGE_ACK_ENDPOINT = "/messages/ack"
+CONTROL_PLANE_MESSAGE_COMPLETE_ENDPOINT = "/messages/complete"
+
 # Disallowed machine names to preserve API endpoint structure
 RESERVED_MACHINE_NAMES = ["live", "metrics"]
 

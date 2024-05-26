@@ -4,6 +4,9 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**ack_message**](DataApi.md#ack_message) | **POST** /messages/ack | Ack Message
+[**complete_message**](DataApi.md#complete_message) | **POST** /messages/complete | Complete Message
+[**create_message**](DataApi.md#create_message) | **POST** /messages/create | Create Message
 [**get_auth_healthcheck**](DataApi.md#get_auth_healthcheck) | **GET** /healthz/auth | Get Auth Healthcheck
 [**get_cpu_metrics**](DataApi.md#get_cpu_metrics) | **GET** /machine/metrics/cpu | Get Cpu Metrics
 [**get_disk_iops_metrics**](DataApi.md#get_disk_iops_metrics) | **GET** /machine/metrics/disk-iops | Get Disk Iops Metrics
@@ -40,6 +43,241 @@ Method | HTTP request | Description
 [**report_machine_death**](DataApi.md#report_machine_death) | **POST** /machine/{machine_id}/report-death | Report Machine Death
 [**report_machine_heartbeat**](DataApi.md#report_machine_heartbeat) | **POST** /machine/{machine_id}/heartbeat | Report Machine Heartbeat
 
+
+# **ack_message**
+> OkResponse ack_message(msg_id)
+
+Ack Message
+
+Acknowledge a message
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    msg_id = 'msg_id_example' # str | 
+
+    try:
+        # Ack Message
+        api_response = api_instance.ack_message(msg_id)
+        print("The response of DataApi->ack_message:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->ack_message: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **msg_id** | **str**|  | 
+
+### Return type
+
+[**OkResponse**](OkResponse.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **complete_message**
+> OkResponse complete_message(machine_agent_message_completion_info)
+
+Complete Message
+
+Complete a message
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.machine_agent_message_completion_info import MachineAgentMessageCompletionInfo
+from centrality_controlplane_sdk.models.ok_response import OkResponse
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    machine_agent_message_completion_info = centrality_controlplane_sdk.MachineAgentMessageCompletionInfo() # MachineAgentMessageCompletionInfo | 
+
+    try:
+        # Complete Message
+        api_response = api_instance.complete_message(machine_agent_message_completion_info)
+        print("The response of DataApi->complete_message:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->complete_message: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **machine_agent_message_completion_info** | [**MachineAgentMessageCompletionInfo**](MachineAgentMessageCompletionInfo.md)|  | 
+
+### Return type
+
+[**OkResponse**](OkResponse.md)
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **create_message**
+> str create_message(machine_agent_message_creation_info)
+
+Create Message
+
+Create a message for a machine
+
+### Example
+
+* Bearer Authentication (HTTPBearer):
+```python
+import time
+import os
+import centrality_controlplane_sdk
+from centrality_controlplane_sdk.models.machine_agent_message_creation_info import MachineAgentMessageCreationInfo
+from centrality_controlplane_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = centrality_controlplane_sdk.Configuration(
+    host = "http://localhost"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: HTTPBearer
+configuration = centrality_controlplane_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with centrality_controlplane_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = centrality_controlplane_sdk.DataApi(api_client)
+    machine_agent_message_creation_info = centrality_controlplane_sdk.MachineAgentMessageCreationInfo() # MachineAgentMessageCreationInfo | 
+
+    try:
+        # Create Message
+        api_response = api_instance.create_message(machine_agent_message_creation_info)
+        print("The response of DataApi->create_message:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling DataApi->create_message: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **machine_agent_message_creation_info** | [**MachineAgentMessageCreationInfo**](MachineAgentMessageCreationInfo.md)|  | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[HTTPBearer](../README.md#HTTPBearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_auth_healthcheck**
 > OkResponse get_auth_healthcheck()
