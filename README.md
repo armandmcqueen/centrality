@@ -24,13 +24,7 @@ so the abstractions are broad and simple enough that the vast majority of set up
 \*For more bespoke setups where the out-of-the-box agents won't work, there is an SDK that can be used to send the relevant 
 data to the control plane REST endpoints.
 
-## Development Status
 
-Early
-
-Currently the control plane exists and there is a MachineAgent
-that sends data to the control plane. Check out https://centrality-dev.fly.dev/Cluster for a rough UI that displays some of the
-data being collected.
 
 
 
